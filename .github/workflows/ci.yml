@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ios-build:
+    name: iOS Build
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify Xcode 26 SDK
+        run: |
+          xcodebuild -version
+          sdk_version="$(xcrun --sdk iphoneos --show-sdk-version)"
+          echo "iPhoneOS SDK: $sdk_version"
+          case "$sdk_version" in
+            26.*) ;;
+            *)
+              echo "::error::Expected iOS 26 SDK or newer, got $sdk_version"
+              exit 1
+              ;;
+          esac
+
+      - name: Build iOS app
+        run: |
+          xcodebuild \
+            -project src/Katsu.xcodeproj \
+            -scheme Katsu \
+            -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            build

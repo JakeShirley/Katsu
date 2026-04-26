@@ -1,0 +1,433 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 70;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AA00010001 /* KatsuApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010001 /* KatsuApp.swift */; };
+		AA00010002 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010002 /* AppConfiguration.swift */; };
+		AA00010003 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010003 /* AppEnvironment.swift */; };
+		AA00010004 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010004 /* DesignSystem.swift */; };
+		AA00010005 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010005 /* RootView.swift */; };
+		AA00010010 /* MealieModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010010 /* MealieModels.swift */; };
+		AA00010011 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010011 /* AppError.swift */; };
+		AA00010020 /* MealieAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010020 /* MealieAPIClient.swift */; };
+		AA00010021 /* URLSessionMealieAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010021 /* URLSessionMealieAPIClient.swift */; };
+		AA00010022 /* MockMealieAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010022 /* MockMealieAPIClient.swift */; };
+		AA00010030 /* ServerProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010030 /* ServerProfileStore.swift */; };
+		AA00010031 /* AppPreferenceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010031 /* AppPreferenceStore.swift */; };
+		AA00010032 /* KeychainCredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010032 /* KeychainCredentialStore.swift */; };
+		AA00010040 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010040 /* OnboardingFlowView.swift */; };
+		AA00010041 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010041 /* HomeView.swift */; };
+		AA00010042 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010042 /* SettingsView.swift */; };
+		AA00010043 /* ChangelogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010043 /* ChangelogView.swift */; };
+		AA00010050 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB00010050 /* Assets.xcassets */; };
+		AA00010051 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BB00010051 /* Localizable.xcstrings */; };
+		AA00010052 /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = BB00010052 /* CHANGELOG.md */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		CC00000001 /* Katsu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Katsu.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC00000002 /* Katsu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Katsu.entitlements; sourceTree = "<group>"; };
+		CC00000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BB00010001 /* KatsuApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KatsuApp.swift; sourceTree = "<group>"; };
+		BB00010002 /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
+		BB00010003 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		BB00010004 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		BB00010005 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		BB00010010 /* MealieModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealieModels.swift; sourceTree = "<group>"; };
+		BB00010011 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
+		BB00010020 /* MealieAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealieAPIClient.swift; sourceTree = "<group>"; };
+		BB00010021 /* URLSessionMealieAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionMealieAPIClient.swift; sourceTree = "<group>"; };
+		BB00010022 /* MockMealieAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMealieAPIClient.swift; sourceTree = "<group>"; };
+		BB00010030 /* ServerProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerProfileStore.swift; sourceTree = "<group>"; };
+		BB00010031 /* AppPreferenceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPreferenceStore.swift; sourceTree = "<group>"; };
+		BB00010032 /* KeychainCredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainCredentialStore.swift; sourceTree = "<group>"; };
+		BB00010040 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
+		BB00010041 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		BB00010042 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		BB00010043 /* ChangelogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangelogView.swift; sourceTree = "<group>"; };
+		BB00010050 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BB00010051 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		BB00010052 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DD00000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EE00000001 = {
+			isa = PBXGroup;
+			children = (
+				EE00000002 /* Katsu */,
+				EE00000099 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EE00000099 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CC00000001 /* Katsu.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EE00000002 /* Katsu */ = {
+			isa = PBXGroup;
+			children = (
+				CC00000002 /* Katsu.entitlements */,
+				EE00000010 /* App */,
+				EE00000020 /* Domain */,
+				EE00000030 /* Networking */,
+				EE00000040 /* Storage */,
+				EE00000050 /* Features */,
+				EE00000060 /* Resources */,
+			);
+			path = Katsu;
+			sourceTree = "<group>";
+		};
+		EE00000010 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				BB00010001 /* KatsuApp.swift */,
+				BB00010002 /* AppConfiguration.swift */,
+				BB00010003 /* AppEnvironment.swift */,
+				BB00010004 /* DesignSystem.swift */,
+				BB00010005 /* RootView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		EE00000020 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				BB00010010 /* MealieModels.swift */,
+				BB00010011 /* AppError.swift */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		EE00000030 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				BB00010020 /* MealieAPIClient.swift */,
+				BB00010021 /* URLSessionMealieAPIClient.swift */,
+				BB00010022 /* MockMealieAPIClient.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		EE00000040 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				BB00010030 /* ServerProfileStore.swift */,
+				BB00010031 /* AppPreferenceStore.swift */,
+				BB00010032 /* KeychainCredentialStore.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		EE00000050 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				EE00000051 /* Onboarding */,
+				EE00000052 /* Home */,
+				EE00000053 /* Settings */,
+				EE00000054 /* Changelog */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		EE00000051 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				BB00010040 /* OnboardingFlowView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		EE00000052 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				BB00010041 /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		EE00000053 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				BB00010042 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		EE00000054 /* Changelog */ = {
+			isa = PBXGroup;
+			children = (
+				BB00010043 /* ChangelogView.swift */,
+			);
+			path = Changelog;
+			sourceTree = "<group>";
+		};
+		EE00000060 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CC00000003 /* Info.plist */,
+				BB00010050 /* Assets.xcassets */,
+				BB00010051 /* Localizable.xcstrings */,
+				BB00010052 /* CHANGELOG.md */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FF00000001 /* Katsu */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1100000010 /* Build configuration list for PBXNativeTarget "Katsu" */;
+			buildPhases = (
+				FF00000010 /* Sources */,
+				DD00000001 /* Frameworks */,
+				FF00000020 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Katsu;
+			productName = Katsu;
+			productReference = CC00000001 /* Katsu.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastSwiftUpdateCheck = 1610;
+				LastUpgradeCheck = 1610;
+				TargetAttributes = {
+					FF00000001 = {
+						CreatedOnToolsVersion = 16.1;
+					};
+				};
+			};
+			buildConfigurationList = 1100000001 /* Build configuration list for PBXProject "Katsu" */;
+			compatibilityVersion = "Xcode 15.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				es,
+				de,
+				ja,
+				Base,
+			);
+			mainGroup = EE00000001;
+			productRefGroup = EE00000099 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FF00000001 /* Katsu */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FF00000020 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA00010050 /* Assets.xcassets in Resources */,
+				AA00010051 /* Localizable.xcstrings in Resources */,
+				AA00010052 /* CHANGELOG.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FF00000010 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA00010001 /* KatsuApp.swift in Sources */,
+				AA00010002 /* AppConfiguration.swift in Sources */,
+				AA00010003 /* AppEnvironment.swift in Sources */,
+				AA00010004 /* DesignSystem.swift in Sources */,
+				AA00010005 /* RootView.swift in Sources */,
+				AA00010010 /* MealieModels.swift in Sources */,
+				AA00010011 /* AppError.swift in Sources */,
+				AA00010020 /* MealieAPIClient.swift in Sources */,
+				AA00010021 /* URLSessionMealieAPIClient.swift in Sources */,
+				AA00010022 /* MockMealieAPIClient.swift in Sources */,
+				AA00010030 /* ServerProfileStore.swift in Sources */,
+				AA00010031 /* AppPreferenceStore.swift in Sources */,
+				AA00010032 /* KeychainCredentialStore.swift in Sources */,
+				AA00010040 /* OnboardingFlowView.swift in Sources */,
+				AA00010041 /* HomeView.swift in Sources */,
+				AA00010042 /* SettingsView.swift in Sources */,
+				AA00010043 /* ChangelogView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1200000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1200000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1200000010 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Katsu/Katsu.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Katsu/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = "0.0.0-development";
+				PRODUCT_BUNDLE_IDENTIFIER = org.odinseye.katsu;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1200000011 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Katsu/Katsu.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Katsu/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = "0.0.0-development";
+				PRODUCT_BUNDLE_IDENTIFIER = org.odinseye.katsu;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1100000001 /* Build configuration list for PBXProject "Katsu" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1200000001 /* Debug */,
+				1200000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1100000010 /* Build configuration list for PBXNativeTarget "Katsu" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1200000010 /* Debug */,
+				1200000011 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1000000001 /* Project object */;
+}
