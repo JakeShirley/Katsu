@@ -176,6 +176,11 @@ struct MealieMealPlanEntryCreate: Encodable, Equatable {
     }
 }
 
+struct MealieMealPlanRandomCreate: Encodable, Equatable {
+    let date: String
+    let entryType: MealieMealPlanEntryType
+}
+
 struct MealieMealPlanEntryUpdate: Encodable, Equatable {
     let date: String
     let entryType: MealieMealPlanEntryType

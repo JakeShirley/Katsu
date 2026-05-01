@@ -94,6 +94,16 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return try await perform(request)
     }
 
+    func createRandomMealPlanEntry(serverURL: URL, token: MealieAuthToken, entry: MealieMealPlanRandomCreate) async throws -> MealieMealPlanEntry {
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/households/mealplans/random"))
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = try encoder.encode(entry)
+        return try await perform(request)
+    }
+
     func updateMealPlanEntry(serverURL: URL, token: MealieAuthToken, entryID: Int, entry: MealieMealPlanEntryUpdate) async throws -> MealieMealPlanEntry {
         var request = URLRequest(url: serverURL.appendingPathComponent("api/households/mealplans/\(entryID)"))
         request.httpMethod = "PUT"

@@ -220,6 +220,31 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return created
     }
 
+    func createRandomMealPlanEntry(serverURL: URL, token: MealieAuthToken, entry: MealieMealPlanRandomCreate) async throws -> MealieMealPlanEntry {
+        try await Task.sleep(nanoseconds: 160_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+        guard let recipe = recipes.randomElement(), let recipeID = recipe.recipeID else {
+            throw AppError.server(status: 404)
+        }
+
+        let created = MealieMealPlanEntry(
+            id: (mealPlanEntries.map(\.id).max() ?? 0) + 1,
+            date: entry.date,
+            entryType: entry.entryType,
+            title: nil,
+            text: nil,
+            recipeID: recipeID,
+            groupID: user.groupId,
+            userID: user.id,
+            householdID: user.householdId,
+            recipe: recipe
+        )
+        mealPlanEntries.append(created)
+        return created
+    }
+
     func updateMealPlanEntry(serverURL: URL, token: MealieAuthToken, entryID: Int, entry: MealieMealPlanEntryUpdate) async throws -> MealieMealPlanEntry {
         try await Task.sleep(nanoseconds: 160_000_000)
         guard token.accessToken == mintedToken.accessToken else {

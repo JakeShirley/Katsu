@@ -174,6 +174,64 @@
         "ja": { "stringUnit": { "state": "needs_review", "value": "軽食" } }
       }
     },
+    "Suggest random dinner for %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Zufälliges Abendessen für %@ vorschlagen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggest random dinner for %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Sugerir cena aleatoria para %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "%@ のランダムな夕食を提案"
+          }
+        }
+      }
+    },
+    "Surprise Me": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Überrasch mich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Surprise Me"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Sorpréndeme"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "おまかせ"
+          }
+        }
+      }
+    },
     "This Week": {
       "extractionState": "manual",
       "localizations": {

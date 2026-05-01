@@ -9,6 +9,7 @@ struct MealPlansView: View {
     @State private var actionErrorMessage: String?
     @State private var activeEditor: MealPlanEditorDraft?
     @State private var entryPendingDeletion: MealieMealPlanEntry?
+    @State private var randomMealDateString: String?
 
     private var week: MealPlanWeek {
         MealPlanWeek(containing: Date())
@@ -69,8 +70,10 @@ struct MealPlansView: View {
                     day: day,
                     entries: entriesByDate[day.dateString] ?? [],
                     onAdd: { activeEditor = MealPlanEditorDraft(dateString: day.dateString) },
+                    onRandom: { Task { await addRandomMealPlanEntry(on: day.dateString) } },
                     onEdit: { activeEditor = MealPlanEditorDraft(entry: $0) },
-                    onDelete: { entryPendingDeletion = $0 }
+                    onDelete: { entryPendingDeletion = $0 },
+                    isSuggestingRandomMeal: randomMealDateString == day.dateString
                 )
             }
         }
@@ -227,6 +230,32 @@ struct MealPlansView: View {
         }
     }
 
+    private func addRandomMealPlanEntry(on dateString: String) async {
+        guard let profile = env.activeProfile else { return }
+        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
+            actionErrorMessage = AppError.unauthorized.errorDescription
+            return
+        }
+        guard randomMealDateString == nil else { return }
+
+        randomMealDateString = dateString
+        actionErrorMessage = nil
+        defer { randomMealDateString = nil }
+
+        do {
+            let created = try await env.apiClient.createRandomMealPlanEntry(
+                serverURL: profile.serverURL,
+                token: token,
+                entry: MealieMealPlanRandomCreate(date: dateString, entryType: .dinner)
+            )
+            replaceEntry(created)
+        } catch let error as AppError {
+            actionErrorMessage = error.errorDescription
+        } catch {
+            actionErrorMessage = error.localizedDescription
+        }
+    }
+
     private func replaceEntry(_ entry: MealieMealPlanEntry) {
         if let index = entries.firstIndex(where: { $0.id == entry.id }) {
             entries[index] = entry
@@ -282,8 +311,10 @@ private struct MealPlanDayRow: View {
     let day: MealPlanDay
     let entries: [MealieMealPlanEntry]
     let onAdd: () -> Void
+    let onRandom: () -> Void
     let onEdit: (MealieMealPlanEntry) -> Void
     let onDelete: (MealieMealPlanEntry) -> Void
+    let isSuggestingRandomMeal: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
@@ -298,13 +329,29 @@ private struct MealPlanDayRow: View {
 
                 Spacer()
 
-                Button(action: onAdd) {
-                    Label("Add", systemImage: "plus.circle")
-                        .labelStyle(.iconOnly)
-                        .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                HStack(spacing: DesignSystem.Spacing.xs) {
+                    Button(action: onRandom) {
+                        if isSuggestingRandomMeal {
+                            ProgressView()
+                                .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                        } else {
+                            Label("Surprise Me", systemImage: "sparkles")
+                                .labelStyle(.iconOnly)
+                                .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(isSuggestingRandomMeal)
+                    .accessibilityLabel(String(localized: "Suggest random dinner for \(day.weekday)"))
+
+                    Button(action: onAdd) {
+                        Label("Add", systemImage: "plus.circle")
+                            .labelStyle(.iconOnly)
+                            .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(String(localized: "Add meal for \(day.weekday)"))
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(String(localized: "Add meal for \(day.weekday)"))
             }
 
             if entries.isEmpty {
