@@ -183,6 +183,17 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return try await perform(request)
     }
 
+    func updateShoppingListItem(serverURL: URL, token: MealieAuthToken, itemID: String, item: MealieShoppingListItemUpdate) async throws -> MealieShoppingListItemsCollection {
+        let encodedID = itemID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? itemID
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/households/shopping/items/\(encodedID)"))
+        request.httpMethod = "PUT"
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = try encoder.encode(item)
+        return try await perform(request)
+    }
+
     // MARK: - Helpers
 
     private func perform<T: Decodable>(_ request: URLRequest) async throws -> T {

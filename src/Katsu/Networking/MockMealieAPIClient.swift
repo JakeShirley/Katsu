@@ -391,6 +391,27 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return list
     }
 
+    func updateShoppingListItem(serverURL: URL, token: MealieAuthToken, itemID: String, item: MealieShoppingListItemUpdate) async throws -> MealieShoppingListItemsCollection {
+        try await Task.sleep(nanoseconds: 180_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+        guard let listIndex = shoppingLists.firstIndex(where: { list in
+            list.listItems.contains { $0.id == itemID }
+        }), let itemIndex = shoppingLists[listIndex].listItems.firstIndex(where: { $0.id == itemID }) else {
+            throw AppError.server(status: 404)
+        }
+
+        let current = shoppingLists[listIndex].listItems[itemIndex]
+        let updated = current.withChecked(item.checked)
+        shoppingLists[listIndex] = shoppingLists[listIndex].replacingItem(updated)
+        return MealieShoppingListItemsCollection(
+            createdItems: [],
+            updatedItems: [updated],
+            deletedItems: []
+        )
+    }
+
     private func detail(for summary: MealieRecipeSummary) -> MealieRecipeDetail {
         switch summary.slug {
         case "miso-ginger-salmon":

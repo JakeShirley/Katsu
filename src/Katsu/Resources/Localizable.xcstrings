@@ -3845,7 +3845,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Marcado" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "チェック済み" } }
       }
-    },,
+    },
     "Checked: %lld": {
       "extractionState": "manual",
       "localizations": {
@@ -3854,7 +3854,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Marcados: %lld" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "チェック済み: %lld" } }
       }
-    },,
+    },
     "Create a shopping list in Mealie and it will appear here.": {
       "extractionState": "manual",
       "localizations": {
@@ -3863,7 +3863,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Crea una lista de compras en Mealie y aparecerá aquí." } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "Mealie で買い物リストを作成すると、ここに表示されます。" } }
       }
-    },,
+    },
     "Items": {
       "extractionState": "manual",
       "localizations": {
@@ -3872,7 +3872,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Artículos" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "項目" } }
       }
-    },,
+    },
     "Items added in Mealie will appear here.": {
       "extractionState": "manual",
       "localizations": {
@@ -3881,7 +3881,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Los artículos añadidos en Mealie aparecerán aquí." } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "Mealie で追加した項目がここに表示されます。" } }
       }
-    },,
+    },
     "Items: %lld": {
       "extractionState": "manual",
       "localizations": {
@@ -3890,7 +3890,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Artículos: %lld" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "項目: %lld" } }
       }
-    },,
+    },
     "Lists": {
       "extractionState": "manual",
       "localizations": {
@@ -3899,7 +3899,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Listas" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "リスト" } }
       }
-    },,
+    },
     "Loading more shopping lists...": {
       "extractionState": "manual",
       "localizations": {
@@ -3908,7 +3908,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Cargando más listas de compras..." } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "さらに買い物リストを読み込み中..." } }
       }
-    },,
+    },
     "Loading shopping list...": {
       "extractionState": "manual",
       "localizations": {
@@ -3917,7 +3917,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Cargando lista de compras..." } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "買い物リストを読み込み中..." } }
       }
-    },,
+    },
     "Loading shopping lists...": {
       "extractionState": "manual",
       "localizations": {
@@ -3926,7 +3926,25 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Cargando listas de compras..." } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "買い物リストを読み込み中..." } }
       }
-    },,
+    },
+    "Marks this item checked": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Markiert diesen Artikel als abgehakt" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Marks this item checked" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Marca este artículo como completado" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "この項目をチェック済みにします" } }
+      }
+    },
+    "Marks this item unchecked": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Markiert diesen Artikel als nicht abgehakt" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Marks this item unchecked" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Marca este artículo como no completado" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "この項目を未チェックにします" } }
+      }
+    },
     "No shopping items": {
       "extractionState": "manual",
       "localizations": {
@@ -3935,7 +3953,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "No hay artículos de compras" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "買い物項目がありません" } }
       }
-    },,
+    },
     "No shopping lists": {
       "extractionState": "manual",
       "localizations": {
@@ -3944,7 +3962,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "No hay listas de compras" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "買い物リストがありません" } }
       }
-    },,
+    },
     "Open a list to review what you need before heading to the store.": {
       "extractionState": "manual",
       "localizations": {
@@ -3953,7 +3971,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Abre una lista para revisar lo que necesitas antes de ir a la tienda." } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "店に行く前にリストを開いて必要なものを確認します。" } }
       }
-    },,
+    },
     "Recipes: %lld": {
       "extractionState": "manual",
       "localizations": {
@@ -3962,7 +3980,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Recetas: %lld" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "レシピ: %lld" } }
       }
-    },,
+    },
     "Shop from your Mealie lists": {
       "extractionState": "manual",
       "localizations": {
@@ -3971,7 +3989,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Compra desde tus listas de Mealie" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "Mealie のリストで買い物" } }
       }
-    },,
+    },
     "Shop from your Mealie lists. Open a list to review what you need before heading to the store. Shopping lists: %lld": {
       "extractionState": "manual",
       "localizations": {
@@ -3980,7 +3998,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Compra desde tus listas de Mealie. Abre una lista para revisar lo que necesitas antes de ir a la tienda. Listas de compras: %lld" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "Mealie のリストで買い物。店に行く前にリストを開いて必要なものを確認します。買い物リスト: %lld" } }
       }
-    },,
+    },
     "Shopping": {
       "extractionState": "manual",
       "localizations": {
@@ -3989,7 +4007,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Compras" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "買い物" } }
       }
-    },,
+    },
     "Shopping item": {
       "extractionState": "manual",
       "localizations": {
@@ -3998,7 +4016,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Artículo de compras" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "買い物項目" } }
       }
-    },,
+    },
     "Shopping List": {
       "extractionState": "manual",
       "localizations": {
@@ -4007,7 +4025,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Lista de compras" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "買い物リスト" } }
       }
-    },,
+    },
     "Shopping Lists": {
       "extractionState": "manual",
       "localizations": {
@@ -4016,7 +4034,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Listas de compras" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "買い物リスト" } }
       }
-    },,
+    },
     "Shopping lists: %lld": {
       "extractionState": "manual",
       "localizations": {
@@ -4025,7 +4043,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Listas de compras: %lld" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "買い物リスト: %lld" } }
       }
-    },,
+    },
     "Unchecked": {
       "extractionState": "manual",
       "localizations": {
@@ -4034,7 +4052,16 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "Sin marcar" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "未チェック" } }
       }
-    },,
+    },
+    "Updating item": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Artikel wird aktualisiert" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Updating item" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Actualizando artículo" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "項目を更新中" } }
+      }
+    },
     "%@, items: %lld, checked: %lld": {
       "extractionState": "manual",
       "localizations": {
@@ -4043,7 +4070,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "%@, artículos: %lld, marcados: %lld" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "%@、項目: %lld、チェック済み: %lld" } }
       }
-    },,
+    },
     "%@, recipes: %lld": {
       "extractionState": "manual",
       "localizations": {
@@ -4052,7 +4079,7 @@
         "es": { "stringUnit": { "state": "needs_review", "value": "%@, recetas: %lld" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "%@、レシピ: %lld" } }
       }
-    },,
+    },
     "Your account doesn't have permission for this action.": {
       "extractionState": "manual",
       "localizations": {

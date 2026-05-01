@@ -493,6 +493,44 @@ struct MealieShoppingListDetail: Codable, Equatable, Identifiable {
         )
     }
 
+    func replacingItem(_ item: MealieShoppingListItem) -> MealieShoppingListDetail {
+        var updatedItems = listItems
+        if let index = updatedItems.firstIndex(where: { $0.id == item.id }) {
+            updatedItems[index] = item
+        }
+        return MealieShoppingListDetail(
+            id: id,
+            name: name,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            listItems: updatedItems,
+            recipeReferences: recipeReferences
+        )
+    }
+
+    func applying(_ collection: MealieShoppingListItemsCollection) -> MealieShoppingListDetail {
+        var updatedItems = listItems
+        let deletedIDs = Set(collection.deletedItems.map(\.id))
+        updatedItems.removeAll { deletedIDs.contains($0.id) }
+
+        for item in collection.updatedItems + collection.createdItems where item.shoppingListID == id {
+            if let index = updatedItems.firstIndex(where: { $0.id == item.id }) {
+                updatedItems[index] = item
+            } else {
+                updatedItems.append(item)
+            }
+        }
+
+        return MealieShoppingListDetail(
+            id: id,
+            name: name,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            listItems: updatedItems,
+            recipeReferences: recipeReferences
+        )
+    }
+
     enum CodingKeys: String, CodingKey {
         case id
         case name
@@ -537,6 +575,24 @@ struct MealieShoppingListItem: Codable, Equatable, Identifiable {
         return formatted
     }
 
+    func withChecked(_ checked: Bool) -> MealieShoppingListItem {
+        MealieShoppingListItem(
+            id: id,
+            shoppingListID: shoppingListID,
+            display: display,
+            note: note,
+            checked: checked,
+            position: position,
+            quantity: quantity,
+            unit: unit,
+            food: food,
+            label: label,
+            recipeReferences: recipeReferences,
+            createdAt: createdAt,
+            updatedAt: updatedAt
+        )
+    }
+
     enum CodingKeys: String, CodingKey {
         case id
         case shoppingListID = "shoppingListId"
@@ -551,6 +607,55 @@ struct MealieShoppingListItem: Codable, Equatable, Identifiable {
         case recipeReferences
         case createdAt
         case updatedAt
+    }
+}
+
+struct MealieShoppingListItemUpdate: Encodable, Equatable {
+    let shoppingListID: String
+    let checked: Bool
+    let quantity: Double
+    let note: String?
+    let display: String
+    let position: Int
+    let foodID: String?
+    let labelID: String?
+    let unitID: String?
+    let recipeReferences: [MealieShoppingItemRecipeReference]
+
+    init(item: MealieShoppingListItem) {
+        shoppingListID = item.shoppingListID
+        checked = item.checked
+        quantity = item.quantity
+        note = item.note
+        display = item.display
+        position = item.position
+        foodID = item.food?.id
+        labelID = item.label?.id
+        unitID = item.unit?.id
+        recipeReferences = item.recipeReferences
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case shoppingListID = "shoppingListId"
+        case checked
+        case quantity
+        case note
+        case display
+        case position
+        case foodID = "foodId"
+        case labelID = "labelId"
+        case unitID = "unitId"
+        case recipeReferences
+    }
+}
+
+struct MealieShoppingListItemsCollection: Codable, Equatable {
+    let createdItems: [MealieShoppingListItem]
+    let updatedItems: [MealieShoppingListItem]
+    let deletedItems: [MealieShoppingListItem]
+
+    var isEmpty: Bool {
+        createdItems.isEmpty && updatedItems.isEmpty && deletedItems.isEmpty
     }
 }
 

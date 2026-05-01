@@ -207,6 +207,7 @@ private struct ShoppingListDetailView: View {
     @State private var detail: MealieShoppingListDetail?
     @State private var isLoading = false
     @State private var errorMessage: String?
+    @State private var savingItemIDs: Set<String> = []
 
     var body: some View {
         List {
@@ -233,7 +234,12 @@ private struct ShoppingListDetailView: View {
                         .listRowBackground(Color.clear)
                     } else {
                         ForEach(detail.listItems.sorted(by: shoppingItemSort)) { item in
-                            ShoppingItemReadOnlyRow(item: item)
+                            ShoppingItemToggleRow(
+                                item: item,
+                                isSaving: savingItemIDs.contains(item.id)
+                            ) {
+                                Task { await toggle(item) }
+                            }
                         }
                     }
                 }
@@ -280,6 +286,40 @@ private struct ShoppingListDetailView: View {
             errorMessage = error.localizedDescription
         }
     }
+
+    private func toggle(_ item: MealieShoppingListItem) async {
+        guard !savingItemIDs.contains(item.id) else { return }
+        guard let profile = env.activeProfile else { return }
+        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
+            errorMessage = AppError.unauthorized.errorDescription
+            return
+        }
+
+        let originalDetail = detail
+        let optimisticItem = item.withChecked(!item.checked)
+        detail = detail?.replacingItem(optimisticItem)
+        savingItemIDs.insert(item.id)
+        errorMessage = nil
+        defer { savingItemIDs.remove(item.id) }
+
+        do {
+            let collection = try await env.apiClient.updateShoppingListItem(
+                serverURL: profile.serverURL,
+                token: token,
+                itemID: item.id,
+                item: MealieShoppingListItemUpdate(item: optimisticItem)
+            )
+            if let detail {
+                self.detail = detail.applying(collection)
+            }
+        } catch let error as AppError {
+            detail = originalDetail
+            errorMessage = error.errorDescription
+        } catch {
+            detail = originalDetail
+            errorMessage = error.localizedDescription
+        }
+    }
 }
 
 private struct ShoppingListStatusRow: View {
@@ -308,39 +348,55 @@ private struct ShoppingListStatusRow: View {
     }
 }
 
-private struct ShoppingItemReadOnlyRow: View {
+private struct ShoppingItemToggleRow: View {
     let item: MealieShoppingListItem
+    let isSaving: Bool
+    let onToggle: () -> Void
 
     var body: some View {
-        HStack(alignment: .top, spacing: DesignSystem.Spacing.md) {
-            Image(systemName: item.checked ? "checkmark.circle.fill" : "circle")
-                .font(.title3)
-                .foregroundStyle(item.checked ? DesignSystem.Colors.accent : .secondary)
-                .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
-                .accessibilityHidden(true)
+        Button(action: onToggle) {
+            HStack(alignment: .top, spacing: DesignSystem.Spacing.md) {
+                Image(systemName: item.checked ? "checkmark.circle.fill" : "circle")
+                    .font(.title3)
+                    .foregroundStyle(item.checked ? DesignSystem.Colors.accent : .secondary)
+                    .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                    .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
-                Text(item.displayName)
-                    .font(.body)
-                    .strikethrough(item.checked)
-                    .foregroundStyle(item.checked ? .secondary : .primary)
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                    Text(item.displayName)
+                        .font(.body)
+                        .strikethrough(item.checked)
+                        .foregroundStyle(item.checked ? .secondary : .primary)
 
-                if let quantityText = item.quantityText {
-                    Text(quantityText)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    if let quantityText = item.quantityText {
+                        Text(quantityText)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if let note = item.note, !note.isEmpty {
+                        Text(note)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
-                if let note = item.note, !note.isEmpty {
-                    Text(note)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                Spacer(minLength: DesignSystem.Spacing.sm)
+
+                if isSaving {
+                    ProgressView()
+                        .controlSize(.small)
+                        .accessibilityLabel("Updating item")
                 }
             }
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
+        .disabled(isSaving)
         .padding(.vertical, DesignSystem.Spacing.xs)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
+        .accessibilityHint(item.checked ? "Marks this item unchecked" : "Marks this item checked")
     }
 
     private var accessibilityLabel: String {
