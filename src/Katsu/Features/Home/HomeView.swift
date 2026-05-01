@@ -23,6 +23,11 @@ struct HomeView: View {
                     .tabItem {
                         Label("Meal Plans", systemImage: "calendar")
                     }
+
+                ShoppingListsView()
+                    .tabItem {
+                        Label("Shopping", systemImage: "cart")
+                    }
             }
         }
     }

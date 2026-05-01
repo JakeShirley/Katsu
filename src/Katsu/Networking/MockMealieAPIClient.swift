@@ -9,6 +9,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
     private var recipes: [MealieRecipeSummary]
     private var mealPlanEntries: [MealieMealPlanEntry]
     private var userRatings: [String: MealieUserRatingSummary]
+    private var shoppingLists: [MealieShoppingListDetail]
     private let validUsername: String
     private let validPassword: String
     private let mintedToken: MealieAuthToken
@@ -19,6 +20,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         recipes: [MealieRecipeSummary],
         mealPlanEntries: [MealieMealPlanEntry] = [],
         userRatings: [String: MealieUserRatingSummary] = [:],
+        shoppingLists: [MealieShoppingListDetail] = [],
         validUsername: String,
         validPassword: String,
         mintedToken: MealieAuthToken
@@ -28,6 +30,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         self.recipes = recipes
         self.mealPlanEntries = mealPlanEntries
         self.userRatings = userRatings
+        self.shoppingLists = shoppingLists
         self.validUsername = validUsername
         self.validPassword = validPassword
         self.mintedToken = mintedToken
@@ -123,6 +126,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
                     isFavorite: false
                 )
             ],
+            shoppingLists: Self.sampleShoppingLists(),
             validUsername: "chef",
             validPassword: "katsu",
             mintedToken: MealieAuthToken(
@@ -355,6 +359,38 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         )
     }
 
+    func fetchShoppingLists(serverURL: URL, token: MealieAuthToken, page: Int, perPage: Int) async throws -> MealieShoppingListPage {
+        try await Task.sleep(nanoseconds: 180_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+
+        let safePage = max(page, 1)
+        let safePerPage = max(perPage, 1)
+        let start = min((safePage - 1) * safePerPage, shoppingLists.count)
+        let end = min(start + safePerPage, shoppingLists.count)
+        let totalPages = Int(ceil(Double(shoppingLists.count) / Double(safePerPage)))
+
+        return MealieShoppingListPage(
+            items: shoppingLists[start..<end].map(\.summary),
+            page: safePage,
+            perPage: safePerPage,
+            total: shoppingLists.count,
+            totalPages: totalPages
+        )
+    }
+
+    func fetchShoppingListDetail(serverURL: URL, token: MealieAuthToken, listID: String) async throws -> MealieShoppingListDetail {
+        try await Task.sleep(nanoseconds: 160_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+        guard let list = shoppingLists.first(where: { $0.id == listID }) else {
+            throw AppError.server(status: 404)
+        }
+        return list
+    }
+
     private func detail(for summary: MealieRecipeSummary) -> MealieRecipeDetail {
         switch summary.slug {
         case "miso-ginger-salmon":
@@ -471,6 +507,113 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
     private func recipeSummary(for recipeID: String?) -> MealieRecipeSummary? {
         guard let recipeID else { return nil }
         return recipes.first { $0.id == recipeID || $0.recipeID == recipeID }
+    }
+
+    private static func sampleShoppingLists() -> [MealieShoppingListDetail] {
+        [
+            MealieShoppingListDetail(
+                id: "00000000-0000-0000-0000-000000000501",
+                name: "Weekly Groceries",
+                createdAt: nil,
+                updatedAt: nil,
+                listItems: [
+                    shoppingItem(
+                        id: "00000000-0000-0000-0000-000000000601",
+                        listID: "00000000-0000-0000-0000-000000000501",
+                        display: "Salmon fillets",
+                        note: "Dinner for Tuesday",
+                        quantity: 4,
+                        unit: nil,
+                        checked: false,
+                        position: 0
+                    ),
+                    shoppingItem(
+                        id: "00000000-0000-0000-0000-000000000602",
+                        listID: "00000000-0000-0000-0000-000000000501",
+                        display: "Short-grain rice",
+                        note: nil,
+                        quantity: 2,
+                        unit: MealieShoppingIngredientUnit(id: "cup", name: "cup", abbreviation: "cup"),
+                        checked: false,
+                        position: 1
+                    ),
+                    shoppingItem(
+                        id: "00000000-0000-0000-0000-000000000603",
+                        listID: "00000000-0000-0000-0000-000000000501",
+                        display: "Panko breadcrumbs",
+                        note: nil,
+                        quantity: 1,
+                        unit: nil,
+                        checked: true,
+                        position: 2
+                    )
+                ],
+                recipeReferences: [
+                    MealieShoppingRecipeReference(
+                        id: "00000000-0000-0000-0000-000000000701",
+                        shoppingListID: "00000000-0000-0000-0000-000000000501",
+                        recipeID: "00000000-0000-0000-0000-000000000101",
+                        recipeQuantity: 1
+                    )
+                ]
+            ),
+            MealieShoppingListDetail(
+                id: "00000000-0000-0000-0000-000000000502",
+                name: "Pantry Restock",
+                createdAt: nil,
+                updatedAt: nil,
+                listItems: [
+                    shoppingItem(
+                        id: "00000000-0000-0000-0000-000000000604",
+                        listID: "00000000-0000-0000-0000-000000000502",
+                        display: "White miso",
+                        note: "Check fridge first",
+                        quantity: 1,
+                        unit: nil,
+                        checked: false,
+                        position: 0
+                    ),
+                    shoppingItem(
+                        id: "00000000-0000-0000-0000-000000000605",
+                        listID: "00000000-0000-0000-0000-000000000502",
+                        display: "Soy sauce",
+                        note: nil,
+                        quantity: 1,
+                        unit: nil,
+                        checked: false,
+                        position: 1
+                    )
+                ],
+                recipeReferences: []
+            )
+        ]
+    }
+
+    private static func shoppingItem(
+        id: String,
+        listID: String,
+        display: String,
+        note: String?,
+        quantity: Double,
+        unit: MealieShoppingIngredientUnit?,
+        checked: Bool,
+        position: Int
+    ) -> MealieShoppingListItem {
+        MealieShoppingListItem(
+            id: id,
+            shoppingListID: listID,
+            display: display,
+            note: note,
+            checked: checked,
+            position: position,
+            quantity: quantity,
+            unit: unit,
+            food: nil,
+            label: nil,
+            recipeReferences: [],
+            createdAt: nil,
+            updatedAt: nil
+        )
     }
 
     private func recipeDetail(

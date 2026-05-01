@@ -3837,6 +3837,222 @@
         }
       }
     },
+    "Checked": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Abgehakt" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Checked" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Marcado" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "チェック済み" } }
+      }
+    },,
+    "Checked: %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Abgehakt: %lld" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Checked: %lld" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Marcados: %lld" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "チェック済み: %lld" } }
+      }
+    },,
+    "Create a shopping list in Mealie and it will appear here.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Erstelle eine Einkaufsliste in Mealie, und sie erscheint hier." } },
+        "en": { "stringUnit": { "state": "translated", "value": "Create a shopping list in Mealie and it will appear here." } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Crea una lista de compras en Mealie y aparecerá aquí." } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "Mealie で買い物リストを作成すると、ここに表示されます。" } }
+      }
+    },,
+    "Items": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Einträge" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Items" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Artículos" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "項目" } }
+      }
+    },,
+    "Items added in Mealie will appear here.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "In Mealie hinzugefügte Einträge erscheinen hier." } },
+        "en": { "stringUnit": { "state": "translated", "value": "Items added in Mealie will appear here." } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Los artículos añadidos en Mealie aparecerán aquí." } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "Mealie で追加した項目がここに表示されます。" } }
+      }
+    },,
+    "Items: %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Einträge: %lld" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Items: %lld" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Artículos: %lld" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "項目: %lld" } }
+      }
+    },,
+    "Lists": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Listen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Lists" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Listas" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "リスト" } }
+      }
+    },,
+    "Loading more shopping lists...": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Weitere Einkaufslisten werden geladen ..." } },
+        "en": { "stringUnit": { "state": "translated", "value": "Loading more shopping lists..." } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Cargando más listas de compras..." } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "さらに買い物リストを読み込み中..." } }
+      }
+    },,
+    "Loading shopping list...": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Einkaufsliste wird geladen ..." } },
+        "en": { "stringUnit": { "state": "translated", "value": "Loading shopping list..." } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Cargando lista de compras..." } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "買い物リストを読み込み中..." } }
+      }
+    },,
+    "Loading shopping lists...": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Einkaufslisten werden geladen ..." } },
+        "en": { "stringUnit": { "state": "translated", "value": "Loading shopping lists..." } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Cargando listas de compras..." } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "買い物リストを読み込み中..." } }
+      }
+    },,
+    "No shopping items": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Keine Einkaufsartikel" } },
+        "en": { "stringUnit": { "state": "translated", "value": "No shopping items" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "No hay artículos de compras" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "買い物項目がありません" } }
+      }
+    },,
+    "No shopping lists": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Keine Einkaufslisten" } },
+        "en": { "stringUnit": { "state": "translated", "value": "No shopping lists" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "No hay listas de compras" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "買い物リストがありません" } }
+      }
+    },,
+    "Open a list to review what you need before heading to the store.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Öffne eine Liste, um vor dem Einkauf zu prüfen, was du brauchst." } },
+        "en": { "stringUnit": { "state": "translated", "value": "Open a list to review what you need before heading to the store." } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Abre una lista para revisar lo que necesitas antes de ir a la tienda." } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "店に行く前にリストを開いて必要なものを確認します。" } }
+      }
+    },,
+    "Recipes: %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Rezepte: %lld" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Recipes: %lld" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Recetas: %lld" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "レシピ: %lld" } }
+      }
+    },,
+    "Shop from your Mealie lists": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Mit deinen Mealie-Listen einkaufen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Shop from your Mealie lists" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Compra desde tus listas de Mealie" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "Mealie のリストで買い物" } }
+      }
+    },,
+    "Shop from your Mealie lists. Open a list to review what you need before heading to the store. Shopping lists: %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Mit deinen Mealie-Listen einkaufen. Öffne eine Liste, um vor dem Einkauf zu prüfen, was du brauchst. Einkaufslisten: %lld" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Shop from your Mealie lists. Open a list to review what you need before heading to the store. Shopping lists: %lld" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Compra desde tus listas de Mealie. Abre una lista para revisar lo que necesitas antes de ir a la tienda. Listas de compras: %lld" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "Mealie のリストで買い物。店に行く前にリストを開いて必要なものを確認します。買い物リスト: %lld" } }
+      }
+    },,
+    "Shopping": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Einkaufen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Shopping" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Compras" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "買い物" } }
+      }
+    },,
+    "Shopping item": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Einkaufsartikel" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Shopping item" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Artículo de compras" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "買い物項目" } }
+      }
+    },,
+    "Shopping List": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Einkaufsliste" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Shopping List" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Lista de compras" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "買い物リスト" } }
+      }
+    },,
+    "Shopping Lists": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Einkaufslisten" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Shopping Lists" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Listas de compras" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "買い物リスト" } }
+      }
+    },,
+    "Shopping lists: %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Einkaufslisten: %lld" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Shopping lists: %lld" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Listas de compras: %lld" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "買い物リスト: %lld" } }
+      }
+    },,
+    "Unchecked": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Nicht abgehakt" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Unchecked" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Sin marcar" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "未チェック" } }
+      }
+    },,
+    "%@, items: %lld, checked: %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "%@, Einträge: %lld, abgehakt: %lld" } },
+        "en": { "stringUnit": { "state": "translated", "value": "%1$@, items: %2$lld, checked: %3$lld" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "%@, artículos: %lld, marcados: %lld" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "%@、項目: %lld、チェック済み: %lld" } }
+      }
+    },,
+    "%@, recipes: %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "%@, Rezepte: %lld" } },
+        "en": { "stringUnit": { "state": "translated", "value": "%1$@, recipes: %2$lld" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "%@, recetas: %lld" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "%@、レシピ: %lld" } }
+      }
+    },,
     "Your account doesn't have permission for this action.": {
       "extractionState": "manual",
       "localizations": {

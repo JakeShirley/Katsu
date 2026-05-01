@@ -161,6 +161,28 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         let _: EmptyResponse = try await perform(request)
     }
 
+    func fetchShoppingLists(serverURL: URL, token: MealieAuthToken, page: Int, perPage: Int) async throws -> MealieShoppingListPage {
+        var components = URLComponents(url: serverURL.appendingPathComponent("api/households/shopping/lists"), resolvingAgainstBaseURL: false)
+        components?.queryItems = [
+            URLQueryItem(name: "page", value: String(page)),
+            URLQueryItem(name: "perPage", value: String(perPage))
+        ]
+        guard let url = components?.url else {
+            throw AppError.invalidURL
+        }
+
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        return try await perform(request)
+    }
+
+    func fetchShoppingListDetail(serverURL: URL, token: MealieAuthToken, listID: String) async throws -> MealieShoppingListDetail {
+        let encodedID = listID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? listID
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/households/shopping/lists/\(encodedID)"))
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        return try await perform(request)
+    }
+
     // MARK: - Helpers
 
     private func perform<T: Decodable>(_ request: URLRequest) async throws -> T {

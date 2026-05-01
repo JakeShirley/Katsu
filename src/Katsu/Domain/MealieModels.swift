@@ -432,6 +432,177 @@ struct MealieRecipeSettings: Codable, Equatable {
     let showNutrition: Bool?
 }
 
+/// Paginated shopping-list browser response from `/api/households/shopping/lists`.
+struct MealieShoppingListPage: Codable, Equatable {
+    let items: [MealieShoppingListSummary]
+    let page: Int
+    let perPage: Int
+    let total: Int?
+    let totalPages: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case items
+        case page
+        case perPage = "per_page"
+        case total
+        case totalPages = "total_pages"
+    }
+}
+
+struct MealieShoppingListSummary: Codable, Equatable, Identifiable {
+    let id: String
+    let name: String?
+    let createdAt: String?
+    let updatedAt: String?
+    let recipeReferences: [MealieShoppingRecipeReference]
+
+    var displayName: String {
+        if let name, !name.isEmpty { return name }
+        return String(localized: "Shopping List")
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case createdAt
+        case updatedAt
+        case recipeReferences
+    }
+}
+
+struct MealieShoppingListDetail: Codable, Equatable, Identifiable {
+    let id: String
+    let name: String?
+    let createdAt: String?
+    let updatedAt: String?
+    let listItems: [MealieShoppingListItem]
+    let recipeReferences: [MealieShoppingRecipeReference]
+
+    var displayName: String {
+        if let name, !name.isEmpty { return name }
+        return String(localized: "Shopping List")
+    }
+
+    var summary: MealieShoppingListSummary {
+        MealieShoppingListSummary(
+            id: id,
+            name: name,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            recipeReferences: recipeReferences
+        )
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case createdAt
+        case updatedAt
+        case listItems
+        case recipeReferences
+    }
+}
+
+struct MealieShoppingListItem: Codable, Equatable, Identifiable {
+    let id: String
+    let shoppingListID: String
+    let display: String
+    let note: String?
+    let checked: Bool
+    let position: Int
+    let quantity: Double
+    let unit: MealieShoppingIngredientUnit?
+    let food: MealieShoppingIngredientFood?
+    let label: MealieShoppingLabel?
+    let recipeReferences: [MealieShoppingItemRecipeReference]
+    let createdAt: String?
+    let updatedAt: String?
+
+    var displayName: String {
+        if !display.isEmpty { return display }
+        if let foodName = food?.name, !foodName.isEmpty { return foodName }
+        if let note, !note.isEmpty { return note }
+        return String(localized: "Shopping item")
+    }
+
+    var quantityText: String? {
+        guard quantity != 1 else { return nil }
+        let formatted = quantity.formatted(.number.precision(.fractionLength(0...2)))
+        if let abbreviation = unit?.abbreviation, !abbreviation.isEmpty {
+            return "\(formatted) \(abbreviation)"
+        }
+        if let unitName = unit?.name, !unitName.isEmpty {
+            return "\(formatted) \(unitName)"
+        }
+        return formatted
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case shoppingListID = "shoppingListId"
+        case display
+        case note
+        case checked
+        case position
+        case quantity
+        case unit
+        case food
+        case label
+        case recipeReferences
+        case createdAt
+        case updatedAt
+    }
+}
+
+struct MealieShoppingIngredientUnit: Codable, Equatable {
+    let id: String?
+    let name: String?
+    let abbreviation: String?
+}
+
+struct MealieShoppingIngredientFood: Codable, Equatable {
+    let id: String?
+    let name: String?
+}
+
+struct MealieShoppingLabel: Codable, Equatable, Identifiable {
+    let id: String
+    let name: String
+    let color: String?
+}
+
+struct MealieShoppingRecipeReference: Codable, Equatable, Identifiable {
+    let id: String
+    let shoppingListID: String?
+    let recipeID: String?
+    let recipeQuantity: Double?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case shoppingListID = "shoppingListId"
+        case recipeID = "recipeId"
+        case recipeQuantity
+    }
+}
+
+struct MealieShoppingItemRecipeReference: Codable, Equatable, Identifiable {
+    let id: String?
+    let recipeID: String
+    let recipeQuantity: Double?
+    let recipeScale: Double?
+    let recipeNote: String?
+    let shoppingListItemID: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case recipeID = "recipeId"
+        case recipeQuantity
+        case recipeScale
+        case recipeNote
+        case shoppingListItemID = "shoppingListItemId"
+    }
+}
+
 /// Persistable record of a Mealie server the user has connected to.
 struct ServerProfile: Codable, Equatable, Identifiable {
     let id: UUID
