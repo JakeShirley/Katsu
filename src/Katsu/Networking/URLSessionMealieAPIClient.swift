@@ -6,9 +6,15 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     init(session: URLSession = .shared) {
         self.session = session
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        self.decoder = decoder
+        // Mealie's REST endpoints return camelCase (e.g. /api/app/about,
+        // /api/users/self) while OAuth-style endpoints return snake_case
+        // (/api/auth/token: access_token, token_type). Using
+        // `.convertFromSnakeCase` here would camelCase incoming JSON keys
+        // before CodingKey lookup, which prevents `MealieAuthToken`'s explicit
+        // `access_token`/`token_type` raw values from matching and causes the
+        // login response to fail decoding. Rely on each model's explicit
+        // CodingKeys instead.
+        self.decoder = JSONDecoder()
     }
 
     func fetchServerInfo(serverURL: URL) async throws -> MealieServerInfo {
