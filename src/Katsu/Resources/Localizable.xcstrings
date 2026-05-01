@@ -494,6 +494,114 @@
         }
       }
     },
+    "Changelog Unavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Änderungsprotokoll nicht verfügbar" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Changelog Unavailable" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Registro de cambios no disponible" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "変更履歴を利用できません" } }
+      }
+    },
+    "CHANGELOG.md is not bundled with this build.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "CHANGELOG.md ist in diesem Build nicht enthalten." } },
+        "en": { "stringUnit": { "state": "translated", "value": "CHANGELOG.md is not bundled with this build." } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "CHANGELOG.md no está incluido en esta compilación." } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "CHANGELOG.md はこのビルドに含まれていません。" } }
+      }
+    },
+    "Commit %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Commit %@" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Commit %@" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Commit %@" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "コミット %@" } }
+      }
+    },
+    "Could not load changelog: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Änderungsprotokoll konnte nicht geladen werden: %@" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Could not load changelog: %@" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "No se pudo cargar el registro de cambios: %@" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "変更履歴を読み込めませんでした: %@" } }
+      }
+    },
+    "Latest": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Neueste" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Latest" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Más reciente" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "最新" } }
+      }
+    },
+    "Loading changelog": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Änderungsprotokoll wird geladen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Loading changelog" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Cargando registro de cambios" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "変更履歴を読み込み中" } }
+      }
+    },
+    "No notes for this release.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Keine Hinweise für diese Version." } },
+        "en": { "stringUnit": { "state": "translated", "value": "No notes for this release." } },
+        "es": { "stringUnit": { "state": "translated", "value": "No hay notas para esta versión." } },
+        "ja": { "stringUnit": { "state": "translated", "value": "このリリースのノートはありません。" } }
+      }
+    },
+    "No Release Notes Yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Noch keine Versionshinweise" } },
+        "en": { "stringUnit": { "state": "translated", "value": "No Release Notes Yet" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Aún no hay notas de la versión" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "リリースノートはまだありません" } }
+      }
+    },
+    "Notes": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Hinweise" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Notes" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Notas" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "ノート" } }
+      }
+    },
+    "Release notes will appear here once the first version of Katsu ships.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Versionshinweise werden hier angezeigt, sobald die erste Version von Katsu veröffentlicht wird." } },
+        "en": { "stringUnit": { "state": "translated", "value": "Release notes will appear here once the first version of Katsu ships." } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Las notas de la versión aparecerán aquí cuando se publique la primera versión de Katsu." } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "Katsu の最初のバージョンが公開されると、リリースノートがここに表示されます。" } }
+      }
+    },
+    "Unreleased": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Unveröffentlicht" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Unreleased" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Sin publicar" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "未リリース" } }
+      }
+    },
+    "View release %@ on GitHub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Version %@ auf GitHub anzeigen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "View release %@ on GitHub" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Ver versión %@ en GitHub" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "リリース %@ を GitHub で表示" } }
+      }
+    },
     "Cholesterol": {
       "extractionState": "manual",
       "localizations": {
