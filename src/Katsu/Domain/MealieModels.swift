@@ -531,6 +531,26 @@ struct MealieShoppingListDetail: Codable, Equatable, Identifiable {
         )
     }
 
+    func addingRecipeReference(recipeID: String, quantity: Double) -> MealieShoppingListDetail {
+        let updatedReference = MealieShoppingRecipeReference(
+            id: recipeID,
+            shoppingListID: id,
+            recipeID: recipeID,
+            recipeQuantity: quantity
+        )
+        let updatedReferences = recipeReferences.contains { $0.recipeID == recipeID }
+            ? recipeReferences
+            : recipeReferences + [updatedReference]
+        return MealieShoppingListDetail(
+            id: id,
+            name: name,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            listItems: listItems,
+            recipeReferences: updatedReferences
+        )
+    }
+
     enum CodingKeys: String, CodingKey {
         case id
         case name
@@ -649,6 +669,30 @@ struct MealieShoppingListItemUpdate: Encodable, Equatable {
     }
 }
 
+struct MealieShoppingListItemCreate: Encodable, Equatable {
+    let shoppingListID: String
+    let checked: Bool
+    let quantity: Double
+    let note: String?
+    let display: String
+    let position: Int
+    let recipeReferences: [MealieShoppingItemRecipeReferenceCreate]
+
+    enum CodingKeys: String, CodingKey {
+        case shoppingListID = "shoppingListId"
+        case checked
+        case quantity
+        case note
+        case display
+        case position
+        case recipeReferences
+    }
+}
+
+struct MealieShoppingRecipeAdd: Encodable, Equatable {
+    let recipeIncrementQuantity: Double
+}
+
 struct MealieShoppingListItemsCollection: Codable, Equatable {
     let createdItems: [MealieShoppingListItem]
     let updatedItems: [MealieShoppingListItem]
@@ -705,6 +749,20 @@ struct MealieShoppingItemRecipeReference: Codable, Equatable, Identifiable {
         case recipeScale
         case recipeNote
         case shoppingListItemID = "shoppingListItemId"
+    }
+}
+
+struct MealieShoppingItemRecipeReferenceCreate: Encodable, Equatable {
+    let recipeID: String
+    let recipeQuantity: Double
+    let recipeScale: Double?
+    let recipeNote: String?
+
+    enum CodingKeys: String, CodingKey {
+        case recipeID = "recipeId"
+        case recipeQuantity
+        case recipeScale
+        case recipeNote
     }
 }
 

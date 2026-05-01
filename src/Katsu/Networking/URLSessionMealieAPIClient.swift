@@ -183,6 +183,16 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return try await perform(request)
     }
 
+    func createShoppingListItem(serverURL: URL, token: MealieAuthToken, item: MealieShoppingListItemCreate) async throws -> MealieShoppingListItemsCollection {
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/households/shopping/items"))
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = try encoder.encode(item)
+        return try await perform(request)
+    }
+
     func updateShoppingListItem(serverURL: URL, token: MealieAuthToken, itemID: String, item: MealieShoppingListItemUpdate) async throws -> MealieShoppingListItemsCollection {
         let encodedID = itemID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? itemID
         var request = URLRequest(url: serverURL.appendingPathComponent("api/households/shopping/items/\(encodedID)"))
@@ -191,6 +201,18 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.httpBody = try encoder.encode(item)
+        return try await perform(request)
+    }
+
+    func addRecipeToShoppingList(serverURL: URL, token: MealieAuthToken, listID: String, recipeID: String, add: MealieShoppingRecipeAdd) async throws -> MealieShoppingListDetail {
+        let encodedListID = listID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? listID
+        let encodedRecipeID = recipeID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? recipeID
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/households/shopping/lists/\(encodedListID)/recipe/\(encodedRecipeID)"))
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = try encoder.encode(add)
         return try await perform(request)
     }
 

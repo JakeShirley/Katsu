@@ -75,6 +75,15 @@
         "ja": { "stringUnit": { "state": "needs_review", "value": "デザート" } }
       }
     },
+    "From %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Aus %@" } },
+        "en": { "stringUnit": { "state": "translated", "value": "From %@" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "De %@" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "%@ から" } }
+      }
+    },
     "Dinner": {
       "extractionState": "manual",
       "localizations": {
@@ -284,6 +293,33 @@
         "en": { "stringUnit": { "state": "translated", "value": "Add Planned Meal" } },
         "es": { "stringUnit": { "state": "needs_review", "value": "Agregar comida planificada" } },
         "ja": { "stringUnit": { "state": "needs_review", "value": "予定した食事を追加" } }
+      }
+    },
+    "Add Shopping Item": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Einkaufsartikel hinzufügen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Add Shopping Item" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Agregar artículo de compras" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "買い物項目を追加" } }
+      }
+    },
+    "Add Type": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Hinzufügetyp" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Add Type" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Tipo de agregado" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "追加タイプ" } }
+      }
+    },
+    "Adds the selected recipe's ingredients to this shopping list.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Fügt die Zutaten des ausgewählten Rezepts zu dieser Einkaufsliste hinzu." } },
+        "en": { "stringUnit": { "state": "translated", "value": "Adds the selected recipe's ingredients to this shopping list." } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Agrega los ingredientes de la receta seleccionada a esta lista de compras." } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "選択したレシピの材料をこの買い物リストに追加します。" } }
       }
     },
     "Day": {
@@ -963,6 +999,15 @@
         "ja": { "stringUnit": { "state": "needs_review", "value": "CHANGELOG.md はこのビルドに含まれていません。" } }
       }
     },
+    "Choose Recipe": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Rezept auswählen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Choose Recipe" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Elegir receta" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "レシピを選択" } }
+      }
+    },
     "Commit %@": {
       "extractionState": "manual",
       "localizations": {
@@ -997,6 +1042,24 @@
         "en": { "stringUnit": { "state": "translated", "value": "Loading changelog" } },
         "es": { "stringUnit": { "state": "translated", "value": "Cargando registro de cambios" } },
         "ja": { "stringUnit": { "state": "translated", "value": "変更履歴を読み込み中" } }
+      }
+    },
+    "Item Name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Artikelname" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Item Name" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Nombre del artículo" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "項目名" } }
+      }
+    },
+    "Manual Item": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Manueller Artikel" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Manual Item" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Artículo manual" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "手入力の項目" } }
       }
     },
     "No notes for this release.": {
@@ -2242,6 +2305,15 @@
         }
       }
     },
+    "No recipes available": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Keine Rezepte verfügbar" } },
+        "en": { "stringUnit": { "state": "translated", "value": "No recipes available" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "No hay recetas disponibles" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "利用できるレシピがありません" } }
+      }
+    },
     "No matching recipes": {
       "extractionState": "manual",
       "localizations": {
@@ -2532,6 +2604,15 @@
       },
       "extractionState": "manual"
     },
+    "Quantity": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Menge" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Quantity" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Cantidad" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "数量" } }
+      }
+    },
     "Recipes": {
       "extractionState": "manual",
       "localizations": {
@@ -2559,6 +2640,33 @@
             "value": "レシピ"
           }
         }
+      }
+    },
+    "Recipe": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Rezept" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Recipe" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Receta" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "レシピ" } }
+      }
+    },
+    "Recipe Ingredients": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Rezeptzutaten" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Recipe Ingredients" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Ingredientes de la receta" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "レシピの材料" } }
+      }
+    },
+    "Recipe Quantity": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Rezeptmenge" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Recipe Quantity" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Cantidad de receta" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "レシピの数量" } }
       }
     },
     "Refine Search": {

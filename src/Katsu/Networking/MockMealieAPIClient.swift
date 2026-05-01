@@ -391,6 +391,43 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return list
     }
 
+    func createShoppingListItem(serverURL: URL, token: MealieAuthToken, item: MealieShoppingListItemCreate) async throws -> MealieShoppingListItemsCollection {
+        try await Task.sleep(nanoseconds: 180_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+        guard let listIndex = shoppingLists.firstIndex(where: { $0.id == item.shoppingListID }) else {
+            throw AppError.server(status: 404)
+        }
+
+        let created = MealieShoppingListItem(
+            id: UUID().uuidString.lowercased(),
+            shoppingListID: item.shoppingListID,
+            display: item.display,
+            note: item.note,
+            checked: item.checked,
+            position: item.position,
+            quantity: item.quantity,
+            unit: nil,
+            food: nil,
+            label: nil,
+            recipeReferences: item.recipeReferences.map { reference in
+                MealieShoppingItemRecipeReference(
+                    id: UUID().uuidString.lowercased(),
+                    recipeID: reference.recipeID,
+                    recipeQuantity: reference.recipeQuantity,
+                    recipeScale: reference.recipeScale,
+                    recipeNote: reference.recipeNote,
+                    shoppingListItemID: nil
+                )
+            },
+            createdAt: nil,
+            updatedAt: nil
+        )
+        shoppingLists[listIndex] = shoppingLists[listIndex].applying(MealieShoppingListItemsCollection(createdItems: [created], updatedItems: [], deletedItems: []))
+        return MealieShoppingListItemsCollection(createdItems: [created], updatedItems: [], deletedItems: [])
+    }
+
     func updateShoppingListItem(serverURL: URL, token: MealieAuthToken, itemID: String, item: MealieShoppingListItemUpdate) async throws -> MealieShoppingListItemsCollection {
         try await Task.sleep(nanoseconds: 180_000_000)
         guard token.accessToken == mintedToken.accessToken else {
@@ -410,6 +447,51 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
             updatedItems: [updated],
             deletedItems: []
         )
+    }
+
+    func addRecipeToShoppingList(serverURL: URL, token: MealieAuthToken, listID: String, recipeID: String, add: MealieShoppingRecipeAdd) async throws -> MealieShoppingListDetail {
+        try await Task.sleep(nanoseconds: 220_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+        guard let listIndex = shoppingLists.firstIndex(where: { $0.id == listID }),
+              let recipe = recipes.first(where: { $0.id == recipeID || $0.recipeID == recipeID }) else {
+            throw AppError.server(status: 404)
+        }
+
+        let recipeDetail = detail(for: recipe)
+        let startPosition = (shoppingLists[listIndex].listItems.map(\.position).max() ?? -1) + 1
+        let createdItems = recipeDetail.recipeIngredient.enumerated().map { offset, ingredient in
+            MealieShoppingListItem(
+                id: UUID().uuidString.lowercased(),
+                shoppingListID: listID,
+                display: ingredient.displayText,
+                note: String(localized: "From \(recipe.displayName)"),
+                checked: false,
+                position: startPosition + offset,
+                quantity: ingredient.quantity ?? add.recipeIncrementQuantity,
+                unit: ingredient.unit.map { MealieShoppingIngredientUnit(id: nil, name: $0.name, abbreviation: $0.abbreviation) },
+                food: ingredient.food.map { MealieShoppingIngredientFood(id: nil, name: $0.name) },
+                label: nil,
+                recipeReferences: [
+                    MealieShoppingItemRecipeReference(
+                        id: UUID().uuidString.lowercased(),
+                        recipeID: recipeID,
+                        recipeQuantity: add.recipeIncrementQuantity,
+                        recipeScale: nil,
+                        recipeNote: ingredient.note,
+                        shoppingListItemID: nil
+                    )
+                ],
+                createdAt: nil,
+                updatedAt: nil
+            )
+        }
+        let collection = MealieShoppingListItemsCollection(createdItems: createdItems, updatedItems: [], deletedItems: [])
+        shoppingLists[listIndex] = shoppingLists[listIndex]
+            .applying(collection)
+            .addingRecipeReference(recipeID: recipeID, quantity: add.recipeIncrementQuantity)
+        return shoppingLists[listIndex]
     }
 
     private func detail(for summary: MealieRecipeSummary) -> MealieRecipeDetail {
