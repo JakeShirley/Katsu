@@ -67,25 +67,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run release
 
-      - name: Get release notes
-        id: release-notes
-        run: |
-          notes=""
-          notes_file="build/TestFlight/release-notes.md"
-          if [[ -f "$notes_file" && -f build/TestFlight/export/Katsu.ipa ]]; then
-            notes="$(cat "$notes_file")"
-            # TestFlight "What to Test" has a 4000 character limit.
-            if [[ ${#notes} -gt 4000 ]]; then
-              notes="${notes:0:3997}..."
-            fi
-          fi
-          {
-            echo "notes<<RELEASE_NOTES_EOF"
-            echo "$notes"
-            echo "RELEASE_NOTES_EOF"
-          } >> "$GITHUB_OUTPUT"
-        shell: bash
-
       - name: Upload app to Test Flight
         if: ${{ hashFiles('build/TestFlight/export/Katsu.ipa') != '' }}
         uses: apple-actions/upload-testflight-build@v5
@@ -96,4 +77,3 @@ jobs:
           api-private-key: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
           uses-non-exempt-encryption: "false"
           wait-for-processing: "true"
-          release-notes: ${{ steps.release-notes.outputs.notes }}
