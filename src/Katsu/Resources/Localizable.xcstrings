@@ -30,6 +30,177 @@
         }
       }
     },
+    "%@ to %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "%@ bis %@" } },
+        "en": { "stringUnit": { "state": "translated", "value": "%1$@ to %2$@" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "%@ a %@" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "%@ から %@" } }
+      }
+    },
+    "%@, %@, no meals planned": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "%@, %@, keine Mahlzeiten geplant" } },
+        "en": { "stringUnit": { "state": "translated", "value": "%1$@, %2$@, no meals planned" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "%@, %@, no hay comidas planificadas" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "%@、%@、予定された食事はありません" } }
+      }
+    },
+    "%@: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "%@: %@" } },
+        "en": { "stringUnit": { "state": "translated", "value": "%1$@: %2$@" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "%@: %@" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "%@: %@" } }
+      }
+    },
+    "Breakfast": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Frühstück" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Breakfast" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Desayuno" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "朝食" } }
+      }
+    },
+    "Dessert": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Dessert" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Dessert" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Postre" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "デザート" } }
+      }
+    },
+    "Dinner": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Abendessen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Dinner" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Cena" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "夕食" } }
+      }
+    },
+    "Drink": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Getränk" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Drink" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Bebida" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "飲み物" } }
+      }
+    },
+    "Loading meal plan": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Essensplan wird geladen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Loading meal plan" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Cargando plan de comidas" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "食事プランを読み込み中" } }
+      }
+    },
+    "Loading meal plan…": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Essensplan wird geladen …" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Loading meal plan…" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Cargando plan de comidas…" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "食事プランを読み込み中…" } }
+      }
+    },
+    "Lunch": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Mittagessen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Lunch" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Almuerzo" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "昼食" } }
+      }
+    },
+    "Meal Plans": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Essenspläne" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Meal Plans" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Planes de comidas" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "食事プラン" } }
+      }
+    },
+    "No meals planned": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Keine Mahlzeiten geplant" } },
+        "en": { "stringUnit": { "state": "translated", "value": "No meals planned" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "No hay comidas planificadas" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "予定された食事はありません" } }
+      }
+    },
+    "Open": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Offen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Open" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Abierto" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "未定" } }
+      }
+    },
+    "Planned meals: %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Geplante Mahlzeiten: %lld" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Planned meals: %lld" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Comidas planificadas: %lld" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "予定された食事: %lld" } }
+      }
+    },
+    "Side": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Beilage" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Side" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Guarnición" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "副菜" } }
+      }
+    },
+    "Snack": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Snack" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Snack" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Tentempié" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "軽食" } }
+      }
+    },
+    "This Week": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Diese Woche" } },
+        "en": { "stringUnit": { "state": "translated", "value": "This Week" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Esta semana" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "今週" } }
+      }
+    },
+    "This week's plan": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Plan dieser Woche" } },
+        "en": { "stringUnit": { "state": "translated", "value": "This week's plan" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Plan de esta semana" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "今週のプラン" } }
+      }
+    },
+    "This week's plan, %@, planned meals: %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Plan dieser Woche, %@, geplante Mahlzeiten: %lld" } },
+        "en": { "stringUnit": { "state": "translated", "value": "This week's plan, %@, planned meals: %lld" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Plan de esta semana, %@, comidas planificadas: %lld" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "今週のプラン、%@、予定された食事: %lld" } }
+      }
+    },
     "About": {
       "extractionState": "manual",
       "localizations": {

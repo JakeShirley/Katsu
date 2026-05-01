@@ -18,6 +18,11 @@ struct HomeView: View {
                     .tabItem {
                         Label("Search", systemImage: "magnifyingglass")
                     }
+
+                MealPlansView()
+                    .tabItem {
+                        Label("Meal Plans", systemImage: "calendar")
+                    }
             }
         }
     }

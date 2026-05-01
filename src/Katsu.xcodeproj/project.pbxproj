@@ -22,6 +22,7 @@
 		AA00010032 /* KeychainCredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010032 /* KeychainCredentialStore.swift */; };
 		AA00010040 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010040 /* OnboardingFlowView.swift */; };
 		AA00010041 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010041 /* HomeView.swift */; };
+		AA00010044 /* MealPlansView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010044 /* MealPlansView.swift */; };
 		AA00010042 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010042 /* SettingsView.swift */; };
 		AA00010043 /* ChangelogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010043 /* ChangelogView.swift */; };
 		AA00010050 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB00010050 /* Assets.xcassets */; };
@@ -45,6 +46,7 @@
 		BB00010032 /* KeychainCredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainCredentialStore.swift; sourceTree = "<group>"; };
 		BB00010040 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
 		BB00010041 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		BB00010044 /* MealPlansView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlansView.swift; sourceTree = "<group>"; };
 		BB00010042 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BB00010043 /* ChangelogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangelogView.swift; sourceTree = "<group>"; };
 		BB00010050 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 			isa = PBXGroup;
 			children = (
 				BB00010041 /* HomeView.swift */,
+				BB00010044 /* MealPlansView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -280,6 +283,7 @@
 				AA00010032 /* KeychainCredentialStore.swift in Sources */,
 				AA00010040 /* OnboardingFlowView.swift in Sources */,
 				AA00010041 /* HomeView.swift in Sources */,
+				AA00010044 /* MealPlansView.swift in Sources */,
 				AA00010042 /* SettingsView.swift in Sources */,
 				AA00010043 /* ChangelogView.swift in Sources */,
 			);

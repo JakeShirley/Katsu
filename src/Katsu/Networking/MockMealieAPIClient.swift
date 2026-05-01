@@ -7,6 +7,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
     private let serverInfo: MealieServerInfo
     private let user: MealieUser
     private var recipes: [MealieRecipeSummary]
+    private var mealPlanEntries: [MealieMealPlanEntry]
     private var userRatings: [String: MealieUserRatingSummary]
     private let validUsername: String
     private let validPassword: String
@@ -16,6 +17,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         serverInfo: MealieServerInfo,
         user: MealieUser,
         recipes: [MealieRecipeSummary],
+        mealPlanEntries: [MealieMealPlanEntry] = [],
         userRatings: [String: MealieUserRatingSummary] = [:],
         validUsername: String,
         validPassword: String,
@@ -24,6 +26,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         self.serverInfo = serverInfo
         self.user = user
         self.recipes = recipes
+        self.mealPlanEntries = mealPlanEntries
         self.userRatings = userRatings
         self.validUsername = validUsername
         self.validPassword = validPassword
@@ -107,6 +110,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
                     recipeYield: "4 jars"
                 )
             ],
+            mealPlanEntries: Self.sampleMealPlanEntries(),
             userRatings: [
                 "00000000-0000-0000-0000-000000000101": MealieUserRatingSummary(
                     recipeID: "00000000-0000-0000-0000-000000000101",
@@ -168,6 +172,29 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
             perPage: safePerPage,
             total: filteredRecipes.count,
             totalPages: totalPages
+        )
+    }
+
+    func fetchMealPlanEntries(serverURL: URL, token: MealieAuthToken, startDate: String, endDate: String) async throws -> MealieMealPlanPage {
+        try await Task.sleep(nanoseconds: 180_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+
+        let entries = mealPlanEntries
+            .filter { $0.date >= startDate && $0.date <= endDate }
+            .sorted { lhs, rhs in
+                if lhs.date == rhs.date {
+                    return lhs.entryType.rawValue < rhs.entryType.rawValue
+                }
+                return lhs.date < rhs.date
+            }
+        return MealieMealPlanPage(
+            items: entries,
+            page: 1,
+            perPage: 50,
+            total: entries.count,
+            totalPages: 1
         )
     }
 
@@ -316,6 +343,46 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
                 nutrition: nil
             )
         }
+    }
+
+    private static func sampleMealPlanEntries() -> [MealieMealPlanEntry] {
+        let calendar = Calendar.current
+        let now = Date()
+        let weekStart = calendar.dateInterval(of: .weekOfYear, for: now)?.start ?? now
+
+        func date(_ offset: Int) -> String {
+            mealPlanDateFormatter.string(from: calendar.date(byAdding: .day, value: offset, to: weekStart) ?? weekStart)
+        }
+
+        return [
+            mealPlanEntry(id: 1, date: date(0), entryType: .dinner, title: nil, recipeID: "00000000-0000-0000-0000-000000000101", recipeSlug: "miso-ginger-salmon", recipeName: "Miso Ginger Salmon"),
+            mealPlanEntry(id: 2, date: date(2), entryType: .lunch, title: "Leftover katsu bowls", recipeID: nil, recipeSlug: nil, recipeName: nil),
+            mealPlanEntry(id: 3, date: date(4), entryType: .dinner, title: nil, recipeID: "00000000-0000-0000-0000-000000000102", recipeSlug: "crispy-katsu-curry", recipeName: "Crispy Katsu Curry"),
+            mealPlanEntry(id: 4, date: date(6), entryType: .breakfast, title: nil, recipeID: "00000000-0000-0000-0000-000000000108", recipeSlug: "berry-yogurt-parfaits", recipeName: "Berry Yogurt Parfaits")
+        ]
+    }
+
+    private static func mealPlanEntry(id: Int, date: String, entryType: MealieMealPlanEntryType, title: String?, recipeID: String?, recipeSlug: String?, recipeName: String?) -> MealieMealPlanEntry {
+        MealieMealPlanEntry(
+            id: id,
+            date: date,
+            entryType: entryType,
+            title: title,
+            text: nil,
+            recipeID: recipeID,
+            groupID: "00000000-0000-0000-0000-0000000000aa",
+            userID: "00000000-0000-0000-0000-000000000001",
+            householdID: "00000000-0000-0000-0000-0000000000bb",
+            recipe: recipeID.flatMap { id in
+                MealieRecipeSummary(
+                    recipeID: id,
+                    slug: recipeSlug ?? id,
+                    name: recipeName,
+                    description: nil,
+                    recipeYield: nil
+                )
+            }
+        )
     }
 
     private func recipeDetail(

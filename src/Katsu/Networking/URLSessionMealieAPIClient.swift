@@ -66,6 +66,24 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return try await perform(request)
     }
 
+    func fetchMealPlanEntries(serverURL: URL, token: MealieAuthToken, startDate: String, endDate: String) async throws -> MealieMealPlanPage {
+        var components = URLComponents(url: serverURL.appendingPathComponent("api/households/mealplans"), resolvingAgainstBaseURL: false)
+        components?.queryItems = [
+            URLQueryItem(name: "start_date", value: startDate),
+            URLQueryItem(name: "end_date", value: endDate),
+            URLQueryItem(name: "orderBy", value: "date"),
+            URLQueryItem(name: "orderDirection", value: "asc"),
+            URLQueryItem(name: "perPage", value: "50")
+        ]
+        guard let url = components?.url else {
+            throw AppError.invalidURL
+        }
+
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        return try await perform(request)
+    }
+
     func fetchRecipeDetail(serverURL: URL, token: MealieAuthToken, slug: String) async throws -> MealieRecipeDetail {
         let encodedSlug = slug.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? slug
         var request = URLRequest(url: serverURL.appendingPathComponent("api/recipes/\(encodedSlug)"))

@@ -81,6 +81,85 @@ struct MealieRecipeFilters: Equatable, Sendable {
     }
 }
 
+struct MealieMealPlanPage: Codable, Equatable {
+    let items: [MealieMealPlanEntry]
+    let page: Int
+    let perPage: Int
+    let total: Int?
+    let totalPages: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case items
+        case page
+        case perPage = "per_page"
+        case total
+        case totalPages = "total_pages"
+    }
+}
+
+enum MealieMealPlanEntryType: String, Codable, CaseIterable, Equatable, Identifiable {
+    case breakfast
+    case lunch
+    case dinner
+    case side
+    case snack
+    case drink
+    case dessert
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .breakfast: String(localized: "Breakfast")
+        case .lunch: String(localized: "Lunch")
+        case .dinner: String(localized: "Dinner")
+        case .side: String(localized: "Side")
+        case .snack: String(localized: "Snack")
+        case .drink: String(localized: "Drink")
+        case .dessert: String(localized: "Dessert")
+        }
+    }
+}
+
+struct MealieMealPlanEntry: Codable, Equatable, Identifiable {
+    let id: Int
+    let date: String
+    let entryType: MealieMealPlanEntryType
+    let title: String?
+    let text: String?
+    let recipeID: String?
+    let groupID: String?
+    let userID: String?
+    let householdID: String?
+    let recipe: MealieRecipeSummary?
+
+    var displayTitle: String {
+        if let recipeName = recipe?.displayName, !recipeName.isEmpty {
+            return recipeName
+        }
+        if let title, !title.isEmpty {
+            return title
+        }
+        if let text, !text.isEmpty {
+            return text
+        }
+        return entryType.displayName
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case date
+        case entryType
+        case title
+        case text
+        case recipeID = "recipeId"
+        case groupID = "groupId"
+        case userID = "userId"
+        case householdID = "householdId"
+        case recipe
+    }
+}
+
 struct MealieUserRatingSummary: Codable, Equatable {
     let recipeID: String
     let rating: Double?
