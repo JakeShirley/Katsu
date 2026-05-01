@@ -14,6 +14,7 @@ final class AppEnvironment: ObservableObject {
 
     @Published var activeProfile: ServerProfile?
     @Published var currentUser: MealieUser?
+    @Published var hasServerProfiles: Bool
 
     init(
         configuration: AppConfiguration,
@@ -27,7 +28,12 @@ final class AppEnvironment: ObservableObject {
         self.credentialStore = credentialStore
         self.profileStore = profileStore
         self.preferenceStore = preferenceStore
-        self.activeProfile = profileStore.activeProfile()
+        let storedProfiles = profileStore.allProfiles()
+        self.activeProfile = profileStore.activeProfile() ?? storedProfiles.first
+        self.hasServerProfiles = !storedProfiles.isEmpty
+        if let activeProfile = self.activeProfile {
+            profileStore.setActiveProfileID(activeProfile.id)
+        }
 
         if configuration.useMockServer,
            let token = configuration.debugAuthToken,
@@ -42,6 +48,7 @@ final class AppEnvironment: ObservableObject {
             profileStore.upsert(profile)
             profileStore.setActiveProfileID(profile.id)
             self.activeProfile = profile
+            self.hasServerProfiles = true
         }
     }
 
@@ -71,14 +78,24 @@ final class AppEnvironment: ObservableObject {
         profileStore.setActiveProfileID(profile.id)
         activeProfile = profile
         currentUser = user
+        hasServerProfiles = true
+    }
+
+    func switchToProfile(_ profile: ServerProfile) {
+        profileStore.setActiveProfileID(profile.id)
+        activeProfile = profile
+        currentUser = nil
+        hasServerProfiles = !profileStore.allProfiles().isEmpty
     }
 
     func signOut() {
-        if let id = activeProfile?.id {
+        let signedOutID = activeProfile?.id ?? profileStore.activeProfileID()
+        if let id = signedOutID {
             try? credentialStore.deleteToken(for: id)
             profileStore.remove(id: id)
         }
-        activeProfile = nil
+        activeProfile = profileStore.activeProfile()
         currentUser = nil
+        hasServerProfiles = !profileStore.allProfiles().isEmpty
     }
 }

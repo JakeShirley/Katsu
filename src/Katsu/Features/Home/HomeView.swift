@@ -2,126 +2,64 @@ import SwiftUI
 
 /// Home screen for the active Mealie server.
 struct HomeView: View {
-    var body: some View {
-        TabView {
-            HomeDashboardView()
-                .tabItem {
-                    Label("Home", systemImage: "house")
-                }
+    @EnvironmentObject private var env: AppEnvironment
 
-            RecipesView()
-                .tabItem {
-                    Label("Recipes", systemImage: "book.closed")
-                }
+    var body: some View {
+        if env.activeProfile == nil && !env.hasServerProfiles {
+            AddServerHomeView()
+        } else {
+            TabView {
+                RecipesView()
+                    .tabItem {
+                        Label("Recipes", systemImage: "book.closed")
+                    }
+            }
         }
     }
 }
 
-private struct HomeDashboardView: View {
-    @EnvironmentObject private var env: AppEnvironment
-    @State private var showSettings = false
-    @State private var loadError: String?
-    @State private var isLoadingUser = false
-
+private struct AddServerHomeView: View {
     var body: some View {
         NavigationStack {
-            List {
-                if let profile = env.activeProfile {
-                    Section("Connected Server") {
-                        LabeledContent("Name", value: profile.displayName)
-                        LabeledContent("URL", value: profile.serverURL.absoluteString)
-                        if let version = profile.version {
-                            LabeledContent("Version", value: version)
-                        }
-                    }
-                }
+            Form {
+                Section {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.lg) {
+                        Image(systemName: "server.rack")
+                            .font(.largeTitle)
+                            .foregroundStyle(DesignSystem.Colors.accent)
+                            .accessibilityHidden(true)
 
-                Section("Signed in as") {
-                    if let user = env.currentUser {
-                        LabeledContent("Username", value: user.username)
-                        if let name = user.fullName, !name.isEmpty {
-                            LabeledContent("Name", value: name)
+                        VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                            Text("Add a Mealie server")
+                                .font(.title2)
+                                .fontWeight(.semibold)
+
+                            Text("Connect Katsu to your Mealie server, then sign in to browse your recipes.")
+                                .font(.body)
+                                .foregroundStyle(.secondary)
                         }
-                        if let email = user.email {
-                            LabeledContent("Email", value: email)
+
+                        NavigationLink {
+                            OnboardingFlowView()
+                        } label: {
+                            Label("Add Server", systemImage: "plus.circle.fill")
+                                .frame(maxWidth: .infinity, minHeight: DesignSystem.HitTarget.minimum)
                         }
-                        if user.admin == true {
-                            Label("Administrator", systemImage: "checkmark.seal.fill")
-                                .foregroundStyle(DesignSystem.accent)
-                        }
-                    } else if isLoadingUser {
-                        HStack(spacing: 8) {
-                            ProgressView()
-                            Text("Loading account…")
-                        }
-                    } else if let loadError {
-                        Text(loadError).foregroundStyle(.red)
-                    } else {
-                        Text("Not loaded yet").foregroundStyle(.secondary)
+                        .buttonStyle(.borderedProminent)
                     }
+                    .padding(.vertical, DesignSystem.Spacing.md)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel("Add a Mealie server. Connect Katsu to your Mealie server, then sign in to browse your recipes.")
                 }
             }
             .navigationTitle("Katsu")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showSettings = true
-                    } label: {
-                        Label("Settings", systemImage: "gearshape")
-                    }
-                    .accessibilityLabel("Settings")
-                }
-            }
-            .sheet(isPresented: $showSettings) {
-                NavigationStack {
-                    SettingsView()
-                }
-            }
-            .task(id: env.activeProfile?.id) {
-                await refreshUserIfNeeded()
-            }
-            .refreshable {
-                await refreshUser(force: true)
-            }
-            .onAppear {
-                if env.configuration.openSettingsOnLaunch {
-                    showSettings = true
-                }
-            }
-        }
-    }
-
-    private func refreshUserIfNeeded() async {
-        if env.currentUser == nil {
-            await refreshUser(force: true)
-        }
-    }
-
-    private func refreshUser(force: Bool) async {
-        guard let profile = env.activeProfile else { return }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            loadError = AppError.unauthorized.errorDescription
-            return
-        }
-        isLoadingUser = true
-        defer { isLoadingUser = false }
-        do {
-            let user = try await env.apiClient.fetchCurrentUser(
-                serverURL: profile.serverURL,
-                token: token
-            )
-            env.currentUser = user
-            loadError = nil
-        } catch let error as AppError {
-            loadError = error.errorDescription
-        } catch {
-            loadError = error.localizedDescription
         }
     }
 }
 
 private struct RecipesView: View {
     @EnvironmentObject private var env: AppEnvironment
+    @State private var showSettings = false
     @State private var recipes: [MealieRecipeSummary] = []
     @State private var recipePage = 1
     @State private var recipeTotalPages: Int?
@@ -185,11 +123,31 @@ private struct RecipesView: View {
                 }
             }
             .navigationTitle("Recipes")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Label("Settings", systemImage: "gearshape")
+                    }
+                    .accessibilityLabel("Settings")
+                }
+            }
+            .sheet(isPresented: $showSettings) {
+                NavigationStack {
+                    SettingsView()
+                }
+            }
             .task(id: env.activeProfile?.id) {
                 await refreshRecipesIfNeeded()
             }
             .refreshable {
                 await refreshRecipes()
+            }
+            .onAppear {
+                if env.configuration.openSettingsOnLaunch {
+                    showSettings = true
+                }
             }
         }
     }

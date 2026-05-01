@@ -6,19 +6,24 @@ struct OnboardingFlowView: View {
     @EnvironmentObject private var env: AppEnvironment
     @State private var validatedProfile: ServerProfile?
     @State private var serverInfo: MealieServerInfo?
+    let onConnected: (() -> Void)?
+
+    init(onConnected: (() -> Void)? = nil) {
+        self.onConnected = onConnected
+    }
 
     var body: some View {
-        NavigationStack {
-            if let profile = validatedProfile {
-                LoginView(profile: profile, serverInfo: serverInfo) {
-                    validatedProfile = nil
-                    serverInfo = nil
-                }
-            } else {
-                ServerURLEntryView { profile, info in
-                    serverInfo = info
-                    validatedProfile = profile
-                }
+        if let profile = validatedProfile {
+            LoginView(profile: profile, serverInfo: serverInfo) {
+                validatedProfile = nil
+                serverInfo = nil
+            } onConnected: {
+                onConnected?()
+            }
+        } else {
+            ServerURLEntryView { profile, info in
+                serverInfo = info
+                validatedProfile = profile
             }
         }
     }
@@ -134,6 +139,7 @@ private struct LoginView: View {
     let profile: ServerProfile
     let serverInfo: MealieServerInfo?
     let onBack: () -> Void
+    let onConnected: () -> Void
 
     @State private var username: String = ""
     @State private var password: String = ""
@@ -214,6 +220,7 @@ private struct LoginView: View {
                 var saved = profile
                 saved.lastUsername = username
                 env.adoptAuthenticatedSession(profile: saved, token: token, user: user)
+                onConnected()
             } catch let error as AppError {
                 errorMessage = error.errorDescription
             } catch {

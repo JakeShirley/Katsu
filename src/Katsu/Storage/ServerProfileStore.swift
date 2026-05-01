@@ -3,6 +3,7 @@ import Foundation
 protocol ServerProfileStore: AnyObject {
     func allProfiles() -> [ServerProfile]
     func activeProfile() -> ServerProfile?
+    func activeProfileID() -> UUID?
     func setActiveProfileID(_ id: UUID?)
     func upsert(_ profile: ServerProfile)
     func remove(id: UUID)
@@ -28,11 +29,17 @@ final class UserDefaultsServerProfileStore: ServerProfileStore {
     }
 
     func activeProfile() -> ServerProfile? {
-        guard let raw = defaults.string(forKey: activeIDKey),
-              let id = UUID(uuidString: raw) else {
+        guard let id = activeProfileID() else {
             return nil
         }
         return allProfiles().first(where: { $0.id == id })
+    }
+
+    func activeProfileID() -> UUID? {
+        guard let raw = defaults.string(forKey: activeIDKey) else {
+            return nil
+        }
+        return UUID(uuidString: raw)
     }
 
     func setActiveProfileID(_ id: UUID?) {
