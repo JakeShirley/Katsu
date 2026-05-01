@@ -201,6 +201,141 @@
         "ja": { "stringUnit": { "state": "needs_review", "value": "今週のプラン、%@、予定された食事: %lld" } }
       }
     },
+    "Add": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Hinzufügen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Add" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Agregar" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "追加" } }
+      }
+    },
+    "Add meal for %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Mahlzeit für %@ hinzufügen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Add meal for %@" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Agregar comida para %@" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "%@ の食事を追加" } }
+      }
+    },
+    "Add Planned Meal": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Geplante Mahlzeit hinzufügen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Add Planned Meal" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Agregar comida planificada" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "予定した食事を追加" } }
+      }
+    },
+    "Day": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Tag" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Day" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Día" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "日" } }
+      }
+    },
+    "Edit": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Bearbeiten" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Edit" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Editar" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "編集" } }
+      }
+    },
+    "Edit Planned Meal": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Geplante Mahlzeit bearbeiten" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Edit Planned Meal" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Editar comida planificada" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "予定した食事を編集" } }
+      }
+    },
+    "Meal Type": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Mahlzeittyp" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Meal Type" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Tipo de comida" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "食事の種類" } }
+      }
+    },
+    "Planned Meal": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Geplante Mahlzeit" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Planned Meal" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Comida planificada" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "予定した食事" } }
+      }
+    },
+    "Remove": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Entfernen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Remove" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Eliminar" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "削除" } }
+      }
+    },
+    "Remove %@ from this week's plan?": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "%@ aus dem Plan dieser Woche entfernen?" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Remove %@ from this week's plan?" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "¿Eliminar %@ del plan de esta semana?" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "%@ を今週のプランから削除しますか?" } }
+      }
+    },
+    "Remove Planned Meal": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Geplante Mahlzeit entfernen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Remove Planned Meal" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Eliminar comida planificada" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "予定した食事を削除" } }
+      }
+    },
+    "Save": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Speichern" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Save" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Guardar" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "保存" } }
+      }
+    },
+    "Schedule": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Zeitplan" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Schedule" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Horario" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "予定" } }
+      }
+    },
+    "This planned meal cannot be edited because Mealie did not return ownership details.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Diese geplante Mahlzeit kann nicht bearbeitet werden, weil Mealie keine Besitzdetails zurückgegeben hat." } },
+        "en": { "stringUnit": { "state": "translated", "value": "This planned meal cannot be edited because Mealie did not return ownership details." } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Esta comida planificada no se puede editar porque Mealie no devolvió los detalles de propiedad." } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "Mealie が所有者の詳細を返さなかったため、この予定した食事は編集できません。" } }
+      }
+    },
+    "Title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Titel" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Title" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Título" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "タイトル" } }
+      }
+    },
     "About": {
       "extractionState": "manual",
       "localizations": {

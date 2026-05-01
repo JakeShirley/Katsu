@@ -198,6 +198,64 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         )
     }
 
+    func createMealPlanEntry(serverURL: URL, token: MealieAuthToken, entry: MealieMealPlanEntryCreate) async throws -> MealieMealPlanEntry {
+        try await Task.sleep(nanoseconds: 160_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+
+        let created = MealieMealPlanEntry(
+            id: (mealPlanEntries.map(\.id).max() ?? 0) + 1,
+            date: entry.date,
+            entryType: entry.entryType,
+            title: entry.title,
+            text: entry.text,
+            recipeID: entry.recipeID,
+            groupID: user.groupId,
+            userID: user.id,
+            householdID: user.householdId,
+            recipe: recipeSummary(for: entry.recipeID)
+        )
+        mealPlanEntries.append(created)
+        return created
+    }
+
+    func updateMealPlanEntry(serverURL: URL, token: MealieAuthToken, entryID: Int, entry: MealieMealPlanEntryUpdate) async throws -> MealieMealPlanEntry {
+        try await Task.sleep(nanoseconds: 160_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+        guard let index = mealPlanEntries.firstIndex(where: { $0.id == entryID }) else {
+            throw AppError.server(status: 404)
+        }
+
+        let updated = MealieMealPlanEntry(
+            id: entry.id,
+            date: entry.date,
+            entryType: entry.entryType,
+            title: entry.title,
+            text: entry.text,
+            recipeID: entry.recipeID,
+            groupID: entry.groupID,
+            userID: entry.userID,
+            householdID: mealPlanEntries[index].householdID,
+            recipe: recipeSummary(for: entry.recipeID)
+        )
+        mealPlanEntries[index] = updated
+        return updated
+    }
+
+    func deleteMealPlanEntry(serverURL: URL, token: MealieAuthToken, entryID: Int) async throws -> MealieMealPlanEntry {
+        try await Task.sleep(nanoseconds: 160_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+        guard let index = mealPlanEntries.firstIndex(where: { $0.id == entryID }) else {
+            throw AppError.server(status: 404)
+        }
+        return mealPlanEntries.remove(at: index)
+    }
+
     private func filtered(recipes: [MealieRecipeSummary], filters: MealieRecipeFilters) -> [MealieRecipeSummary] {
         let search = filters.search.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         return recipes.filter { recipe in
@@ -383,6 +441,11 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
                 )
             }
         )
+    }
+
+    private func recipeSummary(for recipeID: String?) -> MealieRecipeSummary? {
+        guard let recipeID else { return nil }
+        return recipes.first { $0.id == recipeID || $0.recipeID == recipeID }
     }
 
     private func recipeDetail(

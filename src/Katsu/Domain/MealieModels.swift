@@ -160,6 +160,44 @@ struct MealieMealPlanEntry: Codable, Equatable, Identifiable {
     }
 }
 
+struct MealieMealPlanEntryCreate: Encodable, Equatable {
+    let date: String
+    let entryType: MealieMealPlanEntryType
+    let title: String
+    let text: String
+    let recipeID: String?
+
+    enum CodingKeys: String, CodingKey {
+        case date
+        case entryType
+        case title
+        case text
+        case recipeID = "recipeId"
+    }
+}
+
+struct MealieMealPlanEntryUpdate: Encodable, Equatable {
+    let date: String
+    let entryType: MealieMealPlanEntryType
+    let title: String
+    let text: String
+    let recipeID: String?
+    let id: Int
+    let groupID: String
+    let userID: String
+
+    enum CodingKeys: String, CodingKey {
+        case date
+        case entryType
+        case title
+        case text
+        case recipeID = "recipeId"
+        case id
+        case groupID = "groupId"
+        case userID = "userId"
+    }
+}
+
 struct MealieUserRatingSummary: Codable, Equatable {
     let recipeID: String
     let rating: Double?
