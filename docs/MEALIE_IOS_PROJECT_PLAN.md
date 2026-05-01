@@ -46,7 +46,7 @@ later work; do not block v0 on it.
 
 ## Recipes (REC) — post-v0
 
-- **REC-001** Recipe list (`/api/recipes`) with pagination.
+- [x] **REC-001** Recipe list (`/api/recipes`) with pagination.
 - **REC-002** Recipe detail (ingredients, instructions, nutrition, image).
 - **REC-003** Recipe search by name, tag, category, household.
 - **REC-004** Import recipe from URL (`POST /api/recipes/create-url`).

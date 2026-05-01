@@ -6,6 +6,7 @@ import Foundation
 final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
     private let serverInfo: MealieServerInfo
     private let user: MealieUser
+    private let recipes: [MealieRecipeSummary]
     private let validUsername: String
     private let validPassword: String
     private let mintedToken: MealieAuthToken
@@ -13,12 +14,14 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
     init(
         serverInfo: MealieServerInfo,
         user: MealieUser,
+        recipes: [MealieRecipeSummary],
         validUsername: String,
         validPassword: String,
         mintedToken: MealieAuthToken
     ) {
         self.serverInfo = serverInfo
         self.user = user
+        self.recipes = recipes
         self.validUsername = validUsername
         self.validPassword = validPassword
         self.mintedToken = mintedToken
@@ -43,6 +46,64 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
                 groupId: "00000000-0000-0000-0000-0000000000aa",
                 householdId: "00000000-0000-0000-0000-0000000000bb"
             ),
+            recipes: [
+                MealieRecipeSummary(
+                    recipeID: "00000000-0000-0000-0000-000000000101",
+                    slug: "miso-ginger-salmon",
+                    name: "Miso Ginger Salmon",
+                    description: "A quick weeknight dinner with rice and greens.",
+                    recipeYield: "4 servings"
+                ),
+                MealieRecipeSummary(
+                    recipeID: "00000000-0000-0000-0000-000000000102",
+                    slug: "crispy-katsu-curry",
+                    name: "Crispy Katsu Curry",
+                    description: "Golden cutlets with a rich Japanese curry sauce.",
+                    recipeYield: "3 servings"
+                ),
+                MealieRecipeSummary(
+                    recipeID: "00000000-0000-0000-0000-000000000103",
+                    slug: "sesame-cucumber-salad",
+                    name: "Sesame Cucumber Salad",
+                    description: "Cool, crunchy cucumbers dressed with sesame and rice vinegar.",
+                    recipeYield: "2 servings"
+                ),
+                MealieRecipeSummary(
+                    recipeID: "00000000-0000-0000-0000-000000000104",
+                    slug: "garlic-noodles",
+                    name: "Garlic Noodles",
+                    description: "Buttery noodles with garlic, soy, and scallions.",
+                    recipeYield: "4 servings"
+                ),
+                MealieRecipeSummary(
+                    recipeID: "00000000-0000-0000-0000-000000000105",
+                    slug: "matcha-pancakes",
+                    name: "Matcha Pancakes",
+                    description: "Fluffy breakfast pancakes with a gentle green tea flavor.",
+                    recipeYield: "8 pancakes"
+                ),
+                MealieRecipeSummary(
+                    recipeID: "00000000-0000-0000-0000-000000000106",
+                    slug: "tahini-roasted-carrots",
+                    name: "Tahini Roasted Carrots",
+                    description: "Sweet roasted carrots finished with lemony tahini.",
+                    recipeYield: "4 servings"
+                ),
+                MealieRecipeSummary(
+                    recipeID: "00000000-0000-0000-0000-000000000107",
+                    slug: "chicken-rice-soup",
+                    name: "Chicken Rice Soup",
+                    description: "Comforting soup for busy evenings or chilly weekends.",
+                    recipeYield: "6 bowls"
+                ),
+                MealieRecipeSummary(
+                    recipeID: "00000000-0000-0000-0000-000000000108",
+                    slug: "berry-yogurt-parfaits",
+                    name: "Berry Yogurt Parfaits",
+                    description: "Layered yogurt, berries, and granola for quick breakfasts.",
+                    recipeYield: "4 jars"
+                )
+            ],
             validUsername: "chef",
             validPassword: "katsu",
             mintedToken: MealieAuthToken(
@@ -71,5 +132,26 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
             throw AppError.unauthorized
         }
         return user
+    }
+
+    func fetchRecipes(serverURL: URL, token: MealieAuthToken, page: Int, perPage: Int) async throws -> MealieRecipePage {
+        try await Task.sleep(nanoseconds: 200_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+
+        let safePage = max(page, 1)
+        let safePerPage = max(perPage, 1)
+        let start = min((safePage - 1) * safePerPage, recipes.count)
+        let end = min(start + safePerPage, recipes.count)
+        let totalPages = Int(ceil(Double(recipes.count) / Double(safePerPage)))
+
+        return MealieRecipePage(
+            items: Array(recipes[start..<end]),
+            page: safePage,
+            perPage: safePerPage,
+            total: recipes.count,
+            totalPages: totalPages
+        )
     }
 }

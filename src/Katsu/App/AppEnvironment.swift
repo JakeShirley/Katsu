@@ -28,6 +28,21 @@ final class AppEnvironment: ObservableObject {
         self.profileStore = profileStore
         self.preferenceStore = preferenceStore
         self.activeProfile = profileStore.activeProfile()
+
+        if configuration.useMockServer,
+           let token = configuration.debugAuthToken,
+           self.activeProfile == nil {
+            let profile = ServerProfile(
+                displayName: configuration.initialServerURL?.host ?? "Mock Mealie",
+                serverURL: configuration.initialServerURL ?? URL(string: "https://mock.mealie.local")!,
+                version: "v2.5.0-mock",
+                lastUsername: "chef"
+            )
+            try? credentialStore.saveToken(MealieAuthToken(accessToken: token, tokenType: "bearer"), for: profile.id)
+            profileStore.upsert(profile)
+            profileStore.setActiveProfileID(profile.id)
+            self.activeProfile = profile
+        }
     }
 
     static func live(configuration: AppConfiguration) -> AppEnvironment {

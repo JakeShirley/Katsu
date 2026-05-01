@@ -41,6 +41,21 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return try await perform(request)
     }
 
+    func fetchRecipes(serverURL: URL, token: MealieAuthToken, page: Int, perPage: Int) async throws -> MealieRecipePage {
+        var components = URLComponents(url: serverURL.appendingPathComponent("api/recipes"), resolvingAgainstBaseURL: false)
+        components?.queryItems = [
+            URLQueryItem(name: "page", value: String(page)),
+            URLQueryItem(name: "perPage", value: String(perPage))
+        ]
+        guard let url = components?.url else {
+            throw AppError.invalidURL
+        }
+
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        return try await perform(request)
+    }
+
     // MARK: - Helpers
 
     private func perform<T: Decodable>(_ request: URLRequest) async throws -> T {

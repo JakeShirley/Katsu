@@ -52,6 +52,48 @@ struct MealieUser: Codable, Equatable, Identifiable {
     }
 }
 
+/// Paginated `/api/recipes` response used by the recipe list.
+struct MealieRecipePage: Codable, Equatable {
+    let items: [MealieRecipeSummary]
+    let page: Int
+    let perPage: Int
+    let total: Int?
+    let totalPages: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case items
+        case page
+        case perPage = "per_page"
+        case total
+        case totalPages = "total_pages"
+    }
+}
+
+/// Lightweight recipe summary returned by `/api/recipes`.
+struct MealieRecipeSummary: Codable, Equatable, Identifiable {
+    let recipeID: String?
+    let slug: String
+    let name: String?
+    let description: String?
+    let recipeYield: String?
+
+    var id: String { recipeID ?? slug }
+    var displayName: String {
+        if let name, !name.isEmpty {
+            return name
+        }
+        return slug
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case recipeID = "id"
+        case slug
+        case name
+        case description
+        case recipeYield
+    }
+}
+
 /// Persistable record of a Mealie server the user has connected to.
 struct ServerProfile: Codable, Equatable, Identifiable {
     let id: UUID
