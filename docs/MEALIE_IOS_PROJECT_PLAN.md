@@ -51,7 +51,7 @@ later work; do not block v0 on it.
 - [x] **REC-003** Recipe search by name, tag, category, household.
 - [x] **REC-004** Import recipe from URL (`POST /api/recipes/create-url`).
 - [x] **REC-005** Favorite / rating updates.
-- **REC-006** Offline cache for recently viewed recipes.
+- [x] **REC-006** Offline cache for recently viewed recipes.
 
 ## Meal Plans (MP) — post-v0
 

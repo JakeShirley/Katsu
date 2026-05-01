@@ -67,6 +67,7 @@ private struct RecipesView: View {
     @State private var recipeLoadError: String?
     @State private var isLoadingRecipes = false
     @State private var isLoadingMoreRecipes = false
+    @State private var showingCachedRecipes = false
     @State private var searchText = ""
     @State private var categoryFilter = ""
     @State private var tagFilter = ""
@@ -150,6 +151,13 @@ private struct RecipesView: View {
                         Text("No recipes yet")
                             .foregroundStyle(.secondary)
                     } else {
+                        if showingCachedRecipes {
+                            Label("Showing offline recipes", systemImage: "wifi.slash")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .accessibilityLabel("Showing offline recipes")
+                        }
+
                         ForEach(recipes) { recipe in
                             NavigationLink {
                                 RecipeDetailView(recipe: recipe)
@@ -286,9 +294,23 @@ private struct RecipesView: View {
                 Int(ceil(Double(total) / Double(page.perPage)))
             }
             recipes = replacingExisting ? page.items : recipes + page.items
+            showingCachedRecipes = false
             recipeLoadError = nil
         } catch let error as AppError {
-            recipeLoadError = error.errorDescription
+            if error == .offline, replacingExisting, filters.isEmpty {
+                let cachedRecipes = env.preferenceStore.cachedRecipeSummaries(profileID: profile.id)
+                if !cachedRecipes.isEmpty {
+                    recipes = cachedRecipes
+                    recipePage = 1
+                    recipeTotalPages = 1
+                    showingCachedRecipes = true
+                    recipeLoadError = nil
+                } else {
+                    recipeLoadError = error.errorDescription
+                }
+            } else {
+                recipeLoadError = error.errorDescription
+            }
         } catch {
             recipeLoadError = error.localizedDescription
         }
@@ -461,6 +483,7 @@ private struct RecipeDetailView: View {
     @State private var isUpdatingRating = false
     @State private var loadError: String?
     @State private var ratingError: String?
+    @State private var showingCachedDetail = false
 
     var body: some View {
         List {
@@ -483,6 +506,15 @@ private struct RecipeDetailView: View {
                     }
                 }
             } else if let detail {
+                if showingCachedDetail {
+                    Section {
+                        Label("Showing offline copy", systemImage: "wifi.slash")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .accessibilityLabel("Showing offline copy")
+                    }
+                }
+
                 RecipeHeroSection(detail: detail, serverURL: env.activeProfile?.serverURL)
 
                 if let recipeID = detail.recipeID {
@@ -572,9 +604,17 @@ private struct RecipeDetailView: View {
                     recipeID: recipeID
                 )
             }
+            env.preferenceStore.cacheRecipeDetail(loadedDetail, profileID: profile.id)
+            showingCachedDetail = false
             loadError = nil
         } catch let error as AppError {
-            loadError = error.errorDescription
+            if error == .offline, let cached = env.preferenceStore.cachedRecipeDetail(profileID: profile.id, slug: recipe.slug) {
+                detail = cached
+                showingCachedDetail = true
+                loadError = nil
+            } else {
+                loadError = error.errorDescription
+            }
         } catch {
             loadError = error.localizedDescription
         }
