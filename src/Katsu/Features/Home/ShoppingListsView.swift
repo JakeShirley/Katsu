@@ -61,6 +61,8 @@ struct ShoppingListsView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Shopping Lists")
+            .navigationBarTitleDisplayMode(.inline)
+            .contentMargins(.top, DesignSystem.Spacing.sm, for: .scrollContent)
             .task(id: env.activeProfile?.id) {
                 await loadListsIfNeeded()
             }
@@ -135,38 +137,43 @@ private struct ShoppingListsHeroCard: View {
     let listCount: Int
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
+        HStack(alignment: .top, spacing: DesignSystem.Spacing.md) {
             Image(systemName: "cart")
-                .font(.title)
-                .foregroundStyle(DesignSystem.Colors.accent)
+                .font(.title3)
+                .foregroundStyle(DesignSystem.Colors.accentDeep)
+                .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                .background(DesignSystem.Colors.accentSoft.opacity(0.75), in: RoundedRectangle(cornerRadius: DesignSystem.Radius.md))
                 .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
-                Text("Shop from your Mealie lists")
-                    .font(.title2)
-                    .fontWeight(.semibold)
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                    Text("Shop from your Mealie lists")
+                        .font(.headline)
 
-                Text("Open a list to review what you need before heading to the store.")
-                    .font(.body)
-                    .foregroundStyle(.secondary)
+                    Text("Open a list to review what you need before heading to the store.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                Label(String(localized: "Shopping lists: \(listCount)"), systemImage: "list.bullet")
+                    .font(.caption)
+                    .foregroundStyle(DesignSystem.Colors.accentDeep)
+                    .lineLimit(1)
+                    .padding(.horizontal, DesignSystem.Spacing.sm)
+                    .padding(.vertical, DesignSystem.Spacing.xs)
+                    .background(DesignSystem.Colors.accentSoft.opacity(0.75), in: Capsule())
             }
-
-            Label(String(localized: "Shopping lists: \(listCount)"), systemImage: "list.bullet")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, DesignSystem.Spacing.md)
-                .padding(.vertical, DesignSystem.Spacing.sm)
-                .background(DesignSystem.Colors.accentSoft, in: Capsule())
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(DesignSystem.Spacing.lg)
+        .padding(DesignSystem.Spacing.md)
         .background(DesignSystem.Colors.surface, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
         .overlay {
             RoundedRectangle(cornerRadius: DesignSystem.Radius.lg)
                 .stroke(DesignSystem.Colors.separator.opacity(0.35))
         }
         .padding(.horizontal, DesignSystem.Spacing.lg)
-        .padding(.vertical, DesignSystem.Spacing.sm)
+        .padding(.top, DesignSystem.Spacing.sm)
+        .padding(.bottom, DesignSystem.Spacing.xs)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(String(localized: "Shop from your Mealie lists. Open a list to review what you need before heading to the store. Shopping lists: \(listCount)"))
     }
@@ -176,18 +183,27 @@ private struct ShoppingListRow: View {
     let list: MealieShoppingListSummary
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
-            Text(list.displayName)
-                .font(.headline)
-                .foregroundStyle(.primary)
+        HStack(alignment: .top, spacing: DesignSystem.Spacing.md) {
+            Image(systemName: "checklist")
+                .font(.subheadline)
+                .foregroundStyle(DesignSystem.Colors.accentDeep)
+                .frame(width: 36, height: 36)
+                .background(DesignSystem.Colors.accentSoft.opacity(0.75), in: RoundedRectangle(cornerRadius: DesignSystem.Radius.md))
+                .accessibilityHidden(true)
 
-            if !list.recipeReferences.isEmpty {
-                Label(String(localized: "Recipes: \(list.recipeReferences.count)"), systemImage: "book.closed")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                Text(list.displayName)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+
+                if !list.recipeReferences.isEmpty {
+                    Label(String(localized: "Recipes: \(list.recipeReferences.count)"), systemImage: "book.closed")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
-        .padding(.vertical, DesignSystem.Spacing.xs)
+        .padding(.vertical, DesignSystem.Spacing.sm)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
     }

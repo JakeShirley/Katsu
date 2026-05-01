@@ -20,6 +20,8 @@ struct MealPlansView: View {
             mealPlanList
             .listStyle(.insetGrouped)
             .navigationTitle("Meal Plans")
+            .navigationBarTitleDisplayMode(.inline)
+            .contentMargins(.top, DesignSystem.Spacing.sm, for: .scrollContent)
             .toolbar { addToolbarItem }
             .sheet(item: $activeEditor) { draft in
                 editorSheet(for: draft)
@@ -270,38 +272,43 @@ private struct MealPlanWeekSummaryCard: View {
     let plannedCount: Int
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
+        HStack(alignment: .top, spacing: DesignSystem.Spacing.md) {
             Image(systemName: "calendar")
-                .font(.title)
-                .foregroundStyle(DesignSystem.Colors.accent)
+                .font(.title3)
+                .foregroundStyle(DesignSystem.Colors.accentDeep)
+                .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                .background(DesignSystem.Colors.accentSoft.opacity(0.75), in: RoundedRectangle(cornerRadius: DesignSystem.Radius.md))
                 .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
-                Text("This week's plan")
-                    .font(.title2)
-                    .fontWeight(.semibold)
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                    Text("This week's plan")
+                        .font(.headline)
 
-                Text(week.displayRange)
-                    .font(.body)
-                    .foregroundStyle(.secondary)
+                    Text(week.displayRange)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                Label(String(localized: "Planned meals: \(plannedCount)"), systemImage: "fork.knife")
+                    .font(.caption)
+                    .foregroundStyle(DesignSystem.Colors.accentDeep)
+                    .lineLimit(1)
+                    .padding(.horizontal, DesignSystem.Spacing.sm)
+                    .padding(.vertical, DesignSystem.Spacing.xs)
+                    .background(DesignSystem.Colors.accentSoft.opacity(0.75), in: Capsule())
             }
-
-            Label(String(localized: "Planned meals: \(plannedCount)"), systemImage: "fork.knife")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, DesignSystem.Spacing.md)
-                .padding(.vertical, DesignSystem.Spacing.sm)
-                .background(DesignSystem.Colors.accentSoft, in: Capsule())
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(DesignSystem.Spacing.lg)
+        .padding(DesignSystem.Spacing.md)
         .background(DesignSystem.Colors.surface, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
         .overlay {
             RoundedRectangle(cornerRadius: DesignSystem.Radius.lg)
                 .stroke(DesignSystem.Colors.separator.opacity(0.35))
         }
         .padding(.horizontal, DesignSystem.Spacing.lg)
-        .padding(.vertical, DesignSystem.Spacing.sm)
+        .padding(.top, DesignSystem.Spacing.sm)
+        .padding(.bottom, DesignSystem.Spacing.xs)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(String(localized: "This week's plan, \(week.displayRange), planned meals: \(plannedCount)"))
     }
