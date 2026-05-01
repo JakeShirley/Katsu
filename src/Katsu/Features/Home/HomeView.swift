@@ -13,6 +13,11 @@ struct HomeView: View {
                     .tabItem {
                         Label("Recipes", systemImage: "book.closed")
                     }
+
+                RecipeSearchView()
+                    .tabItem {
+                        Label("Search", systemImage: "magnifyingglass")
+                    }
             }
         }
     }
@@ -61,135 +66,25 @@ private struct RecipesView: View {
     @EnvironmentObject private var env: AppEnvironment
     @State private var showSettings = false
     @State private var showImportRecipe = false
-    @State private var recipes: [MealieRecipeSummary] = []
-    @State private var recipePage = 1
-    @State private var recipeTotalPages: Int?
-    @State private var recipeLoadError: String?
-    @State private var isLoadingRecipes = false
-    @State private var isLoadingMoreRecipes = false
-    @State private var showingCachedRecipes = false
-    @State private var searchText = ""
-    @State private var categoryFilter = ""
-    @State private var tagFilter = ""
-    @State private var householdFilter = ""
-
-    private let recipesPerPage = 5
-    private var filters: MealieRecipeFilters {
-        MealieRecipeFilters(
-            search: searchText,
-            categories: tokens(from: categoryFilter),
-            tags: tokens(from: tagFilter),
-            households: tokens(from: householdFilter)
-        )
-    }
+    @State private var refreshTrigger = 0
 
     var body: some View {
         NavigationStack {
-            List {
-                Section("Filter Recipes") {
-                    TextField("Search recipes", text: $searchText)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .submitLabel(.search)
-                        .onSubmit { Task { await refreshRecipes() } }
-                        .accessibilityLabel("Search recipes")
-
-                    TextField("Category slugs", text: $categoryFilter)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .submitLabel(.search)
-                        .onSubmit { Task { await refreshRecipes() } }
-                        .accessibilityLabel("Category slugs")
-
-                    TextField("Tag slugs", text: $tagFilter)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .submitLabel(.search)
-                        .onSubmit { Task { await refreshRecipes() } }
-                        .accessibilityLabel("Tag slugs")
-
-                    TextField("Household slugs", text: $householdFilter)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .submitLabel(.search)
-                        .onSubmit { Task { await refreshRecipes() } }
-                        .accessibilityLabel("Household slugs")
-
-                    HStack(spacing: DesignSystem.Spacing.sm) {
-                        Button("Apply Filters") {
-                            Task { await refreshRecipes() }
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .frame(minHeight: DesignSystem.HitTarget.minimum)
-
-                        Button("Clear") {
-                            clearFilters()
-                        }
-                        .disabled(filters.isEmpty)
-                        .frame(minHeight: DesignSystem.HitTarget.minimum)
-                    }
-                }
-
-                Section {
-                    if isLoadingRecipes && recipes.isEmpty {
-                        HStack(spacing: DesignSystem.Spacing.sm) {
-                            ProgressView()
-                            Text("Loading recipes…")
-                        }
-                        .accessibilityElement(children: .combine)
-                        .accessibilityLabel("Loading recipes")
-                    } else if let recipeLoadError, recipes.isEmpty {
-                        VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
-                            Text(recipeLoadError)
-                                .foregroundStyle(DesignSystem.Colors.destructive)
-                            Button("Try Again") {
-                                Task { await refreshRecipes() }
-                            }
-                            .frame(minHeight: DesignSystem.HitTarget.minimum)
-                        }
-                    } else if recipes.isEmpty {
-                        Text("No recipes yet")
-                            .foregroundStyle(.secondary)
-                    } else {
-                        if showingCachedRecipes {
-                            Label("Showing offline recipes", systemImage: "wifi.slash")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                                .accessibilityLabel("Showing offline recipes")
-                        }
-
-                        ForEach(recipes) { recipe in
-                            NavigationLink {
-                                RecipeDetailView(recipe: recipe)
-                            } label: {
-                                RecipeRow(recipe: recipe)
-                            }
-                            .onAppear {
-                                if recipe.id == recipes.last?.id {
-                                    Task { await loadMoreRecipesIfNeeded() }
-                                }
-                            }
-                        }
-
-                        if isLoadingMoreRecipes {
-                            HStack(spacing: DesignSystem.Spacing.sm) {
-                                ProgressView()
-                                Text("Loading more recipes…")
-                            }
-                            .accessibilityElement(children: .combine)
-                            .accessibilityLabel("Loading more recipes")
-                        } else if recipeLoadError != nil {
-                            Button("Try Again") {
-                                Task { await loadMoreRecipesIfNeeded(force: true) }
-                            }
-                            .frame(minHeight: DesignSystem.HitTarget.minimum)
-                        }
-                    }
-
-                    Text("Meal plans and shopping lists are coming soon.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
+            RecipeResultsList(
+                filters: MealieRecipeFilters(),
+                refreshTrigger: refreshTrigger,
+                loadsWhenFiltersEmpty: true,
+                allowsOfflineCache: true,
+                resultsTitle: nil,
+                emptyStateTitle: "No recipes yet",
+                emptyStateDescription: "Imported and saved recipes will appear here.",
+                emptyStateImage: "book.closed",
+                idleStateTitle: "No recipes yet",
+                idleStateDescription: "Imported and saved recipes will appear here.",
+                idleStateImage: "book.closed",
+                footer: "Meal plans and shopping lists are coming soon."
+            ) {
+                EmptyView()
             }
             .navigationTitle("Recipes")
             .toolbar {
@@ -219,18 +114,11 @@ private struct RecipesView: View {
             .sheet(isPresented: $showImportRecipe) {
                 NavigationStack {
                     ImportRecipeView {
-                        await refreshRecipes()
+                        await MainActor.run {
+                            refreshTrigger += 1
+                        }
                     }
                 }
-            }
-            .task(id: env.activeProfile?.id) {
-                await refreshRecipesIfNeeded()
-            }
-            .onChange(of: filters) { _, _ in
-                Task { await refreshRecipes() }
-            }
-            .refreshable {
-                await refreshRecipes()
             }
             .onAppear {
                 if env.configuration.openSettingsOnLaunch {
@@ -239,9 +127,291 @@ private struct RecipesView: View {
             }
         }
     }
+}
 
-    private func refreshRecipesIfNeeded() async {
-        if recipes.isEmpty {
+private struct RecipeSearchView: View {
+    @State private var searchText = ""
+    @State private var categoryFilter = ""
+    @State private var tagFilter = ""
+    @State private var householdFilter = ""
+    @State private var appliedFilters = MealieRecipeFilters()
+
+    private var draftFilters: MealieRecipeFilters {
+        MealieRecipeFilters(
+            search: searchText.trimmingCharacters(in: .whitespacesAndNewlines),
+            categories: recipeFilterTokens(from: categoryFilter),
+            tags: recipeFilterTokens(from: tagFilter),
+            households: recipeFilterTokens(from: householdFilter)
+        )
+    }
+
+    private var activeFilterCount: Int {
+        let draft = draftFilters
+        return (draft.search.isEmpty ? 0 : 1) + draft.categories.count + draft.tags.count + draft.households.count
+    }
+
+    var body: some View {
+        NavigationStack {
+            RecipeResultsList(
+                filters: appliedFilters,
+                refreshTrigger: 0,
+                loadsWhenFiltersEmpty: false,
+                allowsOfflineCache: false,
+                resultsTitle: "Results",
+                emptyStateTitle: "No matching recipes",
+                emptyStateDescription: "Try a broader search or remove one of the filters.",
+                emptyStateImage: "magnifyingglass",
+                idleStateTitle: "Start searching",
+                idleStateDescription: "Search by recipe name, then refine with Mealie category, tag, or household slugs.",
+                idleStateImage: "sparkle.magnifyingglass",
+                footer: nil
+            ) {
+                Section {
+                    RecipeSearchHeroCard(activeFilterCount: activeFilterCount)
+                }
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+
+                Section("Refine Search") {
+                    RecipeFilterField(
+                        title: "Categories",
+                        systemImage: "folder",
+                        placeholder: "dinner, vegan, weeknight",
+                        text: $categoryFilter,
+                        onSubmit: applyFilters
+                    )
+
+                    RecipeFilterField(
+                        title: "Tags",
+                        systemImage: "tag",
+                        placeholder: "quick, family, freezer",
+                        text: $tagFilter,
+                        onSubmit: applyFilters
+                    )
+
+                    RecipeFilterField(
+                        title: "Households",
+                        systemImage: "house",
+                        placeholder: "main-household",
+                        text: $householdFilter,
+                        onSubmit: applyFilters
+                    )
+
+                    HStack(spacing: DesignSystem.Spacing.sm) {
+                        Button {
+                            applyFilters()
+                        } label: {
+                            Label("Search Now", systemImage: "magnifyingglass")
+                                .frame(maxWidth: .infinity, minHeight: DesignSystem.HitTarget.minimum)
+                        }
+                        .buttonStyle(.borderedProminent)
+
+                        Button {
+                            clearFilters()
+                        } label: {
+                            Label("Clear", systemImage: "xmark.circle")
+                                .frame(maxWidth: .infinity, minHeight: DesignSystem.HitTarget.minimum)
+                        }
+                        .buttonStyle(.bordered)
+                        .disabled(draftFilters.isEmpty)
+                    }
+                }
+            }
+            .navigationTitle("Search")
+            .searchable(
+                text: $searchText,
+                placement: .navigationBarDrawer(displayMode: .always),
+                prompt: "Search recipes"
+            )
+            .onSubmit(of: .search, applyFilters)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    if !draftFilters.isEmpty {
+                        Button("Clear") {
+                            clearFilters()
+                        }
+                    }
+                }
+            }
+            .task(id: draftFilters) {
+                try? await Task.sleep(nanoseconds: 350_000_000)
+                guard !Task.isCancelled else { return }
+                await MainActor.run {
+                    appliedFilters = draftFilters
+                }
+            }
+        }
+    }
+
+    private func applyFilters() {
+        appliedFilters = draftFilters
+    }
+
+    private func clearFilters() {
+        searchText = ""
+        categoryFilter = ""
+        tagFilter = ""
+        householdFilter = ""
+        appliedFilters = MealieRecipeFilters()
+    }
+}
+
+private struct RecipeResultsList<Header: View>: View {
+    @EnvironmentObject private var env: AppEnvironment
+    let filters: MealieRecipeFilters
+    let refreshTrigger: Int
+    let loadsWhenFiltersEmpty: Bool
+    let allowsOfflineCache: Bool
+    let resultsTitle: LocalizedStringKey?
+    let emptyStateTitle: LocalizedStringKey
+    let emptyStateDescription: LocalizedStringKey
+    let emptyStateImage: String
+    let idleStateTitle: LocalizedStringKey
+    let idleStateDescription: LocalizedStringKey
+    let idleStateImage: String
+    let footer: LocalizedStringKey?
+    let header: Header
+
+    @State private var recipes: [MealieRecipeSummary] = []
+    @State private var recipePage = 1
+    @State private var recipeTotalPages: Int?
+    @State private var recipeLoadError: String?
+    @State private var isLoadingRecipes = false
+    @State private var isLoadingMoreRecipes = false
+    @State private var showingCachedRecipes = false
+
+    private let recipesPerPage = 5
+    private var taskID: RecipeResultsTaskID {
+        RecipeResultsTaskID(profileID: env.activeProfile?.id, filters: filters, refreshTrigger: refreshTrigger)
+    }
+
+    init(
+        filters: MealieRecipeFilters,
+        refreshTrigger: Int,
+        loadsWhenFiltersEmpty: Bool,
+        allowsOfflineCache: Bool,
+        resultsTitle: LocalizedStringKey?,
+        emptyStateTitle: LocalizedStringKey,
+        emptyStateDescription: LocalizedStringKey,
+        emptyStateImage: String,
+        idleStateTitle: LocalizedStringKey,
+        idleStateDescription: LocalizedStringKey,
+        idleStateImage: String,
+        footer: LocalizedStringKey?,
+        @ViewBuilder header: () -> Header
+    ) {
+        self.filters = filters
+        self.refreshTrigger = refreshTrigger
+        self.loadsWhenFiltersEmpty = loadsWhenFiltersEmpty
+        self.allowsOfflineCache = allowsOfflineCache
+        self.resultsTitle = resultsTitle
+        self.emptyStateTitle = emptyStateTitle
+        self.emptyStateDescription = emptyStateDescription
+        self.emptyStateImage = emptyStateImage
+        self.idleStateTitle = idleStateTitle
+        self.idleStateDescription = idleStateDescription
+        self.idleStateImage = idleStateImage
+        self.footer = footer
+        self.header = header()
+    }
+
+    var body: some View {
+        List {
+            header
+
+            if let resultsTitle {
+                Section(resultsTitle) {
+                    resultsContent
+                }
+            } else {
+                Section {
+                    resultsContent
+                }
+            }
+        }
+        .listStyle(.insetGrouped)
+        .task(id: taskID) {
+            await refreshRecipesForCurrentFilters()
+        }
+        .refreshable {
+            await refreshRecipesForCurrentFilters(force: true)
+        }
+    }
+
+    @ViewBuilder
+    private var resultsContent: some View {
+        if filters.isEmpty && !loadsWhenFiltersEmpty {
+            ContentUnavailableView {
+                Label {
+                    Text(idleStateTitle)
+                } icon: {
+                    Image(systemName: idleStateImage)
+                }
+            } description: {
+                Text(idleStateDescription)
+            }
+            .listRowBackground(Color.clear)
+        } else if isLoadingRecipes && recipes.isEmpty {
+            LoadingRecipeRow(title: "Loading recipes…")
+        } else if let recipeLoadError, recipes.isEmpty {
+            RecipeErrorRow(errorMessage: recipeLoadError) {
+                Task { await refreshRecipes() }
+            }
+        } else if recipes.isEmpty {
+            ContentUnavailableView {
+                Label {
+                    Text(emptyStateTitle)
+                } icon: {
+                    Image(systemName: emptyStateImage)
+                }
+            } description: {
+                Text(emptyStateDescription)
+            }
+            .listRowBackground(Color.clear)
+        } else {
+            if showingCachedRecipes {
+                Label("Showing offline recipes", systemImage: "wifi.slash")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .accessibilityLabel("Showing offline recipes")
+            }
+
+            ForEach(recipes) { recipe in
+                NavigationLink {
+                    RecipeDetailView(recipe: recipe)
+                } label: {
+                    RecipeRow(recipe: recipe)
+                }
+                .onAppear {
+                    if recipe.id == recipes.last?.id {
+                        Task { await loadMoreRecipesIfNeeded() }
+                    }
+                }
+            }
+
+            if isLoadingMoreRecipes {
+                LoadingRecipeRow(title: "Loading more recipes…")
+            } else if recipeLoadError != nil {
+                Button("Try Again") {
+                    Task { await loadMoreRecipesIfNeeded(force: true) }
+                }
+                .frame(minHeight: DesignSystem.HitTarget.minimum)
+            }
+        }
+
+        if let footer {
+            Text(footer)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func refreshRecipesForCurrentFilters(force: Bool = false) async {
+        guard loadsWhenFiltersEmpty || !filters.isEmpty else {
+            resetResults()
+            return
+        }
+        if force || recipes.isEmpty || !isLoadingRecipes {
             await refreshRecipes()
         }
     }
@@ -297,7 +467,7 @@ private struct RecipesView: View {
             showingCachedRecipes = false
             recipeLoadError = nil
         } catch let error as AppError {
-            if error == .offline, replacingExisting, filters.isEmpty {
+            if error == .offline, replacingExisting, allowsOfflineCache, filters.isEmpty {
                 let cachedRecipes = env.preferenceStore.cachedRecipeSummaries(profileID: profile.id)
                 if !cachedRecipes.isEmpty {
                     recipes = cachedRecipes
@@ -316,20 +486,145 @@ private struct RecipesView: View {
         }
     }
 
-    private func clearFilters() {
-        searchText = ""
-        categoryFilter = ""
-        tagFilter = ""
-        householdFilter = ""
+    private func resetResults() {
+        recipes = []
+        recipePage = 1
+        recipeTotalPages = nil
+        recipeLoadError = nil
+        isLoadingRecipes = false
+        isLoadingMoreRecipes = false
+        showingCachedRecipes = false
+    }
+}
+
+private struct RecipeResultsTaskID: Equatable {
+    let profileID: UUID?
+    let filters: MealieRecipeFilters
+    let refreshTrigger: Int
+}
+
+private struct RecipeSearchHeroCard: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    let activeFilterCount: Int
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
+            Image(systemName: "magnifyingglass")
+                .font(.title)
+                .foregroundStyle(DesignSystem.Colors.accent)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                Text("Find exactly what sounds good")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+
+                Text("Search recipes by name, then refine with focused Mealie filters.")
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+            }
+
+            Label(String(localized: "Active filters: \(activeFilterCount)"), systemImage: "line.3.horizontal.decrease.circle")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, DesignSystem.Spacing.md)
+                .padding(.vertical, DesignSystem.Spacing.sm)
+                .background(.thinMaterial, in: Capsule())
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(DesignSystem.Spacing.lg)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
+        .overlay {
+            RoundedRectangle(cornerRadius: DesignSystem.Radius.lg)
+                .stroke(DesignSystem.Colors.separator.opacity(0.35))
+        }
+        .padding(.horizontal, DesignSystem.Spacing.lg)
+        .padding(.vertical, DesignSystem.Spacing.sm)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(String(localized: "Find exactly what sounds good. Search recipes by name, then refine with focused Mealie filters. Active filters: \(activeFilterCount)"))
+        .animation(reduceMotion ? nil : DesignSystem.Motion.standard, value: activeFilterCount)
+    }
+}
+
+private struct RecipeFilterField: View {
+    let title: LocalizedStringKey
+    let systemImage: String
+    let placeholder: LocalizedStringKey
+    @Binding var text: String
+    let onSubmit: () -> Void
+
+    private var tokens: [String] {
+        recipeFilterTokens(from: text)
     }
 
-    private func tokens(from rawValue: String) -> [String] {
-        rawValue
-            .split { character in
-                character == "," || character == " " || character == "\n"
+    var body: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+            Label {
+                Text(title)
+            } icon: {
+                Image(systemName: systemImage)
             }
-            .map(String.init)
+            .font(.headline)
+
+            TextField(placeholder, text: $text, axis: .vertical)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .submitLabel(.search)
+                .lineLimit(1...2)
+                .onSubmit(onSubmit)
+                .accessibilityLabel(Text(title))
+
+            if !tokens.isEmpty {
+                FlowLayout(spacing: DesignSystem.Spacing.sm) {
+                    ForEach(tokens, id: \.self) { token in
+                        Text(token)
+                            .font(.caption)
+                            .padding(.horizontal, DesignSystem.Spacing.sm)
+                            .padding(.vertical, DesignSystem.Spacing.xs)
+                            .background(DesignSystem.Colors.accentSoft, in: Capsule())
+                            .foregroundStyle(DesignSystem.Colors.accentDeep)
+                            .accessibilityLabel(token)
+                    }
+                }
+            }
+        }
+        .padding(.vertical, DesignSystem.Spacing.xs)
     }
+}
+
+private struct LoadingRecipeRow: View {
+    let title: LocalizedStringKey
+
+    var body: some View {
+        HStack(spacing: DesignSystem.Spacing.sm) {
+            ProgressView()
+            Text(title)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text(title))
+    }
+}
+
+private struct RecipeErrorRow: View {
+    let errorMessage: String
+    let onRetry: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+            Text(errorMessage)
+                .foregroundStyle(DesignSystem.Colors.destructive)
+            Button("Try Again", action: onRetry)
+                .frame(minHeight: DesignSystem.HitTarget.minimum)
+        }
+    }
+}
+
+private func recipeFilterTokens(from rawValue: String) -> [String] {
+    rawValue
+        .split { character in
+            character == "," || character == " " || character == "\n"
+        }
+        .map(String.init)
 }
 
 private struct RecipeRow: View {
