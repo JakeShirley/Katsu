@@ -49,7 +49,7 @@ later work; do not block v0 on it.
 - [x] **REC-001** Recipe list (`/api/recipes`) with pagination.
 - [x] **REC-002** Recipe detail (ingredients, instructions, nutrition, image).
 - [x] **REC-003** Recipe search by name, tag, category, household.
-- **REC-004** Import recipe from URL (`POST /api/recipes/create-url`).
+- [x] **REC-004** Import recipe from URL (`POST /api/recipes/create-url`).
 - **REC-005** Favorite / rating updates.
 - **REC-006** Offline cache for recently viewed recipes.
 

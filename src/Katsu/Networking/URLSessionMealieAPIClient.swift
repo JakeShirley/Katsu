@@ -3,6 +3,7 @@ import Foundation
 final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
     private let session: URLSession
     private let decoder: JSONDecoder
+    private let encoder: JSONEncoder
 
     init(session: URLSession = .shared) {
         self.session = session
@@ -15,6 +16,7 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         // login response to fail decoding. Rely on each model's explicit
         // CodingKeys instead.
         self.decoder = JSONDecoder()
+        self.encoder = JSONEncoder()
     }
 
     func fetchServerInfo(serverURL: URL) async throws -> MealieServerInfo {
@@ -68,6 +70,20 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         let encodedSlug = slug.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? slug
         var request = URLRequest(url: serverURL.appendingPathComponent("api/recipes/\(encodedSlug)"))
         request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        return try await perform(request)
+    }
+
+    func importRecipeFromURL(serverURL: URL, token: MealieAuthToken, url: URL, includeTags: Bool, includeCategories: Bool) async throws -> String {
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/recipes/create/url"))
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = try encoder.encode(ImportRecipeRequest(
+            url: url.absoluteString,
+            includeTags: includeTags,
+            includeCategories: includeCategories
+        ))
         return try await perform(request)
     }
 
@@ -133,5 +149,11 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
                 return "\(k)=\(v)"
             }
             .joined(separator: "&")
+    }
+
+    private struct ImportRecipeRequest: Encodable {
+        let url: String
+        let includeTags: Bool
+        let includeCategories: Bool
     }
 }

@@ -6,7 +6,7 @@ import Foundation
 final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
     private let serverInfo: MealieServerInfo
     private let user: MealieUser
-    private let recipes: [MealieRecipeSummary]
+    private var recipes: [MealieRecipeSummary]
     private let validUsername: String
     private let validPassword: String
     private let mintedToken: MealieAuthToken
@@ -184,6 +184,26 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return detail(for: summary)
     }
 
+    func importRecipeFromURL(serverURL: URL, token: MealieAuthToken, url: URL, includeTags: Bool, includeCategories: Bool) async throws -> String {
+        try await Task.sleep(nanoseconds: 300_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+
+        let source = url.host ?? url.deletingPathExtension().lastPathComponent
+        let baseSlug = slugify(url.deletingPathExtension().lastPathComponent.isEmpty ? source : url.deletingPathExtension().lastPathComponent)
+        let slug = uniqueSlug(baseSlug.isEmpty ? "imported-recipe" : baseSlug)
+        let recipe = MealieRecipeSummary(
+            recipeID: UUID().uuidString.lowercased(),
+            slug: slug,
+            name: title(from: slug),
+            description: "Imported from \(source).",
+            recipeYield: "Imported recipe"
+        )
+        recipes.insert(recipe, at: 0)
+        return slug
+    }
+
     private func detail(for summary: MealieRecipeSummary) -> MealieRecipeDetail {
         switch summary.slug {
         case "miso-ginger-salmon":
@@ -325,5 +345,32 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
             transFatContent: nil,
             unsaturatedFatContent: nil
         )
+    }
+
+    private func slugify(_ value: String) -> String {
+        value
+            .lowercased()
+            .split { !$0.isLetter && !$0.isNumber }
+            .joined(separator: "-")
+    }
+
+    private func uniqueSlug(_ base: String) -> String {
+        var candidate = base
+        var index = 2
+        let existing = Set(recipes.map(\.slug))
+        while existing.contains(candidate) {
+            candidate = "\(base)-\(index)"
+            index += 1
+        }
+        return candidate
+    }
+
+    private func title(from slug: String) -> String {
+        slug
+            .split(separator: "-")
+            .map { word in
+                word.prefix(1).uppercased() + word.dropFirst()
+            }
+            .joined(separator: " ")
     }
 }
