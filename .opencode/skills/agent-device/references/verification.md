@@ -4,6 +4,10 @@
 
 Open this file when the task needs evidence, regression checks, replay maintenance, or session performance measurements after the main interaction flow is already working.
 
+## Command
+
+Use `./node_modules/.bin/agent-device` from the workspace root in this repo. The shorter `agent-device` form in examples means the same repo-local binary, not a required global install.
+
 ## Main commands to reach for first
 
 - `screenshot`
@@ -20,11 +24,11 @@ Do not use verification tools as the first exploration step. First get the app i
 ## Canonical loop
 
 ```bash
-agent-device open Settings --platform ios
+./node_modules/.bin/agent-device open Settings --platform ios
 # after using exploration to reach the state you want to verify
-agent-device snapshot
-agent-device screenshot /tmp/settings-proof.png --overlay-refs
-agent-device close
+./node_modules/.bin/agent-device snapshot
+./node_modules/.bin/agent-device screenshot /tmp/settings-proof.png --overlay-refs
+./node_modules/.bin/agent-device close
 ```
 
 ## Structural verification with diff snapshot
@@ -32,9 +36,9 @@ agent-device close
 Use `diff snapshot` when you need a compact view of how the UI changed between nearby states.
 
 ```bash
-agent-device snapshot -i
-agent-device press @e5
-agent-device diff snapshot -i
+./node_modules/.bin/agent-device snapshot -i
+./node_modules/.bin/agent-device press @e5
+./node_modules/.bin/agent-device diff snapshot -i
 ```
 
 - Initialize the baseline at a stable point.
@@ -56,9 +60,9 @@ Use `screenshot` when the proof needs a rendered image instead of a structural t
 Use `diff screenshot` when comparing the current rendered screen against a saved visual baseline.
 
 ```bash
-agent-device diff screenshot --baseline ./baseline.png --out /tmp/diff.png
-agent-device diff screenshot --baseline ./baseline.png ./current.png --out /tmp/diff.png
-agent-device diff screenshot --baseline ./baseline.png --out /tmp/diff.png --overlay-refs
+./node_modules/.bin/agent-device diff screenshot --baseline ./baseline.png --out /tmp/diff.png
+./node_modules/.bin/agent-device diff screenshot --baseline ./baseline.png ./current.png --out /tmp/diff.png
+./node_modules/.bin/agent-device diff screenshot --baseline ./baseline.png --out /tmp/diff.png --overlay-refs
 ```
 
 - Text output includes ranked changed regions with screen-space rectangles, shape, size, density, average color, and luminance. JSON also includes normalized bounds.
@@ -73,12 +77,12 @@ agent-device diff screenshot --baseline ./baseline.png --out /tmp/diff.png --ove
 Use `record` for debugging, documentation, or shareable verification artifacts.
 
 ```bash
-agent-device record start ./recordings/ios.mov
-agent-device open App
-agent-device snapshot -i
-agent-device press @e3
-agent-device close
-agent-device record stop
+./node_modules/.bin/agent-device record start ./recordings/ios.mov
+./node_modules/.bin/agent-device open App
+./node_modules/.bin/agent-device snapshot -i
+./node_modules/.bin/agent-device press @e3
+./node_modules/.bin/agent-device close
+./node_modules/.bin/agent-device record stop
 ```
 
 - `record` supports iOS simulators, iOS devices, and Android.
@@ -93,9 +97,9 @@ agent-device record stop
 Example:
 
 ```bash
-agent-device record start ./recordings/smoke.mov
-agent-device batch --session sim --platform ios --steps-file /tmp/smoke-steps.json --json
-agent-device record stop
+./node_modules/.bin/agent-device record start ./recordings/smoke.mov
+./node_modules/.bin/agent-device batch --session sim --platform ios --steps-file /tmp/smoke-steps.json --json
+./node_modules/.bin/agent-device record stop
 ```
 
 - Use this only after exploration has stabilized the flow.
@@ -106,8 +110,8 @@ agent-device record stop
 Use replay updates when selectors drift but the recorded scenario is still correct.
 
 ```bash
-agent-device replay -u ./session.ad
-agent-device test ./smoke --platform android
+./node_modules/.bin/agent-device replay -u ./session.ad
+./node_modules/.bin/agent-device test ./smoke --platform android
 ```
 
 - Prefer selector-based actions in recorded `.ad` replays.
@@ -122,8 +126,8 @@ agent-device test ./smoke --platform android
 Use `perf --json` or `metrics --json` when you need session performance data for the active session.
 
 ```bash
-agent-device open Settings --platform ios
-agent-device perf --json
+./node_modules/.bin/agent-device open Settings --platform ios
+./node_modules/.bin/agent-device perf --json
 ```
 
 - `startup` is command round-trip timing around `open`.

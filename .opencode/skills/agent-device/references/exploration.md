@@ -4,6 +4,10 @@
 
 Open this file when the app or screen is already running and you need to discover the UI, choose targets, read state, wait for conditions, or perform normal interactions.
 
+## Command
+
+Use `./node_modules/.bin/agent-device` from the workspace root in this repo. The shorter `agent-device` form in examples means the same repo-local binary, not a required global install.
+
 ## Read-only first
 
 - If the question is what text, labels, or structure is visible on screen, start with plain `snapshot`.
@@ -20,8 +24,8 @@ Open this file when the app or screen is already running and you need to discove
 - User asks what is visible on screen: `snapshot`
 - User asks for exact text from a known target: `get text`
 - User asks you to tap, type, or choose an element: `snapshot -i`, then act
-- User asks for the React Native component tree, props/state/hooks, or render profiling: use `agent-device react-devtools ...` and the `skills/react-devtools` workflow
-- User asks to reload a Metro-backed React Native app after JS changes: `agent-device metro reload`, then wait briefly and re-run `snapshot` or `snapshot -i`
+- User asks for the React Native component tree, props/state/hooks, or render profiling: use `./node_modules/.bin/agent-device react-devtools ...` and the `skills/react-devtools` workflow
+- User asks to reload a Metro-backed React Native app after JS changes: `./node_modules/.bin/agent-device metro reload`, then wait briefly and re-run `snapshot` or `snapshot -i`
 - React Native dev or debug build shows warning/error UI: capture enough evidence to identify it, dismiss it if it is not the requested behavior, then continue the flow and report it in the summary
 - The on-screen keyboard is blocking the next step: `keyboard dismiss`; on iOS do this only while an app session is active, and use `keyboard status|get` only on Android
 - UI does not expose the answer: say so plainly; do not browse or force the app into a new state unless asked
@@ -64,9 +68,9 @@ Open this file when the app or screen is already running and you need to discove
 **React Native Metro reload.** When a dev app is already running and connected to Metro, prefer a Metro reload over restarting the native app process:
 
 ```bash
-agent-device metro reload
-agent-device wait 1000
-agent-device snapshot -i
+./node_modules/.bin/agent-device metro reload
+./node_modules/.bin/agent-device wait 1000
+./node_modules/.bin/agent-device snapshot -i
 ```
 
 Use `--metro-host`, `--metro-port`, or `--bundle-url` only when the active connection does not already carry the right runtime hints. Fall back to `open <app> --relaunch` when the app is not connected to Metro, Metro reload fails, or native startup state needs a clean process.
@@ -78,22 +82,22 @@ These are examples, not required exact sequences. Adapt them to the app, state, 
 ### Interactive exploration loop
 
 ```bash
-agent-device open Settings --platform ios
-agent-device snapshot -i
-agent-device press @e3
-agent-device wait visible 'label="Privacy & Security"' 3000
-agent-device get text 'label="Privacy & Security"'
-agent-device close
+./node_modules/.bin/agent-device open Settings --platform ios
+./node_modules/.bin/agent-device snapshot -i
+./node_modules/.bin/agent-device press @e3
+./node_modules/.bin/agent-device wait visible 'label="Privacy & Security"' 3000
+./node_modules/.bin/agent-device get text 'label="Privacy & Security"'
+./node_modules/.bin/agent-device close
 ```
 
 ### Screen verification loop
 
 ```bash
-agent-device open MyApp --platform ios
+./node_modules/.bin/agent-device open MyApp --platform ios
 # perform the necessary actions to reach the state you need to verify
-agent-device snapshot
+./node_modules/.bin/agent-device snapshot
 # verify whether the expected element or text is present
-agent-device close
+./node_modules/.bin/agent-device close
 ```
 
 ## Snapshot choices
@@ -110,7 +114,7 @@ agent-device close
 Example:
 
 ```bash
-agent-device snapshot -i
+./node_modules/.bin/agent-device snapshot -i
 ```
 
 Sample output:
@@ -139,10 +143,10 @@ App: com.apple.Preferences
 Examples:
 
 ```bash
-agent-device press @e2
-agent-device fill @e5 "test"
-agent-device press 'id="camera_row" || label="Camera" role=button'
-agent-device is visible 'id="camera_settings_anchor"'
+./node_modules/.bin/agent-device press @e2
+./node_modules/.bin/agent-device fill @e5 "test"
+./node_modules/.bin/agent-device press 'id="camera_row" || label="Camera" role=button'
+./node_modules/.bin/agent-device is visible 'id="camera_settings_anchor"'
 ```
 
 Example loop:
@@ -150,12 +154,12 @@ Example loop:
 ```bash
 previous=''
 for _ in 1 2 3 4 5 6; do
-  current="$(agent-device snapshot -i)"
+  current="$(./node_modules/.bin/agent-device snapshot -i)"
   printf '%s\n' "$current"
   printf '%s\n' "$current" | grep -q 'Battery' && break
   [ "$current" = "$previous" ] && break
   previous="$current"
-  agent-device scroll down 0.5 >/dev/null
+  ./node_modules/.bin/agent-device scroll down 0.5 >/dev/null
 done
 ```
 
@@ -166,12 +170,12 @@ When `press @ref` fails:
 1. If the error says the ref is off-screen, use the off-screen summary direction to run `scroll <direction>`, then take a fresh `snapshot -i`.
 2. Re-snapshot if the UI may have changed.
 3. Retry `press @ref` or a selector-based `press`.
-4. If `screenshot --overlay-refs --json` returned a reliable `overlayRefs[].center`, use `agent-device press <x> <y>`.
+4. If `screenshot --overlay-refs --json` returned a reliable `overlayRefs[].center`, use `./node_modules/.bin/agent-device press <x> <y>`.
 5. Use an external vision-based tap tool only after semantic and coordinate targeting fail.
 
 - Prefer `@ref` over coordinates.
 - Do not guess coordinates from the image when structured `center` is available.
-- `agent-device` does not provide a built-in vision-tap flag.
+- `./node_modules/.bin/agent-device` does not provide a built-in vision-tap flag.
 
 ## Text entry rules
 
@@ -214,7 +218,7 @@ Use this rule of thumb:
 Example:
 
 ```bash
-agent-device find "Increment" click --json
+./node_modules/.bin/agent-device find "Increment" click --json
 ```
 
 Returned metadata comes from the matched snapshot node and can be used for observability or replay maintenance.
@@ -252,13 +256,13 @@ Avoid this escalation path for visible-text questions:
 Canonical QA loop:
 
 ```bash
-agent-device open MyApp --platform ios
-agent-device snapshot -i
-agent-device press @e3
-agent-device wait visible 'label="Success"' 3000
-agent-device is visible 'label="Success"'
-agent-device screenshot /tmp/qa-proof.png
-agent-device close
+./node_modules/.bin/agent-device open MyApp --platform ios
+./node_modules/.bin/agent-device snapshot -i
+./node_modules/.bin/agent-device press @e3
+./node_modules/.bin/agent-device wait visible 'label="Success"' 3000
+./node_modules/.bin/agent-device is visible 'label="Success"'
+./node_modules/.bin/agent-device screenshot /tmp/qa-proof.png
+./node_modules/.bin/agent-device close
 ```
 
 ## Accessibility audit
@@ -277,8 +281,8 @@ Audit loop:
 Example:
 
 ```bash
-agent-device screenshot /tmp/accessibility-screen.png
-agent-device snapshot -i
+./node_modules/.bin/agent-device screenshot /tmp/accessibility-screen.png
+./node_modules/.bin/agent-device snapshot -i
 ```
 
 Use `screenshot` as the visual source of truth and `snapshot` as the accessibility source of truth for this audit.
@@ -288,7 +292,7 @@ Use `screenshot` as the visual source of truth and `snapshot` as the accessibili
 Use `batch` when a short command sequence is already planned and belongs to one logical screen flow.
 
 ```bash
-agent-device batch --session sim --platform ios --steps-file /tmp/batch-steps.json --json
+./node_modules/.bin/agent-device batch --session sim --platform ios --steps-file /tmp/batch-steps.json --json
 ```
 
 - Keep batch size moderate, roughly 5 to 20 steps.

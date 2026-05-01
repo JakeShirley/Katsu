@@ -7,6 +7,10 @@ description: Automates interactions for Apple-platform apps (iOS, tvOS, macOS) a
 
 Use this skill as a router with mandatory defaults. Read this file first. For normal device tasks, always load `references/bootstrap-install.md` and `references/exploration.md` before acting. Use bootstrap to confirm or establish deterministic setup. Use exploration for UI inspection, interaction, and verification once the app session is open.
 
+## Command
+
+Run the repo-local binary from the workspace root: `./node_modules/.bin/agent-device`. Do not assume a global `agent-device` command is installed. In examples, replace `agent-device` with `./node_modules/.bin/agent-device` when executing commands in this repo.
+
 ## Default operating rules
 
 - Start conservative. Prefer read-only inspection before mutating the UI.
@@ -16,7 +20,7 @@ Use this skill as a router with mandatory defaults. Read this file first. For no
 - Prefer `diff snapshot` after a nearby mutation when you only need to know what changed.
 - Avoid speculative mutations. You may take the smallest reversible UI action needed to unblock inspection or complete the requested task, such as dismissing a popup, closing an alert, or clearing an unintended surface.
 - In React Native dev or debug builds, check early for visible warning or error overlays, tooltips, and toasts that can steal focus or intercept taps. If they are not part of the requested behavior, dismiss them and continue. If you saw them, report them in the final summary.
-- In Metro-backed React Native dev loops, use `agent-device metro reload` for a JS app reload before falling back to `open <app> --relaunch`. It mirrors pressing `r` in the Metro terminal and preserves the native app process.
+- In Metro-backed React Native dev loops, use `./node_modules/.bin/agent-device metro reload` for a JS app reload before falling back to `open <app> --relaunch`. It mirrors pressing `r` in the Metro terminal and preserves the native app process.
 - Do not browse the web or use external sources unless the user explicitly asks.
 - Re-snapshot after meaningful UI changes instead of reusing stale refs.
 - Treat refs in default snapshot output as actionable-now, not durable identities. If a target appears only in an off-screen summary, use `scroll <direction>` and re-snapshot until the target is visible.
@@ -61,7 +65,7 @@ Use this skill as a router with mandatory defaults. Read this file first. For no
 - If there is no simulator, no app install, or no open app session yet, switch to `bootstrap-install.md` instead of improvising setup steps.
 - Use the smallest unblock action first when transient UI blocks inspection, but do not navigate, search, or enter new text just to make the UI reveal data unless the user asked for that interaction.
 - In React Native dev or debug apps, treat visible warning or error overlays as transient blockers unless the user is explicitly asking you to diagnose them. Dismiss them when safe, then continue the requested flow.
-- For React Native code changes where the app is already connected to Metro, prefer `agent-device metro reload`, then wait and re-snapshot. Use `open <app> --relaunch` only when Metro reload does not reconnect or native startup state must reset.
+- For React Native code changes where the app is already connected to Metro, prefer `./node_modules/.bin/agent-device metro reload`, then wait and re-snapshot. Use `open <app> --relaunch` only when Metro reload does not reconnect or native startup state must reset.
 - Do not use external lookups to compensate for missing on-screen data unless the user asked for them.
 - If the needed information is not exposed on screen, say that plainly instead of compensating with extra navigation, text entry, or web search.
 - Prefer `@ref` or selector targeting over raw coordinates.
@@ -72,5 +76,5 @@ Use this skill as a router with mandatory defaults. Read this file first. For no
 - Need screenshots, diff, recording, replay maintenance, or perf data: [references/verification.md](references/verification.md)
 - Need desktop surfaces, menu bar behavior, or macOS-specific interaction rules: [references/macos-desktop.md](references/macos-desktop.md)
 - Need remote HTTP transport, `connect --remote-config`, or tenant leases on a remote macOS host: [references/remote-tenancy.md](references/remote-tenancy.md)
-  This includes remote React Native runs where `agent-device` now prepares Metro locally and manages the local Metro companion tunnel automatically.
-- Need the React Native component tree, props, state, hooks, or render profiling: use `agent-device react-devtools ...` and the [react-devtools skill](../react-devtools/SKILL.md).
+  This includes remote React Native runs where `./node_modules/.bin/agent-device` now prepares Metro locally and manages the local Metro companion tunnel automatically.
+- Need the React Native component tree, props, state, hooks, or render profiling: use `./node_modules/.bin/agent-device react-devtools ...` and the [react-devtools skill](../react-devtools/SKILL.md).

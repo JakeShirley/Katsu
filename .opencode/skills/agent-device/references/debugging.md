@@ -4,7 +4,11 @@
 
 Open this file when the task turns into failure triage, logs, network inspection, permission prompts, setup trouble, or unstable session behavior.
 
-If the debugging task needs the React Native component tree, props, state, hooks, or render profiling, use `agent-device react-devtools ...` and the `skills/react-devtools` workflow instead of trying to infer those internals from the accessibility tree or app logs alone.
+## Command
+
+Use `./node_modules/.bin/agent-device` from the workspace root in this repo. The shorter `agent-device` form in examples means the same repo-local binary, not a required global install.
+
+If the debugging task needs the React Native component tree, props, state, hooks, or render profiling, use `./node_modules/.bin/agent-device react-devtools ...` and the `skills/react-devtools` workflow instead of trying to infer those internals from the accessibility tree or app logs alone.
 
 ## Main commands to reach for first
 
@@ -24,11 +28,11 @@ In React Native dev or debug builds, do not dismiss visible warning or error ove
 ## Canonical loop
 
 ```bash
-agent-device open MyApp --platform ios
-agent-device logs clear --restart
-agent-device network dump 25
-agent-device logs path
-agent-device close
+./node_modules/.bin/agent-device open MyApp --platform ios
+./node_modules/.bin/agent-device logs clear --restart
+./node_modules/.bin/agent-device network dump 25
+./node_modules/.bin/agent-device logs path
+./node_modules/.bin/agent-device close
 ```
 
 ## Log and network flow
@@ -85,8 +89,8 @@ If the app showed a visible warning or error overlay during the flow:
 Use `alert` for iOS simulator permission dialogs and macOS desktop alerts instead of tapping coordinates.
 
 ```bash
-agent-device alert wait 5000
-agent-device alert accept
+./node_modules/.bin/agent-device alert wait 5000
+./node_modules/.bin/agent-device alert accept
 ```
 
 - `alert` is supported on iOS simulators and macOS desktop targets.
@@ -124,7 +128,7 @@ agent-device alert accept
 Always start from the session app log, then branch by platform.
 
 ```bash
-agent-device logs path
+./node_modules/.bin/agent-device logs path
 grep -n -E "SIGABRT|SIGSEGV|EXC_|fatal|exception|terminated|killed|jetsam|memorystatus|FATAL EXCEPTION|Abort message" <path>
 ```
 

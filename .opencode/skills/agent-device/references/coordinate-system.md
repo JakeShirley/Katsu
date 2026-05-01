@@ -4,6 +4,10 @@
 
 Open this file only when you must use raw coordinates instead of selectors or `@ref` targeting.
 
+## Command
+
+Use `./node_modules/.bin/agent-device` from the workspace root in this repo. The shorter `agent-device` form in examples means the same repo-local binary, not a required global install.
+
 ## Main commands to reach for first
 
 - `screenshot`
@@ -16,8 +20,8 @@ Do not assume coordinates mean the same thing across platforms or runs. Prefer s
 ## Canonical loop
 
 ```bash
-agent-device screenshot /tmp/current-screen.png
-agent-device click 120 240
+./node_modules/.bin/agent-device screenshot /tmp/current-screen.png
+./node_modules/.bin/agent-device click 120 240
 ```
 
 ## Rules

@@ -4,6 +4,10 @@
 
 Open this file when you still need to choose the right target, start the right session, install or relaunch the app, or pin automation to one device before interacting. This is the deterministic setup layer for sandbox, cloud, or other environments where install paths, device state, or app readiness may be uncertain.
 
+## Command
+
+Use `./node_modules/.bin/agent-device` from the workspace root in this repo. The shorter `agent-device` form in examples means the same repo-local binary, not a required global install.
+
 ## Open-first path
 
 - `devices`
@@ -33,7 +37,7 @@ After setup is confirmed or completed, move to `exploration.md` before doing UI 
 ## Open-first rule
 
 - If the user asks to test an app and does not provide an install artifact or explicit install instruction, try `open <app>` first.
-- If `open <app>` fails, run `agent-device apps` and retry with a discovered app name before considering install steps.
+- If `open <app>` fails, run `./node_modules/.bin/agent-device apps` and retry with a discovered app name before considering install steps.
 - Do not install or reinstall on the first attempt unless the user explicitly asks for installation or provides a concrete artifact path or URL.
 - When installation is required from a known location, prefer a checked-in shell script or other deterministic bootstrap command over ad hoc path guessing.
 - Use `apps --platform <platform>` together with `--device`, `--udid`, or `--serial` when target selection matters.
@@ -46,29 +50,29 @@ These are examples, not required exact sequences. Use the smallest setup flow th
 ### Boot a simulator and open an app
 
 ```bash
-agent-device ensure-simulator --platform ios --device "iPhone 17 Pro" --boot
-agent-device open MyApp --platform ios --device "iPhone 17 Pro" --relaunch
+./node_modules/.bin/agent-device ensure-simulator --platform ios --device "iPhone 17 Pro" --boot
+./node_modules/.bin/agent-device open MyApp --platform ios --device "iPhone 17 Pro" --relaunch
 ```
 
 ### Install an app artifact
 
 ```bash
-agent-device install com.example.app ./build/app.apk --platform android --serial emulator-5554
+./node_modules/.bin/agent-device install com.example.app ./build/app.apk --platform android --serial emulator-5554
 ```
 
 ```bash
-agent-device install com.example.app ./build/MyApp.app --platform ios --device "iPhone 17 Pro"
+./node_modules/.bin/agent-device install com.example.app ./build/MyApp.app --platform ios --device "iPhone 17 Pro"
 ```
 
 ```bash
 ARTIFACT_URL="<trusted-artifact-url>"
-agent-device install-from-source "$ARTIFACT_URL" --platform android
+./node_modules/.bin/agent-device install-from-source "$ARTIFACT_URL" --platform android
 ```
 
 Daemon-resolved GitHub Actions artifacts:
 
 ```bash
-agent-device install-from-source \
+./node_modules/.bin/agent-device install-from-source \
   --github-actions-artifact ORG/REPO:1234567890 \
   --platform android
 ```
@@ -116,8 +120,8 @@ Project config can provide an artifact name instead:
 TV example:
 
 ```bash
-agent-device open MyTvApp --platform ios --target tv
-agent-device open com.example.androidtv --platform android --target tv
+./node_modules/.bin/agent-device open MyTvApp --platform ios --target tv
+./node_modules/.bin/agent-device open com.example.androidtv --platform android --target tv
 ```
 
 ## Session rules
@@ -125,8 +129,8 @@ agent-device open com.example.androidtv --platform android --target tv
 - Use `--session <name>` when you need a named session:
 
 ```bash
-agent-device --session auth open Settings --platform ios
-agent-device --session auth snapshot -i
+./node_modules/.bin/agent-device --session auth open Settings --platform ios
+./node_modules/.bin/agent-device --session auth snapshot -i
 ```
 
 - Use `open <app>` before interactions.
@@ -149,17 +153,17 @@ Once you have opened the correct session on the correct target, default to the c
 Good shared-host pattern:
 
 ```bash
-agent-device --session auth open Settings --platform ios --device "iPhone 17 Pro"
-agent-device --session auth snapshot -i
-agent-device --session auth press @e3
-agent-device --session auth close
+./node_modules/.bin/agent-device --session auth open Settings --platform ios --device "iPhone 17 Pro"
+./node_modules/.bin/agent-device --session auth snapshot -i
+./node_modules/.bin/agent-device --session auth press @e3
+./node_modules/.bin/agent-device --session auth close
 ```
 
 Bad shared-host pattern:
 
 ```bash
-agent-device --session auth open Settings --platform ios --device "iPhone 17 Pro"
-agent-device --session auth snapshot -i --platform ios --device "iPhone 17 Pro"
+./node_modules/.bin/agent-device --session auth open Settings --platform ios --device "iPhone 17 Pro"
+./node_modules/.bin/agent-device --session auth snapshot -i --platform ios --device "iPhone 17 Pro"
 ```
 
 Use target-selection flags again only when you are choosing the target before opening a session, or when you explicitly mean to retarget.
@@ -173,7 +177,7 @@ export AGENT_DEVICE_SESSION=qa-ios
 export AGENT_DEVICE_PLATFORM=ios
 export AGENT_DEVICE_SESSION_LOCK=strip
 
-agent-device open MyApp --relaunch
+./node_modules/.bin/agent-device open MyApp --relaunch
 ```
 
 - `AGENT_DEVICE_SESSION` plus `AGENT_DEVICE_PLATFORM` provides the default binding.
@@ -188,7 +192,7 @@ Android emulator variant:
 export AGENT_DEVICE_SESSION=qa-android
 export AGENT_DEVICE_PLATFORM=android
 
-agent-device --session-lock reject open com.example.myapp --relaunch
+./node_modules/.bin/agent-device --session-lock reject open com.example.myapp --relaunch
 ```
 
 ## Scoped discovery
@@ -196,8 +200,8 @@ agent-device --session-lock reject open com.example.myapp --relaunch
 Use scoped discovery when one run must not see host-global device lists.
 
 ```bash
-agent-device devices --platform ios --ios-simulator-device-set /tmp/tenant-a/simulators
-agent-device devices --platform android --android-device-allowlist emulator-5554,device-1234
+./node_modules/.bin/agent-device devices --platform ios --ios-simulator-device-set /tmp/tenant-a/simulators
+./node_modules/.bin/agent-device devices --platform android --android-device-allowlist emulator-5554,device-1234
 ```
 
 - Scope is applied before `--device`, `--udid`, and `--serial`.
@@ -211,9 +215,9 @@ agent-device devices --platform android --android-device-allowlist emulator-5554
 ## Session inspection and replay
 
 ```bash
-agent-device session list
-agent-device replay ./session.ad --session auth
-agent-device replay -u ./session.ad --session auth
+./node_modules/.bin/agent-device session list
+./node_modules/.bin/agent-device replay ./session.ad --session auth
+./node_modules/.bin/agent-device replay -u ./session.ad --session auth
 ```
 
 - iOS session entries include `device_udid` and `ios_simulator_device_set`. Use them to confirm routing in concurrent runs.
@@ -228,11 +232,11 @@ agent-device replay -u ./session.ad --session auth
 ## Install examples
 
 ```bash
-agent-device reinstall MyApp /path/to/app-debug.apk --platform android --serial emulator-5554
+./node_modules/.bin/agent-device reinstall MyApp /path/to/app-debug.apk --platform android --serial emulator-5554
 ```
 
 ```bash
-agent-device install com.example.app ./build/MyApp.ipa --platform ios --device "iPhone 17 Pro"
+./node_modules/.bin/agent-device install com.example.app ./build/MyApp.ipa --platform ios --device "iPhone 17 Pro"
 ```
 
 Do not use `open <apk|aab> --relaunch` on Android.

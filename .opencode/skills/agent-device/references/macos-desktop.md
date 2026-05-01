@@ -4,6 +4,10 @@
 
 Open this file only when `--platform macos` is involved or the task needs `frontmost-app`, `desktop`, or `menubar` surfaces.
 
+## Command
+
+Use `./node_modules/.bin/agent-device` from the workspace root in this repo. The shorter `agent-device` form in examples means the same repo-local binary, not a required global install.
+
 ## Main commands to reach for first
 
 - `open <app> --platform macos`
@@ -20,9 +24,9 @@ Do not treat every macOS surface the same. Use the normal `app` surface when you
 ## Canonical loop
 
 ```bash
-agent-device open TextEdit --platform macos
-agent-device snapshot
-agent-device close
+./node_modules/.bin/agent-device open TextEdit --platform macos
+./node_modules/.bin/agent-device snapshot
+./node_modules/.bin/agent-device close
 ```
 
 ## Surface rules
@@ -48,8 +52,8 @@ Use inspect-first surfaces to understand desktop-global UI, then switch back to 
 Context menus are not ambient UI. Open them explicitly, then re-snapshot.
 
 ```bash
-agent-device click @e66 --button secondary --platform macos
-agent-device snapshot -i
+./node_modules/.bin/agent-device click @e66 --button secondary --platform macos
+./node_modules/.bin/agent-device snapshot -i
 ```
 
 Expected loop:
