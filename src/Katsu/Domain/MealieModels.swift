@@ -94,6 +94,198 @@ struct MealieRecipeSummary: Codable, Equatable, Identifiable {
     }
 }
 
+/// Full recipe payload returned by `/api/recipes/{slug}`.
+struct MealieRecipeDetail: Codable, Equatable, Identifiable {
+    let recipeID: String?
+    let slug: String
+    let name: String?
+    let description: String?
+    let recipeYield: String?
+    let recipeServings: Double?
+    let totalTime: String?
+    let prepTime: String?
+    let cookTime: String?
+    let recipeCategory: [MealieRecipeToken]?
+    let tags: [MealieRecipeToken]?
+    let rating: Double?
+    let image: MealieRecipeImage?
+    let recipeIngredient: [MealieRecipeIngredient]
+    let recipeInstructions: [MealieRecipeInstruction]?
+    let nutrition: MealieRecipeNutrition?
+    let settings: MealieRecipeSettings?
+
+    var id: String { recipeID ?? slug }
+    var displayName: String {
+        if let name, !name.isEmpty {
+            return name
+        }
+        return slug
+    }
+
+    var summary: MealieRecipeSummary {
+        MealieRecipeSummary(
+            recipeID: recipeID,
+            slug: slug,
+            name: name,
+            description: description,
+            recipeYield: recipeYield
+        )
+    }
+
+    func imageURL(serverURL: URL) -> URL? {
+        guard image != nil, let recipeID else { return nil }
+        return serverURL
+            .appendingPathComponent("api/media/recipes")
+            .appendingPathComponent(recipeID)
+            .appendingPathComponent("images/min-original.webp")
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case recipeID = "id"
+        case slug
+        case name
+        case description
+        case recipeYield
+        case recipeServings
+        case totalTime
+        case prepTime
+        case cookTime
+        case recipeCategory
+        case tags
+        case rating
+        case image
+        case recipeIngredient
+        case recipeInstructions
+        case nutrition
+        case settings
+    }
+}
+
+struct MealieRecipeImage: Codable, Equatable {
+    init() {}
+    init(from decoder: Decoder) throws {}
+    func encode(to encoder: Encoder) throws {}
+}
+
+struct MealieRecipeToken: Codable, Equatable, Identifiable {
+    let tokenID: String?
+    let name: String
+    let slug: String
+
+    var id: String { tokenID ?? slug }
+
+    enum CodingKeys: String, CodingKey {
+        case tokenID = "id"
+        case name
+        case slug
+    }
+}
+
+struct MealieRecipeIngredient: Codable, Equatable, Identifiable {
+    let referenceID: String?
+    let display: String?
+    let title: String?
+    let note: String?
+    let quantity: Double?
+    let unit: MealieIngredientUnit?
+    let food: MealieIngredientFood?
+
+    var id: String { referenceID ?? displayText }
+    var displayText: String {
+        if let display, !display.isEmpty { return display }
+        if let title, !title.isEmpty { return title }
+        if let note, !note.isEmpty { return note }
+        if let foodName = food?.name, !foodName.isEmpty { return foodName }
+        return String(localized: "Ingredient")
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case referenceID = "referenceId"
+        case display
+        case title
+        case note
+        case quantity
+        case unit
+        case food
+    }
+}
+
+struct MealieIngredientUnit: Codable, Equatable {
+    let name: String?
+    let abbreviation: String?
+}
+
+struct MealieIngredientFood: Codable, Equatable {
+    let name: String?
+}
+
+struct MealieRecipeInstruction: Codable, Equatable, Identifiable {
+    let stepID: String?
+    let title: String?
+    let summary: String?
+    let text: String?
+
+    var id: String { stepID ?? displayText }
+    var displayText: String {
+        if let text, !text.isEmpty { return text }
+        if let summary, !summary.isEmpty { return summary }
+        if let title, !title.isEmpty { return title }
+        return String(localized: "Instruction")
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case stepID = "id"
+        case title
+        case summary
+        case text
+    }
+}
+
+struct MealieRecipeNutrition: Codable, Equatable {
+    let calories: String?
+    let carbohydrateContent: String?
+    let cholesterolContent: String?
+    let fatContent: String?
+    let fiberContent: String?
+    let proteinContent: String?
+    let saturatedFatContent: String?
+    let sodiumContent: String?
+    let sugarContent: String?
+    let transFatContent: String?
+    let unsaturatedFatContent: String?
+
+    var entries: [MealieRecipeNutritionEntry] {
+        [
+            entry(label: String(localized: "Calories"), value: calories),
+            entry(label: String(localized: "Carbohydrates"), value: carbohydrateContent),
+            entry(label: String(localized: "Cholesterol"), value: cholesterolContent),
+            entry(label: String(localized: "Fat"), value: fatContent),
+            entry(label: String(localized: "Fiber"), value: fiberContent),
+            entry(label: String(localized: "Protein"), value: proteinContent),
+            entry(label: String(localized: "Saturated fat"), value: saturatedFatContent),
+            entry(label: String(localized: "Sodium"), value: sodiumContent),
+            entry(label: String(localized: "Sugar"), value: sugarContent),
+            entry(label: String(localized: "Trans fat"), value: transFatContent),
+            entry(label: String(localized: "Unsaturated fat"), value: unsaturatedFatContent)
+        ].compactMap { $0 }
+    }
+
+    private func entry(label: String, value: String?) -> MealieRecipeNutritionEntry? {
+        guard let value, !value.isEmpty else { return nil }
+        return MealieRecipeNutritionEntry(label: label, value: value)
+    }
+}
+
+struct MealieRecipeNutritionEntry: Identifiable, Equatable {
+    var id: String { label }
+    let label: String
+    let value: String
+}
+
+struct MealieRecipeSettings: Codable, Equatable {
+    let showNutrition: Bool?
+}
+
 /// Persistable record of a Mealie server the user has connected to.
 struct ServerProfile: Codable, Equatable, Identifiable {
     let id: UUID

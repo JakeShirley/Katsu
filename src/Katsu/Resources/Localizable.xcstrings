@@ -1,1872 +1,1927 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "%@, %@, %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@, %2$@, %3$@"
+  "sourceLanguage": "en",
+  "strings": {
+    "%@, %@, %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@, %2$@, %3$@"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "%@, %@, %@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "%@, %@, %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "%@, %@, %@"
+          }
         }
-      }
+      },
+      "extractionState": "manual"
     },
-    "About" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Über"
+    "About": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Über"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "About"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Acerca de"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acerca de"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "情報"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "情報"
           }
         }
       }
     },
-    "Active" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Aktiv"
+    "Active": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Aktiv"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Active"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Activo"
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Activo"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "アクティブ"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "アクティブ"
           }
         }
       }
     },
-    "Active Server" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktiver Server"
+    "Active Server": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktiver Server"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Active Server"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active Server"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Servidor activo"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servidor activo"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アクティブなサーバ"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アクティブなサーバ"
           }
         }
       }
     },
-    "Add a Mealie server" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Mealie-Server hinzufügen"
+    "Add a Mealie server": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Mealie-Server hinzufügen"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add a Mealie server"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a Mealie server"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Agregar un servidor de Mealie"
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Agregar un servidor de Mealie"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Mealie サーバを追加"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Mealie サーバを追加"
           }
         }
       }
     },
-    "Add a Mealie server. Connect Katsu to your Mealie server, then sign in to browse your recipes." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Mealie-Server hinzufügen. Verbinde Katsu mit deinem Mealie-Server und melde dich dann an, um deine Rezepte zu durchsuchen."
+    "Add a Mealie server. Connect Katsu to your Mealie server, then sign in to browse your recipes.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Mealie-Server hinzufügen. Verbinde Katsu mit deinem Mealie-Server und melde dich dann an, um deine Rezepte zu durchsuchen."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add a Mealie server. Connect Katsu to your Mealie server, then sign in to browse your recipes."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a Mealie server. Connect Katsu to your Mealie server, then sign in to browse your recipes."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Agregar un servidor de Mealie. Conecta Katsu a tu servidor de Mealie y luego inicia sesión para explorar tus recetas."
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Agregar un servidor de Mealie. Conecta Katsu a tu servidor de Mealie y luego inicia sesión para explorar tus recetas."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Mealie サーバを追加。Katsu を Mealie サーバに接続し、サインインしてレシピを閲覧します。"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Mealie サーバを追加。Katsu を Mealie サーバに接続し、サインインしてレシピを閲覧します。"
           }
         }
       }
     },
-    "Add Server" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Server hinzufügen"
+    "Add Server": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Server hinzufügen"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add Server"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add Server"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Agregar servidor"
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Agregar servidor"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "サーバを追加"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "サーバを追加"
           }
         }
       }
     },
-    "Administrator" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Administrator"
+    "Administrator": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Administrator"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Administrator"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Administrator"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Administrador"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Administrador"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "管理者"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "管理者"
           }
         }
       }
     },
-    "App" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App"
+    "App": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "App"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App"
           }
         }
       }
     },
-    "Bundle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bundle"
+    "Bundle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bundle"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bundle"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bundle"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Paquete"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paquete"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "バンドル"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バンドル"
           }
         }
       }
     },
-    "Cancel" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abbrechen"
+    "Calories": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Calories" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Calories" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Calories" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "Calories" } }
+      }
+    },
+    "Carbohydrates": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Carbohydrates" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Carbohydrates" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Carbohydrates" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "Carbohydrates" } }
+      }
+    },
+    "Cancel": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abbrechen"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancel"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancelar"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "キャンセル"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キャンセル"
           }
         }
       }
     },
-    "Change Server" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Server wechseln"
+    "Change Server": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server wechseln"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Change Server"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change Server"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cambiar servidor"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambiar servidor"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サーバを変更"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サーバを変更"
           }
         }
       }
     },
-    "Changelog" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Änderungsprotokoll"
+    "Changelog": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Änderungsprotokoll"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Changelog"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changelog"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Registro de cambios"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registro de cambios"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "変更履歴"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "変更履歴"
           }
         }
       }
     },
-    "Confirm the Mealie server is running and reachable from this device." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stelle sicher, dass der Mealie-Server läuft und von diesem Gerät erreichbar ist."
+    "Confirm the Mealie server is running and reachable from this device.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stelle sicher, dass der Mealie-Server läuft und von diesem Gerät erreichbar ist."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Confirm the Mealie server is running and reachable from this device."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm the Mealie server is running and reachable from this device."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comprueba que el servidor de Mealie esté en marcha y sea accesible desde este dispositivo."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprueba que el servidor de Mealie esté en marcha y sea accesible desde este dispositivo."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mealie サーバが起動しており、このデバイスから到達可能であることを確認してください。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mealie サーバが起動しており、このデバイスから到達可能であることを確認してください。"
           }
         }
       }
     },
-    "Connect Katsu to your Mealie server, then sign in to browse your recipes." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Verbinde Katsu mit deinem Mealie-Server und melde dich dann an, um deine Rezepte zu durchsuchen."
+    "Connect Katsu to your Mealie server, then sign in to browse your recipes.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Verbinde Katsu mit deinem Mealie-Server und melde dich dann an, um deine Rezepte zu durchsuchen."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connect Katsu to your Mealie server, then sign in to browse your recipes."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect Katsu to your Mealie server, then sign in to browse your recipes."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Conecta Katsu a tu servidor de Mealie y luego inicia sesión para explorar tus recetas."
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Conecta Katsu a tu servidor de Mealie y luego inicia sesión para explorar tus recetas."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Katsu を Mealie サーバに接続し、サインインしてレシピを閲覧します。"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Katsu を Mealie サーバに接続し、サインインしてレシピを閲覧します。"
           }
         }
+      }
+    },
+    "Cholesterol": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Cholesterol" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Cholesterol" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Cholesterol" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "Cholesterol" } }
+      }
+    },
+    "Cook: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": { "stringUnit": { "state": "needs_review", "value": "Cook: %@" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Cook: %@" } },
+        "es": { "stringUnit": { "state": "needs_review", "value": "Cook: %@" } },
+        "ja": { "stringUnit": { "state": "needs_review", "value": "Cook: %@" } }
       }
     },
-    "Connect to your Mealie server to get started." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verbinde dich mit deinem Mealie-Server, um loszulegen."
+    "Connect to your Mealie server to get started.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbinde dich mit deinem Mealie-Server, um loszulegen."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connect to your Mealie server to get started."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect to your Mealie server to get started."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conéctate a tu servidor de Mealie para empezar."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conéctate a tu servidor de Mealie para empezar."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mealie サーバに接続して始めましょう。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mealie サーバに接続して始めましょう。"
           }
         }
       }
     },
-    "Connected Server" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verbundener Server"
+    "Connected Server": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbundener Server"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connected Server"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connected Server"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Servidor conectado"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servidor conectado"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "接続中のサーバ"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続中のサーバ"
           }
         }
       }
     },
-    "Connecting…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verbinden …"
+    "Connecting…": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbinden …"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connecting…"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connecting…"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conectando…"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectando…"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "接続中…"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接続中…"
           }
         }
       }
     },
-    "Continue" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weiter"
+    "Continue": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weiter"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continue"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continuar"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuar"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "続ける"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "続ける"
           }
         }
       }
     },
-    "Done" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fertig"
+    "Done": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fertig"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Done"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Listo"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listo"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完了"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完了"
           }
         }
       }
     },
-    "Email" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "E-Mail"
+    "Email": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E-Mail"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Email"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Email"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Correo electrónico"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Correo electrónico"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "メール"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メール"
           }
         }
       }
     },
-    "Enter a valid Mealie server URL." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gib eine gültige Mealie-Server-URL ein."
+    "Enter a valid Mealie server URL.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gib eine gültige Mealie-Server-URL ein."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enter a valid Mealie server URL."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a valid Mealie server URL."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Introduce una URL válida del servidor de Mealie."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Introduce una URL válida del servidor de Mealie."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "有効な Mealie サーバの URL を入力してください。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有効な Mealie サーバの URL を入力してください。"
           }
         }
       }
     },
-    "Home" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start"
+    "Home": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Home"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Home"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inicio"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicio"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ホーム"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホーム"
           }
         }
       }
     },
-    "https://mealie.example.com" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://mealie.example.com"
+    "https://mealie.example.com": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://mealie.example.com"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://mealie.example.com"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://mealie.example.com"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://mealie.example.com"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://mealie.example.com"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "https://mealie.example.com"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "https://mealie.example.com"
           }
         }
       }
     },
-    "Inactive" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Inaktiv"
+    "Inactive": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Inaktiv"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inactive"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inactive"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Inactivo"
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Inactivo"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "非アクティブ"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "非アクティブ"
           }
         }
       }
     },
-    "Include the scheme and host, for example https://mealie.example.com." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gib Schema und Host an, zum Beispiel https://mealie.example.com."
+    "Include the scheme and host, for example https://mealie.example.com.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gib Schema und Host an, zum Beispiel https://mealie.example.com."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Include the scheme and host, for example https://mealie.example.com."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Include the scheme and host, for example https://mealie.example.com."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Incluye el esquema y el host, por ejemplo https://mealie.example.com."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incluye el esquema y el host, por ejemplo https://mealie.example.com."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "スキームとホストを含めてください。例: https://mealie.example.com"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スキームとホストを含めてください。例: https://mealie.example.com"
           }
         }
       }
     },
-    "Katsu" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Katsu"
+    "Katsu": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Katsu"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Katsu"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Katsu"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Katsu"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Katsu"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Katsu"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Katsu"
           }
         }
       }
     },
-    "Loading account…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konto wird geladen …"
+    "Loading account…": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konto wird geladen …"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Loading account…"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading account…"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cargando cuenta…"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargando cuenta…"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アカウントを読み込み中…"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アカウントを読み込み中…"
           }
         }
       }
     },
-    "Loading more recipes" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Weitere Rezepte werden geladen"
+    "Loading more recipes": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Weitere Rezepte werden geladen"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Loading more recipes"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading more recipes"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Cargando más recetas"
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Cargando más recetas"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "さらにレシピを読み込み中"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "さらにレシピを読み込み中"
           }
         }
       }
     },
-    "Loading more recipes…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Weitere Rezepte werden geladen…"
+    "Loading more recipes…": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Weitere Rezepte werden geladen…"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Loading more recipes…"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading more recipes…"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Cargando más recetas…"
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Cargando más recetas…"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "さらにレシピを読み込み中…"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "さらにレシピを読み込み中…"
           }
         }
       }
     },
-    "Loading recipes" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Rezepte werden geladen"
+    "Loading recipes": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Rezepte werden geladen"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Loading recipes"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading recipes"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Cargando recetas"
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Cargando recetas"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "レシピを読み込み中"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "レシピを読み込み中"
           }
         }
       }
     },
-    "Loading recipes…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Rezepte werden geladen…"
+    "Loading recipes…": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Rezepte werden geladen…"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Loading recipes…"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading recipes…"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Cargando recetas…"
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Cargando recetas…"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "レシピを読み込み中…"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "レシピを読み込み中…"
           }
         }
       }
     },
-    "Meal plans and shopping lists are coming soon." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Essenspläne und Einkaufslisten folgen in Kürze."
+    "Meal plans and shopping lists are coming soon.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Essenspläne und Einkaufslisten folgen in Kürze."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meal plans and shopping lists are coming soon."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meal plans and shopping lists are coming soon."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Los planes de comidas y las listas de compras llegarán pronto."
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Los planes de comidas y las listas de compras llegarán pronto."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ミールプランと買い物リストは近日公開予定です。"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "ミールプランと買い物リストは近日公開予定です。"
           }
         }
       }
     },
-    "Mealie server URL" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mealie-Server-URL"
+    "Mealie server URL": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mealie-Server-URL"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mealie server URL"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mealie server URL"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL del servidor de Mealie"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL del servidor de Mealie"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mealie サーバの URL"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mealie サーバの URL"
           }
         }
       }
     },
-    "Name" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Name"
+    "Name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Name"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nombre"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "名前"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "名前"
           }
         }
       }
     },
-    "No recipes yet" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Noch keine Rezepte"
+    "No recipes yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Noch keine Rezepte"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No recipes yet"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No recipes yet"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Todavía no hay recetas"
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Todavía no hay recetas"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "レシピはまだありません"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "レシピはまだありません"
           }
         }
       }
     },
-    "No servers added" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Keine Server hinzugefügt"
+    "No servers added": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Keine Server hinzugefügt"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No servers added"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No servers added"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "No se agregaron servidores"
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "No se agregaron servidores"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "追加されたサーバはありません"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "追加されたサーバはありません"
           }
         }
       }
     },
-    "Not loaded yet" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Noch nicht geladen"
+    "Not loaded yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nicht geladen"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Not loaded yet"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not loaded yet"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aún no cargado"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no cargado"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "まだ読み込まれていません"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まだ読み込まれていません"
           }
         }
       }
     },
-    "Password" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Passwort"
+    "Password": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passwort"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Password"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Password"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contraseña"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contraseña"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "パスワード"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パスワード"
           }
         }
       }
     },
-    "Password is required." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Passwort ist erforderlich."
+    "Password is required.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passwort ist erforderlich."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Password is required."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Password is required."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se requiere la contraseña."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se requiere la contraseña."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "パスワードを入力してください。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パスワードを入力してください。"
           }
         }
       }
     },
-    "Recipes" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Rezepte"
+    "Recipes": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Rezepte"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recipes"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recipes"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Recetas"
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Recetas"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "レシピ"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "レシピ"
           }
         }
       }
     },
-    "Server" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Server"
+    "Server": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Server"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Servidor"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servidor"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サーバ"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サーバ"
           }
         }
       }
     },
-    "Server URL" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Server-URL"
+    "Server URL": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server-URL"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Server URL"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server URL"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL del servidor"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL del servidor"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サーバの URL"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サーバの URL"
           }
         }
       }
     },
-    "Servers" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Server"
+    "Servers": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Server"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Servers"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servers"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Servidores"
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Servidores"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "サーバ"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "サーバ"
           }
         }
       }
     },
-    "Settings" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Einstellungen"
+    "Settings": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einstellungen"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Settings"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajustes"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajustes"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定"
           }
         }
       }
     },
-    "Sign in" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anmelden"
+    "Sign in": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anmelden"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sign in"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Iniciar sesión"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar sesión"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サインイン"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サインイン"
           }
         }
       }
     },
-    "Sign In" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anmelden"
+    "Sign In": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anmelden"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sign In"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign In"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Iniciar sesión"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar sesión"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サインイン"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サインイン"
           }
         }
       }
     },
-    "Sign in again with your Mealie credentials." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Melde dich erneut mit deinen Mealie-Zugangsdaten an."
+    "Sign in again with your Mealie credentials.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Melde dich erneut mit deinen Mealie-Zugangsdaten an."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sign in again with your Mealie credentials."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in again with your Mealie credentials."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vuelve a iniciar sesión con tus credenciales de Mealie."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vuelve a iniciar sesión con tus credenciales de Mealie."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mealie の資格情報で再度サインインしてください。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mealie の資格情報で再度サインインしてください。"
           }
         }
       }
     },
-    "Sign Out" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abmelden"
+    "Sign Out": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abmelden"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sign Out"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign Out"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cerrar sesión"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerrar sesión"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サインアウト"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サインアウト"
           }
         }
       }
     },
-    "Sign out and remove this server from this device?" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abmelden und diesen Server von diesem Gerät entfernen?"
+    "Sign out and remove this server from this device?": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abmelden und diesen Server von diesem Gerät entfernen?"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sign out and remove this server from this device?"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign out and remove this server from this device?"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Cerrar sesión y eliminar este servidor de este dispositivo?"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Cerrar sesión y eliminar este servidor de este dispositivo?"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サインアウトして、このサーバをこのデバイスから削除しますか？"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サインアウトして、このサーバをこのデバイスから削除しますか？"
           }
         }
       }
     },
-    "Signed in as" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Angemeldet als"
+    "Signed in as": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Angemeldet als"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Signed in as"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Signed in as"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sesión iniciada como"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sesión iniciada como"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サインイン中のユーザ"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サインイン中のユーザ"
           }
         }
       }
     },
-    "Signing in…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anmeldung läuft …"
+    "Signing in…": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anmeldung läuft …"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Signing in…"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Signing in…"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Iniciando sesión…"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciando sesión…"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サインイン中…"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サインイン中…"
           }
         }
       }
     },
-    "The Mealie server appears to be offline or unreachable." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der Mealie-Server scheint offline oder nicht erreichbar zu sein."
+    "The Mealie server appears to be offline or unreachable.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Mealie-Server scheint offline oder nicht erreichbar zu sein."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The Mealie server appears to be offline or unreachable."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Mealie server appears to be offline or unreachable."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El servidor de Mealie parece estar desconectado o no es accesible."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El servidor de Mealie parece estar desconectado o no es accesible."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mealie サーバはオフラインか、到達できないようです。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mealie サーバはオフラインか、到達できないようです。"
           }
         }
       }
     },
-    "The server is receiving too many requests. Try again in a moment." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der Server erhält zu viele Anfragen. Bitte versuche es gleich noch einmal."
+    "The server is receiving too many requests. Try again in a moment.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Server erhält zu viele Anfragen. Bitte versuche es gleich noch einmal."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The server is receiving too many requests. Try again in a moment."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server is receiving too many requests. Try again in a moment."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El servidor está recibiendo demasiadas solicitudes. Inténtalo de nuevo en un momento."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El servidor está recibiendo demasiadas solicitudes. Inténtalo de nuevo en un momento."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サーバへのリクエストが集中しています。少し時間をおいてから再度お試しください。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サーバへのリクエストが集中しています。少し時間をおいてから再度お試しください。"
           }
         }
       }
     },
-    "The server returned an unexpected response." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der Server hat eine unerwartete Antwort gesendet."
+    "The server returned an unexpected response.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Server hat eine unerwartete Antwort gesendet."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The server returned an unexpected response."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server returned an unexpected response."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El servidor devolvió una respuesta inesperada."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El servidor devolvió una respuesta inesperada."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サーバから予期しない応答が返されました。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サーバから予期しない応答が返されました。"
           }
         }
       }
     },
-    "The server returned HTTP %lld." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der Server hat HTTP %lld zurückgegeben."
+    "The server returned HTTP %lld.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Server hat HTTP %lld zurückgegeben."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The server returned HTTP %lld."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server returned HTTP %lld."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El servidor devolvió HTTP %lld."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El servidor devolvió HTTP %lld."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サーバから HTTP %lld が返されました。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サーバから HTTP %lld が返されました。"
           }
         }
       }
     },
-    "The server's secure connection could not be trusted." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die sichere Verbindung zum Server konnte nicht verifiziert werden."
+    "The server's secure connection could not be trusted.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die sichere Verbindung zum Server konnte nicht verifiziert werden."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The server's secure connection could not be trusted."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server's secure connection could not be trusted."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No se pudo confiar en la conexión segura del servidor."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo confiar en la conexión segura del servidor."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サーバの安全な接続を検証できませんでした。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サーバの安全な接続を検証できませんでした。"
           }
         }
       }
     },
-    "Try Again" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Erneut versuchen"
+    "Try Again": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Erneut versuchen"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Try Again"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try Again"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Intentar de nuevo"
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Intentar de nuevo"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "もう一度試す"
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "もう一度試す"
           }
         }
       }
     },
-    "URL" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL"
+    "URL": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
           }
         }
       }
     },
-    "Username" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Benutzername"
+    "Username": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benutzername"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Username"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Username"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nombre de usuario"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre de usuario"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ユーザ名"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ユーザ名"
           }
         }
       }
     },
-    "Username or email" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Benutzername oder E-Mail"
+    "Username or email": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benutzername oder E-Mail"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Username or email"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Username or email"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nombre de usuario o correo electrónico"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre de usuario o correo electrónico"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ユーザ名またはメール"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ユーザ名またはメール"
           }
         }
       }
     },
-    "Version" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Version"
+    "Version": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Version"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Versión"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versión"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "バージョン"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バージョン"
           }
         }
       }
     },
-    "Welcome to Katsu" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Willkommen bei Katsu"
+    "Welcome to Katsu": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Willkommen bei Katsu"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Welcome to Katsu"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome to Katsu"
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Te damos la bienvenida a Katsu"
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Te damos la bienvenida a Katsu"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Katsu へようこそ"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Katsu へようこそ"
           }
         }
       }
     },
-    "Your account doesn't have permission for this action." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dein Konto ist für diese Aktion nicht berechtigt."
+    "Your account doesn't have permission for this action.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Konto ist für diese Aktion nicht berechtigt."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your account doesn't have permission for this action."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your account doesn't have permission for this action."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tu cuenta no tiene permiso para esta acción."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu cuenta no tiene permiso para esta acción."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "このアカウントにはこの操作を行う権限がありません。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このアカウントにはこの操作を行う権限がありません。"
           }
         }
       }
     },
-    "Your session has expired. Sign in again to continue." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deine Sitzung ist abgelaufen. Melde dich erneut an, um fortzufahren."
+    "Your session has expired. Sign in again to continue.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Sitzung ist abgelaufen. Melde dich erneut an, um fortzufahren."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your session has expired. Sign in again to continue."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your session has expired. Sign in again to continue."
           }
         },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tu sesión ha caducado. Inicia sesión de nuevo para continuar."
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu sesión ha caducado. Inicia sesión de nuevo para continuar."
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "セッションの有効期限が切れました。続行するには再度サインインしてください。"
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "セッションの有効期限が切れました。続行するには再度サインインしてください。"
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

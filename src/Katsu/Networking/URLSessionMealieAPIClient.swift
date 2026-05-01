@@ -56,6 +56,13 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return try await perform(request)
     }
 
+    func fetchRecipeDetail(serverURL: URL, token: MealieAuthToken, slug: String) async throws -> MealieRecipeDetail {
+        let encodedSlug = slug.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? slug
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/recipes/\(encodedSlug)"))
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        return try await perform(request)
+    }
+
     // MARK: - Helpers
 
     private func perform<T: Decodable>(_ request: URLRequest) async throws -> T {

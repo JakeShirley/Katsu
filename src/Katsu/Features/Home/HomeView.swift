@@ -94,12 +94,16 @@ private struct RecipesView: View {
                             .foregroundStyle(.secondary)
                     } else {
                         ForEach(recipes) { recipe in
-                            RecipeRow(recipe: recipe)
-                                .onAppear {
-                                    if recipe.id == recipes.last?.id {
-                                        Task { await loadMoreRecipesIfNeeded() }
-                                    }
+                            NavigationLink {
+                                RecipeDetailView(recipe: recipe)
+                            } label: {
+                                RecipeRow(recipe: recipe)
+                            }
+                            .onAppear {
+                                if recipe.id == recipes.last?.id {
+                                    Task { await loadMoreRecipesIfNeeded() }
                                 }
+                            }
                         }
 
                         if isLoadingMoreRecipes {
@@ -246,5 +250,269 @@ private struct RecipeRow: View {
                 return value
             }
             .joined(separator: ", ")
+    }
+}
+
+private struct RecipeDetailView: View {
+    @EnvironmentObject private var env: AppEnvironment
+    let recipe: MealieRecipeSummary
+
+    @State private var detail: MealieRecipeDetail?
+    @State private var isLoading = false
+    @State private var loadError: String?
+
+    var body: some View {
+        List {
+            if isLoading && detail == nil {
+                HStack(spacing: DesignSystem.Spacing.sm) {
+                    ProgressView()
+                    Text("Loading recipe…")
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Loading recipe")
+            } else if let loadError, detail == nil {
+                Section {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                        Text(loadError)
+                            .foregroundStyle(DesignSystem.Colors.destructive)
+                        Button("Try Again") {
+                            Task { await loadDetail() }
+                        }
+                        .frame(minHeight: DesignSystem.HitTarget.minimum)
+                    }
+                }
+            } else if let detail {
+                RecipeHeroSection(detail: detail, serverURL: env.activeProfile?.serverURL)
+
+                if !detail.recipeIngredient.isEmpty {
+                    Section("Ingredients") {
+                        ForEach(detail.recipeIngredient) { ingredient in
+                            Text(ingredient.displayText)
+                                .font(.body)
+                                .accessibilityLabel(ingredient.displayText)
+                        }
+                    }
+                }
+
+                if let instructions = detail.recipeInstructions, !instructions.isEmpty {
+                    Section("Instructions") {
+                        ForEach(Array(instructions.enumerated()), id: \.element.id) { index, instruction in
+                            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                                Text(String(localized: "Step \(index + 1)"))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(instruction.displayText)
+                                    .font(.body)
+                            }
+                            .accessibilityElement(children: .combine)
+                            .accessibilityLabel(String(localized: "Step \(index + 1), \(instruction.displayText)"))
+                        }
+                    }
+                }
+
+                if let nutrition = detail.nutrition,
+                   detail.settings?.showNutrition != false,
+                   !nutrition.entries.isEmpty {
+                    Section("Nutrition") {
+                        ForEach(nutrition.entries) { entry in
+                            LabeledContent(entry.label, value: entry.value)
+                        }
+                    }
+                }
+            }
+        }
+        .navigationTitle(detail?.displayName ?? recipe.displayName)
+        .navigationBarTitleDisplayMode(.inline)
+        .task(id: recipe.slug) {
+            await loadDetailIfNeeded()
+        }
+        .refreshable {
+            await loadDetail()
+        }
+    }
+
+    private func loadDetailIfNeeded() async {
+        if detail == nil {
+            await loadDetail()
+        }
+    }
+
+    private func loadDetail() async {
+        guard let profile = env.activeProfile else { return }
+        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
+            loadError = AppError.unauthorized.errorDescription
+            return
+        }
+        guard !isLoading else { return }
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            detail = try await env.apiClient.fetchRecipeDetail(
+                serverURL: profile.serverURL,
+                token: token,
+                slug: recipe.slug
+            )
+            loadError = nil
+        } catch let error as AppError {
+            loadError = error.errorDescription
+        } catch {
+            loadError = error.localizedDescription
+        }
+    }
+}
+
+private struct RecipeHeroSection: View {
+    let detail: MealieRecipeDetail
+    let serverURL: URL?
+
+    var body: some View {
+        Section {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
+                if let serverURL, let imageURL = detail.imageURL(serverURL: serverURL) {
+                    AsyncImage(url: imageURL) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                                .frame(maxWidth: .infinity, minHeight: 180)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(maxWidth: .infinity, minHeight: 180, maxHeight: 220)
+                                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
+                        case .failure:
+                            EmptyView()
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .accessibilityHidden(true)
+                }
+
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                    Text(detail.displayName)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+
+                    if let description = detail.description, !description.isEmpty {
+                        Text(description)
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                RecipeMetadataView(detail: detail)
+
+                let chips = (detail.recipeCategory ?? []) + (detail.tags ?? [])
+                if !chips.isEmpty {
+                    FlowLayout(spacing: DesignSystem.Spacing.sm) {
+                        ForEach(chips) { chip in
+                            Text(chip.name)
+                                .font(.caption)
+                                .padding(.horizontal, DesignSystem.Spacing.sm)
+                                .padding(.vertical, DesignSystem.Spacing.xs)
+                                .background(DesignSystem.Colors.accentSoft, in: Capsule())
+                                .foregroundStyle(DesignSystem.Colors.accentDeep)
+                                .accessibilityLabel(chip.name)
+                        }
+                    }
+                }
+            }
+            .padding(.vertical, DesignSystem.Spacing.xs)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(heroAccessibilityLabel)
+        }
+    }
+
+    private var heroAccessibilityLabel: String {
+        [
+            detail.displayName,
+            detail.description,
+            detail.recipeYield,
+            detail.totalTime.map { String(localized: "Total time \($0)") },
+            detail.rating.map { String(localized: "Rating \($0)") }
+        ]
+        .compactMap { value -> String? in
+            guard let value, !value.isEmpty else { return nil }
+            return value
+        }
+        .joined(separator: ", ")
+    }
+}
+
+private struct RecipeMetadataView: View {
+    let detail: MealieRecipeDetail
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+            if let recipeYield = detail.recipeYield, !recipeYield.isEmpty {
+                Label(recipeYield, systemImage: "fork.knife")
+            }
+            if let totalTime = detail.totalTime, !totalTime.isEmpty {
+                Label(String(localized: "Total time: \(totalTime)"), systemImage: "clock")
+            }
+            if let prepTime = detail.prepTime, !prepTime.isEmpty {
+                Label(String(localized: "Prep: \(prepTime)"), systemImage: "timer")
+            }
+            if let cookTime = detail.cookTime, !cookTime.isEmpty {
+                Label(String(localized: "Cook: \(cookTime)"), systemImage: "flame")
+            }
+            if let rating = detail.rating {
+                Label(String(localized: "Rating: \(rating, specifier: "%.1f")"), systemImage: "star.fill")
+            }
+        }
+        .font(.subheadline)
+        .foregroundStyle(.secondary)
+    }
+}
+
+private struct FlowLayout: Layout {
+    var spacing: CGFloat
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let rows = rows(for: subviews, proposedWidth: proposal.width ?? 0)
+        return CGSize(
+            width: proposal.width ?? rows.map(\.width).max() ?? 0,
+            height: rows.map(\.height).reduce(0, +) + spacing * CGFloat(max(rows.count - 1, 0))
+        )
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var origin = bounds.origin
+        var rowHeight: CGFloat = 0
+
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if origin.x > bounds.minX && origin.x + size.width > bounds.maxX {
+                origin.x = bounds.minX
+                origin.y += rowHeight + spacing
+                rowHeight = 0
+            }
+            subview.place(at: origin, proposal: ProposedViewSize(size))
+            origin.x += size.width + spacing
+            rowHeight = max(rowHeight, size.height)
+        }
+    }
+
+    private func rows(for subviews: Subviews, proposedWidth: CGFloat) -> [CGSize] {
+        var rows: [CGSize] = []
+        var current = CGSize.zero
+        let maxWidth = proposedWidth > 0 ? proposedWidth : .greatestFiniteMagnitude
+
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if current.width > 0 && current.width + spacing + size.width > maxWidth {
+                rows.append(current)
+                current = size
+            } else {
+                current.width += current.width > 0 ? spacing + size.width : size.width
+                current.height = max(current.height, size.height)
+            }
+        }
+        if current.width > 0 || current.height > 0 {
+            rows.append(current)
+        }
+        return rows
     }
 }
