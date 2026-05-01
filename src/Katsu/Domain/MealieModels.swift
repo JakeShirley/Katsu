@@ -81,6 +81,18 @@ struct MealieRecipeFilters: Equatable, Sendable {
     }
 }
 
+struct MealieUserRatingSummary: Codable, Equatable {
+    let recipeID: String
+    let rating: Double?
+    let isFavorite: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case recipeID = "recipeId"
+        case rating
+        case isFavorite
+    }
+}
+
 /// Lightweight recipe summary returned by `/api/recipes`.
 struct MealieRecipeSummary: Codable, Equatable, Identifiable {
     let recipeID: String?

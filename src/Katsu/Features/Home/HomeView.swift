@@ -456,8 +456,11 @@ private struct RecipeDetailView: View {
     let recipe: MealieRecipeSummary
 
     @State private var detail: MealieRecipeDetail?
+    @State private var userRating: MealieUserRatingSummary?
     @State private var isLoading = false
+    @State private var isUpdatingRating = false
     @State private var loadError: String?
+    @State private var ratingError: String?
 
     var body: some View {
         List {
@@ -481,6 +484,16 @@ private struct RecipeDetailView: View {
                 }
             } else if let detail {
                 RecipeHeroSection(detail: detail, serverURL: env.activeProfile?.serverURL)
+
+                if let recipeID = detail.recipeID {
+                    RecipeRatingSection(
+                        rating: userRating ?? MealieUserRatingSummary(recipeID: recipeID, rating: detail.rating, isFavorite: false),
+                        isUpdating: isUpdatingRating,
+                        errorMessage: ratingError,
+                        onToggleFavorite: { await updateFavorite(!$0.isFavorite) },
+                        onSetRating: { await updateRating($0) }
+                    )
+                }
 
                 if !detail.recipeIngredient.isEmpty {
                     Section("Ingredients") {
@@ -546,16 +559,119 @@ private struct RecipeDetailView: View {
         defer { isLoading = false }
 
         do {
-            detail = try await env.apiClient.fetchRecipeDetail(
+            let loadedDetail = try await env.apiClient.fetchRecipeDetail(
                 serverURL: profile.serverURL,
                 token: token,
                 slug: recipe.slug
             )
+            detail = loadedDetail
+            if let recipeID = loadedDetail.recipeID {
+                userRating = try await env.apiClient.fetchUserRating(
+                    serverURL: profile.serverURL,
+                    token: token,
+                    recipeID: recipeID
+                )
+            }
             loadError = nil
         } catch let error as AppError {
             loadError = error.errorDescription
         } catch {
             loadError = error.localizedDescription
+        }
+    }
+
+    private func updateFavorite(_ isFavorite: Bool) async {
+        await updateUserRating(rating: nil, isFavorite: isFavorite)
+    }
+
+    private func updateRating(_ rating: Double?) async {
+        await updateUserRating(rating: rating, isFavorite: nil)
+    }
+
+    private func updateUserRating(rating: Double?, isFavorite: Bool?) async {
+        guard let profile = env.activeProfile,
+              let token = try? env.credentialStore.loadToken(for: profile.id),
+              let detail,
+              let recipeID = detail.recipeID else {
+            ratingError = AppError.unauthorized.errorDescription
+            return
+        }
+        guard !isUpdatingRating else { return }
+        isUpdatingRating = true
+        defer { isUpdatingRating = false }
+
+        do {
+            let currentUser = try await currentUser(profile: profile, token: token)
+            try await env.apiClient.updateUserRating(
+                serverURL: profile.serverURL,
+                token: token,
+                userID: currentUser.id,
+                slug: detail.slug,
+                rating: rating,
+                isFavorite: isFavorite
+            )
+            let current = userRating ?? MealieUserRatingSummary(recipeID: recipeID, rating: detail.rating, isFavorite: false)
+            userRating = MealieUserRatingSummary(
+                recipeID: recipeID,
+                rating: rating ?? current.rating,
+                isFavorite: isFavorite ?? current.isFavorite
+            )
+            ratingError = nil
+        } catch let error as AppError {
+            ratingError = error.errorDescription
+        } catch {
+            ratingError = error.localizedDescription
+        }
+    }
+
+    private func currentUser(profile: ServerProfile, token: MealieAuthToken) async throws -> MealieUser {
+        if let currentUser = env.currentUser {
+            return currentUser
+        }
+        let currentUser = try await env.apiClient.fetchCurrentUser(serverURL: profile.serverURL, token: token)
+        env.currentUser = currentUser
+        return currentUser
+    }
+}
+
+private struct RecipeRatingSection: View {
+    let rating: MealieUserRatingSummary
+    let isUpdating: Bool
+    let errorMessage: String?
+    let onToggleFavorite: (MealieUserRatingSummary) async -> Void
+    let onSetRating: (Double?) async -> Void
+
+    var body: some View {
+        Section("My Rating") {
+            Button {
+                Task { await onToggleFavorite(rating) }
+            } label: {
+                Label(rating.isFavorite ? "Remove Favorite" : "Add Favorite", systemImage: rating.isFavorite ? "heart.fill" : "heart")
+                    .frame(maxWidth: .infinity, minHeight: DesignSystem.HitTarget.minimum, alignment: .leading)
+            }
+            .disabled(isUpdating)
+            .accessibilityLabel(rating.isFavorite ? "Remove Favorite" : "Add Favorite")
+
+            HStack(spacing: DesignSystem.Spacing.sm) {
+                ForEach(1...5, id: \.self) { value in
+                    Button {
+                        Task { await onSetRating(Double(value)) }
+                    } label: {
+                        Image(systemName: (rating.rating ?? 0) >= Double(value) ? "star.fill" : "star")
+                            .font(.title3)
+                            .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(isUpdating)
+                    .accessibilityLabel(String(localized: "Set rating to \(value) stars"))
+                }
+            }
+
+            if let errorMessage {
+                Text(errorMessage)
+                    .font(.subheadline)
+                    .foregroundStyle(DesignSystem.Colors.destructive)
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
     private let serverInfo: MealieServerInfo
     private let user: MealieUser
     private var recipes: [MealieRecipeSummary]
+    private var userRatings: [String: MealieUserRatingSummary]
     private let validUsername: String
     private let validPassword: String
     private let mintedToken: MealieAuthToken
@@ -15,6 +16,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         serverInfo: MealieServerInfo,
         user: MealieUser,
         recipes: [MealieRecipeSummary],
+        userRatings: [String: MealieUserRatingSummary] = [:],
         validUsername: String,
         validPassword: String,
         mintedToken: MealieAuthToken
@@ -22,6 +24,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         self.serverInfo = serverInfo
         self.user = user
         self.recipes = recipes
+        self.userRatings = userRatings
         self.validUsername = validUsername
         self.validPassword = validPassword
         self.mintedToken = mintedToken
@@ -102,6 +105,18 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
                     name: "Berry Yogurt Parfaits",
                     description: "Layered yogurt, berries, and granola for quick breakfasts.",
                     recipeYield: "4 jars"
+                )
+            ],
+            userRatings: [
+                "00000000-0000-0000-0000-000000000101": MealieUserRatingSummary(
+                    recipeID: "00000000-0000-0000-0000-000000000101",
+                    rating: 4,
+                    isFavorite: true
+                ),
+                "00000000-0000-0000-0000-000000000102": MealieUserRatingSummary(
+                    recipeID: "00000000-0000-0000-0000-000000000102",
+                    rating: 5,
+                    isFavorite: false
                 )
             ],
             validUsername: "chef",
@@ -202,6 +217,32 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         )
         recipes.insert(recipe, at: 0)
         return slug
+    }
+
+    func fetchUserRating(serverURL: URL, token: MealieAuthToken, recipeID: String) async throws -> MealieUserRatingSummary {
+        try await Task.sleep(nanoseconds: 120_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+        return userRatings[recipeID] ?? MealieUserRatingSummary(recipeID: recipeID, rating: nil, isFavorite: false)
+    }
+
+    func updateUserRating(serverURL: URL, token: MealieAuthToken, userID: String, slug: String, rating: Double?, isFavorite: Bool?) async throws {
+        try await Task.sleep(nanoseconds: 160_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+        guard userID == user.id,
+              let recipe = recipes.first(where: { $0.slug == slug || $0.id == slug }),
+              let recipeID = recipe.recipeID else {
+            throw AppError.server(status: 404)
+        }
+        let current = userRatings[recipeID] ?? MealieUserRatingSummary(recipeID: recipeID, rating: nil, isFavorite: false)
+        userRatings[recipeID] = MealieUserRatingSummary(
+            recipeID: recipeID,
+            rating: rating ?? current.rating,
+            isFavorite: isFavorite ?? current.isFavorite
+        )
     }
 
     private func detail(for summary: MealieRecipeSummary) -> MealieRecipeDetail {

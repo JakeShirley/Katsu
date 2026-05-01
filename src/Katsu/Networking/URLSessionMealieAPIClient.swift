@@ -87,6 +87,24 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return try await perform(request)
     }
 
+    func fetchUserRating(serverURL: URL, token: MealieAuthToken, recipeID: String) async throws -> MealieUserRatingSummary {
+        let encodedID = recipeID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? recipeID
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/users/self/ratings/\(encodedID)"))
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        return try await perform(request)
+    }
+
+    func updateUserRating(serverURL: URL, token: MealieAuthToken, userID: String, slug: String, rating: Double?, isFavorite: Bool?) async throws {
+        let encodedUserID = userID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? userID
+        let encodedSlug = slug.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? slug
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/users/\(encodedUserID)/ratings/\(encodedSlug)"))
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try encoder.encode(UserRatingUpdate(rating: rating, isFavorite: isFavorite))
+        let _: EmptyResponse = try await perform(request)
+    }
+
     // MARK: - Helpers
 
     private func perform<T: Decodable>(_ request: URLRequest) async throws -> T {
@@ -107,6 +125,9 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         switch http.statusCode {
         case 200..<300:
             do {
+                if T.self == EmptyResponse.self, data.isEmpty {
+                    return EmptyResponse() as! T
+                }
                 return try decoder.decode(T.self, from: data)
             } catch {
                 throw AppError.invalidServerResponse
@@ -156,4 +177,11 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         let includeTags: Bool
         let includeCategories: Bool
     }
+
+    private struct UserRatingUpdate: Encodable {
+        let rating: Double?
+        let isFavorite: Bool?
+    }
+
+    private struct EmptyResponse: Decodable {}
 }
