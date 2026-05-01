@@ -41,12 +41,20 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return try await perform(request)
     }
 
-    func fetchRecipes(serverURL: URL, token: MealieAuthToken, page: Int, perPage: Int) async throws -> MealieRecipePage {
+    func fetchRecipes(serverURL: URL, token: MealieAuthToken, page: Int, perPage: Int, filters: MealieRecipeFilters) async throws -> MealieRecipePage {
         var components = URLComponents(url: serverURL.appendingPathComponent("api/recipes"), resolvingAgainstBaseURL: false)
-        components?.queryItems = [
+        var queryItems = [
             URLQueryItem(name: "page", value: String(page)),
             URLQueryItem(name: "perPage", value: String(perPage))
         ]
+        let search = filters.search.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !search.isEmpty {
+            queryItems.append(URLQueryItem(name: "search", value: search))
+        }
+        queryItems.append(contentsOf: filters.categories.map { URLQueryItem(name: "categories", value: $0) })
+        queryItems.append(contentsOf: filters.tags.map { URLQueryItem(name: "tags", value: $0) })
+        queryItems.append(contentsOf: filters.households.map { URLQueryItem(name: "households", value: $0) })
+        components?.queryItems = queryItems
         guard let url = components?.url else {
             throw AppError.invalidURL
         }

@@ -294,19 +294,59 @@
     "Calories": {
       "extractionState": "manual",
       "localizations": {
-        "de": { "stringUnit": { "state": "needs_review", "value": "Calories" } },
-        "en": { "stringUnit": { "state": "translated", "value": "Calories" } },
-        "es": { "stringUnit": { "state": "needs_review", "value": "Calories" } },
-        "ja": { "stringUnit": { "state": "needs_review", "value": "Calories" } }
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Calories"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calories"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Calories"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Calories"
+          }
+        }
       }
     },
     "Carbohydrates": {
       "extractionState": "manual",
       "localizations": {
-        "de": { "stringUnit": { "state": "needs_review", "value": "Carbohydrates" } },
-        "en": { "stringUnit": { "state": "translated", "value": "Carbohydrates" } },
-        "es": { "stringUnit": { "state": "needs_review", "value": "Carbohydrates" } },
-        "ja": { "stringUnit": { "state": "needs_review", "value": "Carbohydrates" } }
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Carbohydrates"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carbohydrates"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Carbohydrates"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Carbohydrates"
+          }
+        }
       }
     },
     "Cancel": {
@@ -457,19 +497,59 @@
     "Cholesterol": {
       "extractionState": "manual",
       "localizations": {
-        "de": { "stringUnit": { "state": "needs_review", "value": "Cholesterol" } },
-        "en": { "stringUnit": { "state": "translated", "value": "Cholesterol" } },
-        "es": { "stringUnit": { "state": "needs_review", "value": "Cholesterol" } },
-        "ja": { "stringUnit": { "state": "needs_review", "value": "Cholesterol" } }
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Cholesterol"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cholesterol"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Cholesterol"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Cholesterol"
+          }
+        }
       }
     },
     "Cook: %@": {
       "extractionState": "manual",
       "localizations": {
-        "de": { "stringUnit": { "state": "needs_review", "value": "Cook: %@" } },
-        "en": { "stringUnit": { "state": "translated", "value": "Cook: %@" } },
-        "es": { "stringUnit": { "state": "needs_review", "value": "Cook: %@" } },
-        "ja": { "stringUnit": { "state": "needs_review", "value": "Cook: %@" } }
+        "de": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Cook: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cook: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Cook: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Cook: %@"
+          }
+        }
       }
     },
     "Connect to your Mealie server to get started.": {

@@ -66,12 +66,68 @@ private struct RecipesView: View {
     @State private var recipeLoadError: String?
     @State private var isLoadingRecipes = false
     @State private var isLoadingMoreRecipes = false
+    @State private var searchText = ""
+    @State private var categoryFilter = ""
+    @State private var tagFilter = ""
+    @State private var householdFilter = ""
 
     private let recipesPerPage = 5
+    private var filters: MealieRecipeFilters {
+        MealieRecipeFilters(
+            search: searchText,
+            categories: tokens(from: categoryFilter),
+            tags: tokens(from: tagFilter),
+            households: tokens(from: householdFilter)
+        )
+    }
 
     var body: some View {
         NavigationStack {
             List {
+                Section("Filter Recipes") {
+                    TextField("Search recipes", text: $searchText)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .submitLabel(.search)
+                        .onSubmit { Task { await refreshRecipes() } }
+                        .accessibilityLabel("Search recipes")
+
+                    TextField("Category slugs", text: $categoryFilter)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .submitLabel(.search)
+                        .onSubmit { Task { await refreshRecipes() } }
+                        .accessibilityLabel("Category slugs")
+
+                    TextField("Tag slugs", text: $tagFilter)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .submitLabel(.search)
+                        .onSubmit { Task { await refreshRecipes() } }
+                        .accessibilityLabel("Tag slugs")
+
+                    TextField("Household slugs", text: $householdFilter)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .submitLabel(.search)
+                        .onSubmit { Task { await refreshRecipes() } }
+                        .accessibilityLabel("Household slugs")
+
+                    HStack(spacing: DesignSystem.Spacing.sm) {
+                        Button("Apply Filters") {
+                            Task { await refreshRecipes() }
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .frame(minHeight: DesignSystem.HitTarget.minimum)
+
+                        Button("Clear") {
+                            clearFilters()
+                        }
+                        .disabled(filters.isEmpty)
+                        .frame(minHeight: DesignSystem.HitTarget.minimum)
+                    }
+                }
+
                 Section {
                     if isLoadingRecipes && recipes.isEmpty {
                         HStack(spacing: DesignSystem.Spacing.sm) {
@@ -145,6 +201,9 @@ private struct RecipesView: View {
             .task(id: env.activeProfile?.id) {
                 await refreshRecipesIfNeeded()
             }
+            .onChange(of: filters) { _, _ in
+                Task { await refreshRecipes() }
+            }
             .refreshable {
                 await refreshRecipes()
             }
@@ -180,6 +239,7 @@ private struct RecipesView: View {
 
     private func loadRecipes(page: Int, replacingExisting: Bool) async {
         guard let profile = env.activeProfile else { return }
+        let filters = filters
         guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
             recipeLoadError = AppError.unauthorized.errorDescription
             return
@@ -201,7 +261,8 @@ private struct RecipesView: View {
                 serverURL: profile.serverURL,
                 token: token,
                 page: page,
-                perPage: recipesPerPage
+                perPage: recipesPerPage,
+                filters: filters
             )
             recipePage = page.page
             recipeTotalPages = page.totalPages ?? page.total.map { total in
@@ -214,6 +275,21 @@ private struct RecipesView: View {
         } catch {
             recipeLoadError = error.localizedDescription
         }
+    }
+
+    private func clearFilters() {
+        searchText = ""
+        categoryFilter = ""
+        tagFilter = ""
+        householdFilter = ""
+    }
+
+    private func tokens(from rawValue: String) -> [String] {
+        rawValue
+            .split { character in
+                character == "," || character == " " || character == "\n"
+            }
+            .map(String.init)
     }
 }
 

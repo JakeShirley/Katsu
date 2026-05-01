@@ -134,25 +134,43 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return user
     }
 
-    func fetchRecipes(serverURL: URL, token: MealieAuthToken, page: Int, perPage: Int) async throws -> MealieRecipePage {
+    func fetchRecipes(serverURL: URL, token: MealieAuthToken, page: Int, perPage: Int, filters: MealieRecipeFilters) async throws -> MealieRecipePage {
         try await Task.sleep(nanoseconds: 200_000_000)
         guard token.accessToken == mintedToken.accessToken else {
             throw AppError.unauthorized
         }
 
+        let filteredRecipes = filtered(recipes: recipes, filters: filters)
         let safePage = max(page, 1)
         let safePerPage = max(perPage, 1)
-        let start = min((safePage - 1) * safePerPage, recipes.count)
-        let end = min(start + safePerPage, recipes.count)
-        let totalPages = Int(ceil(Double(recipes.count) / Double(safePerPage)))
+        let start = min((safePage - 1) * safePerPage, filteredRecipes.count)
+        let end = min(start + safePerPage, filteredRecipes.count)
+        let totalPages = Int(ceil(Double(filteredRecipes.count) / Double(safePerPage)))
 
         return MealieRecipePage(
-            items: Array(recipes[start..<end]),
+            items: Array(filteredRecipes[start..<end]),
             page: safePage,
             perPage: safePerPage,
-            total: recipes.count,
+            total: filteredRecipes.count,
             totalPages: totalPages
         )
+    }
+
+    private func filtered(recipes: [MealieRecipeSummary], filters: MealieRecipeFilters) -> [MealieRecipeSummary] {
+        let search = filters.search.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return recipes.filter { recipe in
+            let detail = detail(for: recipe)
+            let searchableText = [recipe.displayName, recipe.description, recipe.slug]
+                .compactMap { $0?.lowercased() }
+                .joined(separator: " ")
+            let matchesSearch = search.isEmpty || searchableText.contains(search)
+            let categorySlugs = Set((detail.recipeCategory ?? []).map(\.slug))
+            let tagSlugs = Set((detail.tags ?? []).map(\.slug))
+            let matchesCategories = filters.categories.isEmpty || !categorySlugs.isDisjoint(with: filters.categories)
+            let matchesTags = filters.tags.isEmpty || !tagSlugs.isDisjoint(with: filters.tags)
+            let matchesHouseholds = filters.households.isEmpty || filters.households.contains(user.householdId ?? "")
+            return matchesSearch && matchesCategories && matchesTags && matchesHouseholds
+        }
     }
 
     func fetchRecipeDetail(serverURL: URL, token: MealieAuthToken, slug: String) async throws -> MealieRecipeDetail {

@@ -69,6 +69,18 @@ struct MealieRecipePage: Codable, Equatable {
     }
 }
 
+struct MealieRecipeFilters: Equatable, Sendable {
+    var search: String = ""
+    var categories: [String] = []
+    var tags: [String] = []
+    var households: [String] = []
+
+    var isEmpty: Bool {
+        search.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+            categories.isEmpty && tags.isEmpty && households.isEmpty
+    }
+}
+
 /// Lightweight recipe summary returned by `/api/recipes`.
 struct MealieRecipeSummary: Codable, Equatable, Identifiable {
     let recipeID: String?
