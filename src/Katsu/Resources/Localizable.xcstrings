@@ -1,7 +1,150 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "About" : {
 
+    },
+    "Active Server" : {
+
+    },
+    "Administrator" : {
+
+    },
+    "App" : {
+
+    },
+    "Bundle" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Change Server" : {
+
+    },
+    "Changelog" : {
+
+    },
+    "Confirm the Mealie server is running and reachable from this device." : {
+
+    },
+    "Connect to your Mealie server to get started." : {
+
+    },
+    "Connected Server" : {
+
+    },
+    "Connecting…" : {
+
+    },
+    "Continue" : {
+
+    },
+    "Done" : {
+
+    },
+    "Email" : {
+
+    },
+    "Enter a valid Mealie server URL." : {
+
+    },
+    "https://mealie.example.com" : {
+
+    },
+    "Include the scheme and host, for example https://mealie.example.com." : {
+
+    },
+    "Katsu" : {
+
+    },
+    "Loading account…" : {
+
+    },
+    "Mealie server URL" : {
+
+    },
+    "Name" : {
+
+    },
+    "Not loaded yet" : {
+
+    },
+    "Password" : {
+
+    },
+    "Password is required." : {
+
+    },
+    "Recipes, meal plans, and shopping lists are coming soon." : {
+
+    },
+    "Server" : {
+
+    },
+    "Server URL" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Sign in" : {
+
+    },
+    "Sign In" : {
+
+    },
+    "Sign in again with your Mealie credentials." : {
+
+    },
+    "Sign Out" : {
+
+    },
+    "Sign out and remove this server from this device?" : {
+
+    },
+    "Signed in as" : {
+
+    },
+    "Signing in…" : {
+
+    },
+    "The Mealie server appears to be offline or unreachable." : {
+
+    },
+    "The server is receiving too many requests. Try again in a moment." : {
+
+    },
+    "The server returned an unexpected response." : {
+
+    },
+    "The server returned HTTP %lld." : {
+
+    },
+    "The server's secure connection could not be trusted." : {
+
+    },
+    "URL" : {
+
+    },
+    "Username" : {
+
+    },
+    "Username or email" : {
+
+    },
+    "Version" : {
+
+    },
+    "Welcome to Katsu" : {
+
+    },
+    "Your account doesn't have permission for this action." : {
+
+    },
+    "Your session has expired. Sign in again to continue." : {
+
+    }
   },
   "version" : "1.0"
 }

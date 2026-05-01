@@ -162,4 +162,6 @@ grow without mixing concerns:
 - `src/Katsu/Features`: user-facing SwiftUI feature modules. v0 ships
   `Onboarding`, `Home`, and `Settings`.
 - `src/Katsu/Resources`: assets, Info.plist, `Localizable.xcstrings`, and
-  bundled JSON fixtures used by the mock client.
+  bundled JSON fixtures used by the mock client. The app icon is generated
+  via Icon Kitchen — see [`docs/ICON.md`](ICON.md) for the source URL and
+  replacement workflow.

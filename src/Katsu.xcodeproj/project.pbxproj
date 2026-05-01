@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -30,9 +30,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CC00000001 /* Katsu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Katsu.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CC00000002 /* Katsu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Katsu.entitlements; sourceTree = "<group>"; };
-		CC00000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB00010001 /* KatsuApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KatsuApp.swift; sourceTree = "<group>"; };
 		BB00010002 /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
 		BB00010003 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
@@ -53,6 +50,9 @@
 		BB00010050 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BB00010051 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		BB00010052 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
+		CC00000001 /* Katsu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Katsu.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC00000002 /* Katsu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Katsu.entitlements; sourceTree = "<group>"; };
+		CC00000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,14 +72,6 @@
 				EE00000002 /* Katsu */,
 				EE00000099 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		EE00000099 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CC00000001 /* Katsu.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		EE00000002 /* Katsu */ = {
@@ -189,6 +181,14 @@
 				BB00010052 /* CHANGELOG.md */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		EE00000099 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CC00000001 /* Katsu.app */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -356,6 +356,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = NV688MDJ78;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Katsu/Resources/Info.plist;
@@ -385,6 +386,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = NV688MDJ78;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Katsu/Resources/Info.plist;

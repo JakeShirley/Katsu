@@ -17,8 +17,9 @@ later work; do not block v0 on it.
   credential store, preference store, profile store).
 - **FND-004** Persist active server profile and preferences in UserDefaults.
 - **FND-005** Design system (`DesignSystem.swift`) with Katsu palette tokens.
-- **FND-006** App icon and accent color (placeholder ships in v0; final art is a
-  follow-up).
+- **FND-006** App icon and accent color. Icon is generated from
+  [Icon Kitchen](https://icon.kitchen/i/H4sIAAAAAAAAA0WPzQrCMBCE32W9elBLS-nVgy_gTUQSdxuCMVvSxB9K393diphDwsxOPmYneJhQaIRugt7tOXCCDlb9cmAN9u81pkJqxZNc8INJWT-NJA8g9aaELEN_5ShGNjfiki_oo48OZiUd3wPJyCWDnqKGrTv8hKIyD0uRzVKBcFdXEtqqoraxFSrHRBcEU23rL5ReuSQxpln0nbEE3eYkOUzsUSvxKPeTLJznDyfWIxjwAAAA);
+  see `docs/ICON.md` for the replacement workflow.
 - **FND-007** Accessibility baseline: Dynamic Type, VoiceOver labels, contrast,
   reduced motion, 44pt hit targets. See `AGENTS.md` for the rules.
 - **FND-008** Localization for `en`, `es`, `de`, `ja` via
