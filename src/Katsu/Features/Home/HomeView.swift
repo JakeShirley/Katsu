@@ -2,18 +2,26 @@ import SwiftUI
 
 /// Home screen for the active Mealie server.
 struct HomeView: View {
+    var body: some View {
+        TabView {
+            HomeDashboardView()
+                .tabItem {
+                    Label("Home", systemImage: "house")
+                }
+
+            RecipesView()
+                .tabItem {
+                    Label("Recipes", systemImage: "book.closed")
+                }
+        }
+    }
+}
+
+private struct HomeDashboardView: View {
     @EnvironmentObject private var env: AppEnvironment
     @State private var showSettings = false
     @State private var loadError: String?
     @State private var isLoadingUser = false
-    @State private var recipes: [MealieRecipeSummary] = []
-    @State private var recipePage = 1
-    @State private var recipeTotalPages: Int?
-    @State private var recipeLoadError: String?
-    @State private var isLoadingRecipes = false
-    @State private var isLoadingMoreRecipes = false
-
-    private let recipesPerPage = 5
 
     var body: some View {
         NavigationStack {
@@ -52,8 +60,81 @@ struct HomeView: View {
                         Text("Not loaded yet").foregroundStyle(.secondary)
                     }
                 }
+            }
+            .navigationTitle("Katsu")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Label("Settings", systemImage: "gearshape")
+                    }
+                    .accessibilityLabel("Settings")
+                }
+            }
+            .sheet(isPresented: $showSettings) {
+                NavigationStack {
+                    SettingsView()
+                }
+            }
+            .task(id: env.activeProfile?.id) {
+                await refreshUserIfNeeded()
+            }
+            .refreshable {
+                await refreshUser(force: true)
+            }
+            .onAppear {
+                if env.configuration.openSettingsOnLaunch {
+                    showSettings = true
+                }
+            }
+        }
+    }
 
-                Section("Recipes") {
+    private func refreshUserIfNeeded() async {
+        if env.currentUser == nil {
+            await refreshUser(force: true)
+        }
+    }
+
+    private func refreshUser(force: Bool) async {
+        guard let profile = env.activeProfile else { return }
+        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
+            loadError = AppError.unauthorized.errorDescription
+            return
+        }
+        isLoadingUser = true
+        defer { isLoadingUser = false }
+        do {
+            let user = try await env.apiClient.fetchCurrentUser(
+                serverURL: profile.serverURL,
+                token: token
+            )
+            env.currentUser = user
+            loadError = nil
+        } catch let error as AppError {
+            loadError = error.errorDescription
+        } catch {
+            loadError = error.localizedDescription
+        }
+    }
+}
+
+private struct RecipesView: View {
+    @EnvironmentObject private var env: AppEnvironment
+    @State private var recipes: [MealieRecipeSummary] = []
+    @State private var recipePage = 1
+    @State private var recipeTotalPages: Int?
+    @State private var recipeLoadError: String?
+    @State private var isLoadingRecipes = false
+    @State private var isLoadingMoreRecipes = false
+
+    private let recipesPerPage = 5
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
                     if isLoadingRecipes && recipes.isEmpty {
                         HStack(spacing: DesignSystem.Spacing.sm) {
                             ProgressView()
@@ -103,68 +184,14 @@ struct HomeView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .navigationTitle("Katsu")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showSettings = true
-                    } label: {
-                        Label("Settings", systemImage: "gearshape")
-                    }
-                    .accessibilityLabel("Settings")
-                }
-            }
-            .sheet(isPresented: $showSettings) {
-                NavigationStack {
-                    SettingsView()
-                }
-            }
+            .navigationTitle("Recipes")
             .task(id: env.activeProfile?.id) {
-                await refreshUserIfNeeded()
                 await refreshRecipesIfNeeded()
             }
             .refreshable {
-                await refreshAll()
-            }
-            .onAppear {
-                if env.configuration.openSettingsOnLaunch {
-                    showSettings = true
-                }
+                await refreshRecipes()
             }
         }
-    }
-
-    private func refreshUserIfNeeded() async {
-        if env.currentUser == nil {
-            await refreshUser(force: true)
-        }
-    }
-
-    private func refreshUser(force: Bool) async {
-        guard let profile = env.activeProfile else { return }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            loadError = AppError.unauthorized.errorDescription
-            return
-        }
-        isLoadingUser = true
-        defer { isLoadingUser = false }
-        do {
-            let user = try await env.apiClient.fetchCurrentUser(
-                serverURL: profile.serverURL,
-                token: token
-            )
-            env.currentUser = user
-            loadError = nil
-        } catch let error as AppError {
-            loadError = error.errorDescription
-        } catch {
-            loadError = error.localizedDescription
-        }
-    }
-
-    private func refreshAll() async {
-        await refreshUser(force: true)
-        await refreshRecipes()
     }
 
     private func refreshRecipesIfNeeded() async {
