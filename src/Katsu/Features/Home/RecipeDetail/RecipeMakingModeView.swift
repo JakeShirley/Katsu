@@ -1,3 +1,4 @@
+import AudioToolbox
 import SwiftUI
 
 struct RecipeMakingModeView: View {
@@ -5,6 +6,9 @@ struct RecipeMakingModeView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var selectedPage = 0
+    @State private var timerMinutes = 5
+    @State private var timerRemainingSeconds: Int?
+    @State private var didPlayTimerCompletionAlert = false
 
     private var pages: [RecipeMakingPage] {
         var pages = [RecipeMakingPage.ingredients(detail.recipeIngredient)]
@@ -21,6 +25,12 @@ struct RecipeMakingModeView: View {
 
             VStack(spacing: DesignSystem.Spacing.lg) {
                 header
+                RecipeMakingTimerPanel(
+                    timerMinutes: $timerMinutes,
+                    remainingSeconds: $timerRemainingSeconds,
+                    onStart: { didPlayTimerCompletionAlert = false },
+                    onCancel: { didPlayTimerCompletionAlert = false }
+                )
                 progressStrip
 
                 TabView(selection: $selectedPage) {
@@ -40,6 +50,9 @@ struct RecipeMakingModeView: View {
         }
         .accessibilityAction(.escape) {
             dismiss()
+        }
+        .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
+            tickTimer()
         }
     }
 
@@ -127,6 +140,139 @@ struct RecipeMakingModeView: View {
             }
         }
     }
+
+    private func tickTimer() {
+        guard let remainingSeconds = timerRemainingSeconds else { return }
+        if remainingSeconds > 1 {
+            timerRemainingSeconds = remainingSeconds - 1
+        } else if remainingSeconds == 1 {
+            timerRemainingSeconds = 0
+            playTimerCompletionAlertIfNeeded()
+        } else if !didPlayTimerCompletionAlert {
+            playTimerCompletionAlertIfNeeded()
+        }
+    }
+
+    private func playTimerCompletionAlertIfNeeded() {
+        guard !didPlayTimerCompletionAlert else { return }
+        didPlayTimerCompletionAlert = true
+        playTimerCompletionAlert()
+    }
+
+    private func playTimerCompletionAlert() {
+        AudioServicesPlaySystemSound(1005)
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+    }
+}
+
+private struct RecipeMakingTimerPanel: View {
+    @Binding var timerMinutes: Int
+    @Binding var remainingSeconds: Int?
+    let onStart: () -> Void
+    let onCancel: () -> Void
+
+    private var isTimerRunning: Bool {
+        remainingSeconds.map { $0 > 0 } ?? false
+    }
+
+    private var formattedRemainingTime: String {
+        let remainingSeconds = remainingSeconds ?? timerMinutes * 60
+        return Self.durationFormatter.string(from: TimeInterval(remainingSeconds)) ?? "0:00"
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
+            HStack(alignment: .firstTextBaseline) {
+                Label("Timer", systemImage: "timer")
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+
+                Spacer(minLength: DesignSystem.Spacing.md)
+
+                Text(formattedRemainingTime)
+                    .font(.title.monospacedDigit())
+                    .fontWeight(.bold)
+                    .foregroundStyle(isTimerRunning ? DesignSystem.Colors.accentDeep : .secondary)
+                    .accessibilityLabel(timerStatusAccessibilityLabel)
+            }
+
+            Stepper(value: $timerMinutes, in: 1...240) {
+                Text(timerDurationText)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .disabled(isTimerRunning)
+
+            HStack(spacing: DesignSystem.Spacing.md) {
+                Button {
+                    startTimer()
+                } label: {
+                    Label(
+                        remainingSeconds == 0 ? "Restart" : "Start",
+                        systemImage: remainingSeconds == 0 ? "arrow.clockwise" : "play.fill"
+                    )
+                        .frame(maxWidth: .infinity, minHeight: DesignSystem.HitTarget.minimum)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(isTimerRunning)
+                .accessibilityLabel(remainingSeconds == 0 ? "Restart timer" : "Start timer")
+
+                Button {
+                    cancelTimer()
+                } label: {
+                    Label("Cancel", systemImage: "xmark")
+                        .frame(maxWidth: .infinity, minHeight: DesignSystem.HitTarget.minimum)
+                }
+                .buttonStyle(.bordered)
+                .disabled(remainingSeconds == nil)
+                .accessibilityLabel("Cancel timer")
+            }
+        }
+        .padding(DesignSystem.Spacing.lg)
+        .background(DesignSystem.Colors.surface, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
+        .overlay {
+            RoundedRectangle(cornerRadius: DesignSystem.Radius.lg)
+                .stroke(DesignSystem.Colors.separator.opacity(0.55), lineWidth: 1)
+        }
+        .padding(.horizontal, DesignSystem.Spacing.lg)
+        .accessibilityElement(children: .contain)
+    }
+
+    private var timerStatusAccessibilityLabel: String {
+        if remainingSeconds == 0 {
+            String(localized: "Timer finished")
+        } else if isTimerRunning {
+            String(localized: "Timer running, \(formattedRemainingTime) remaining")
+        } else {
+            String(localized: "Timer set for \(timerDurationText)")
+        }
+    }
+
+    private var timerDurationText: String {
+        if timerMinutes == 1 {
+            String(localized: "1 minute")
+        } else {
+            String(localized: "\(timerMinutes) minutes")
+        }
+    }
+
+    private func startTimer() {
+        onStart()
+        remainingSeconds = timerMinutes * 60
+    }
+
+    private func cancelTimer() {
+        onCancel()
+        remainingSeconds = nil
+    }
+
+    private static let durationFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute, .second]
+        formatter.unitsStyle = .positional
+        formatter.zeroFormattingBehavior = [.pad]
+        return formatter
+    }()
 }
 
 private enum RecipeMakingPage {
