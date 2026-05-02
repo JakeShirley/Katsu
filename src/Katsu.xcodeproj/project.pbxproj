@@ -25,6 +25,26 @@
 		AA00010041 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010041 /* HomeView.swift */; };
 		AA00010044 /* MealPlansView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010044 /* MealPlansView.swift */; };
 		AA00010045 /* ShoppingListsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010045 /* ShoppingListsView.swift */; };
+		AA00010100 /* RecipesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010100 /* RecipesView.swift */; };
+		AA00010101 /* RecipeSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010101 /* RecipeSearchView.swift */; };
+		AA00010102 /* RecipeResultsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010102 /* RecipeResultsList.swift */; };
+		AA00010103 /* RecipeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010103 /* RecipeRow.swift */; };
+		AA00010104 /* ImportRecipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010104 /* ImportRecipeView.swift */; };
+		AA00010110 /* RecipeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010110 /* RecipeDetailView.swift */; };
+		AA00010111 /* RecipeHeroSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010111 /* RecipeHeroSection.swift */; };
+		AA00010112 /* RecipeImageViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010112 /* RecipeImageViewer.swift */; };
+		AA00010113 /* RecipeMakingModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010113 /* RecipeMakingModeView.swift */; };
+		AA00010114 /* RecipeIngredientViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010114 /* RecipeIngredientViews.swift */; };
+		AA00010115 /* RecipeMetadataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010115 /* RecipeMetadataView.swift */; };
+		AA00010116 /* RecipeRatingSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010116 /* RecipeRatingSection.swift */; };
+		AA00010120 /* MealPlanRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010120 /* MealPlanRows.swift */; };
+		AA00010121 /* MealPlanEntryEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010121 /* MealPlanEntryEditorView.swift */; };
+		AA00010122 /* MealPlanModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010122 /* MealPlanModels.swift */; };
+		AA00010130 /* ShoppingListRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010130 /* ShoppingListRows.swift */; };
+		AA00010131 /* ShoppingItemAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010131 /* ShoppingItemAddView.swift */; };
+		AA00010132 /* ShoppingListModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010132 /* ShoppingListModels.swift */; };
+		AA00010133 /* ShoppingListDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010133 /* ShoppingListDetailView.swift */; };
+		AA00010140 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010140 /* FlowLayout.swift */; };
 		AA00010042 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010042 /* SettingsView.swift */; };
 		AA00010043 /* ChangelogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010043 /* ChangelogView.swift */; };
 		AA00010050 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB00010050 /* Assets.xcassets */; };
@@ -51,6 +71,26 @@
 		BB00010041 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		BB00010044 /* MealPlansView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlansView.swift; sourceTree = "<group>"; };
 		BB00010045 /* ShoppingListsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListsView.swift; sourceTree = "<group>"; };
+		BB00010100 /* RecipesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesView.swift; sourceTree = "<group>"; };
+		BB00010101 /* RecipeSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeSearchView.swift; sourceTree = "<group>"; };
+		BB00010102 /* RecipeResultsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeResultsList.swift; sourceTree = "<group>"; };
+		BB00010103 /* RecipeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeRow.swift; sourceTree = "<group>"; };
+		BB00010104 /* ImportRecipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportRecipeView.swift; sourceTree = "<group>"; };
+		BB00010110 /* RecipeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeDetailView.swift; sourceTree = "<group>"; };
+		BB00010111 /* RecipeHeroSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeHeroSection.swift; sourceTree = "<group>"; };
+		BB00010112 /* RecipeImageViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeImageViewer.swift; sourceTree = "<group>"; };
+		BB00010113 /* RecipeMakingModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeMakingModeView.swift; sourceTree = "<group>"; };
+		BB00010114 /* RecipeIngredientViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeIngredientViews.swift; sourceTree = "<group>"; };
+		BB00010115 /* RecipeMetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeMetadataView.swift; sourceTree = "<group>"; };
+		BB00010116 /* RecipeRatingSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeRatingSection.swift; sourceTree = "<group>"; };
+		BB00010120 /* MealPlanRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanRows.swift; sourceTree = "<group>"; };
+		BB00010121 /* MealPlanEntryEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanEntryEditorView.swift; sourceTree = "<group>"; };
+		BB00010122 /* MealPlanModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanModels.swift; sourceTree = "<group>"; };
+		BB00010130 /* ShoppingListRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListRows.swift; sourceTree = "<group>"; };
+		BB00010131 /* ShoppingItemAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingItemAddView.swift; sourceTree = "<group>"; };
+		BB00010132 /* ShoppingListModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListModels.swift; sourceTree = "<group>"; };
+		BB00010133 /* ShoppingListDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListDetailView.swift; sourceTree = "<group>"; };
+		BB00010140 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
 		BB00010042 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BB00010043 /* ChangelogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangelogView.swift; sourceTree = "<group>"; };
 		BB00010050 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -143,6 +183,7 @@
 				EE00000052 /* Home */,
 				EE00000053 /* Settings */,
 				EE00000054 /* Changelog */,
+				EE00000055 /* Shared */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -159,10 +200,61 @@
 			isa = PBXGroup;
 			children = (
 				BB00010041 /* HomeView.swift */,
+				EE00000100 /* Recipes */,
+				EE00000110 /* RecipeDetail */,
 				BB00010044 /* MealPlansView.swift */,
+				EE00000120 /* MealPlans */,
 				BB00010045 /* ShoppingListsView.swift */,
+				EE00000130 /* ShoppingLists */,
 			);
 			path = Home;
+			sourceTree = "<group>";
+		};
+		EE00000100 /* Recipes */ = {
+			isa = PBXGroup;
+			children = (
+				BB00010100 /* RecipesView.swift */,
+				BB00010101 /* RecipeSearchView.swift */,
+				BB00010102 /* RecipeResultsList.swift */,
+				BB00010103 /* RecipeRow.swift */,
+				BB00010104 /* ImportRecipeView.swift */,
+			);
+			path = Recipes;
+			sourceTree = "<group>";
+		};
+		EE00000110 /* RecipeDetail */ = {
+			isa = PBXGroup;
+			children = (
+				BB00010110 /* RecipeDetailView.swift */,
+				BB00010111 /* RecipeHeroSection.swift */,
+				BB00010112 /* RecipeImageViewer.swift */,
+				BB00010113 /* RecipeMakingModeView.swift */,
+				BB00010114 /* RecipeIngredientViews.swift */,
+				BB00010115 /* RecipeMetadataView.swift */,
+				BB00010116 /* RecipeRatingSection.swift */,
+			);
+			path = RecipeDetail;
+			sourceTree = "<group>";
+		};
+		EE00000120 /* MealPlans */ = {
+			isa = PBXGroup;
+			children = (
+				BB00010120 /* MealPlanRows.swift */,
+				BB00010121 /* MealPlanEntryEditorView.swift */,
+				BB00010122 /* MealPlanModels.swift */,
+			);
+			path = MealPlans;
+			sourceTree = "<group>";
+		};
+		EE00000130 /* ShoppingLists */ = {
+			isa = PBXGroup;
+			children = (
+				BB00010133 /* ShoppingListDetailView.swift */,
+				BB00010130 /* ShoppingListRows.swift */,
+				BB00010131 /* ShoppingItemAddView.swift */,
+				BB00010132 /* ShoppingListModels.swift */,
+			);
+			path = ShoppingLists;
 			sourceTree = "<group>";
 		};
 		EE00000053 /* Settings */ = {
@@ -179,6 +271,14 @@
 				BB00010043 /* ChangelogView.swift */,
 			);
 			path = Changelog;
+			sourceTree = "<group>";
+		};
+		EE00000055 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				BB00010140 /* FlowLayout.swift */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		EE00000060 /* Resources */ = {
@@ -290,8 +390,28 @@
 				AA00010033 /* RecipeOfflineCache.swift in Sources */,
 				AA00010040 /* OnboardingFlowView.swift in Sources */,
 				AA00010041 /* HomeView.swift in Sources */,
+				AA00010100 /* RecipesView.swift in Sources */,
+				AA00010101 /* RecipeSearchView.swift in Sources */,
+				AA00010102 /* RecipeResultsList.swift in Sources */,
+				AA00010103 /* RecipeRow.swift in Sources */,
+				AA00010104 /* ImportRecipeView.swift in Sources */,
+				AA00010110 /* RecipeDetailView.swift in Sources */,
+				AA00010111 /* RecipeHeroSection.swift in Sources */,
+				AA00010112 /* RecipeImageViewer.swift in Sources */,
+				AA00010113 /* RecipeMakingModeView.swift in Sources */,
+				AA00010114 /* RecipeIngredientViews.swift in Sources */,
+				AA00010115 /* RecipeMetadataView.swift in Sources */,
+				AA00010116 /* RecipeRatingSection.swift in Sources */,
 				AA00010044 /* MealPlansView.swift in Sources */,
+				AA00010120 /* MealPlanRows.swift in Sources */,
+				AA00010121 /* MealPlanEntryEditorView.swift in Sources */,
+				AA00010122 /* MealPlanModels.swift in Sources */,
 				AA00010045 /* ShoppingListsView.swift in Sources */,
+				AA00010130 /* ShoppingListRows.swift in Sources */,
+				AA00010131 /* ShoppingItemAddView.swift in Sources */,
+				AA00010132 /* ShoppingListModels.swift in Sources */,
+				AA00010133 /* ShoppingListDetailView.swift in Sources */,
+				AA00010140 /* FlowLayout.swift in Sources */,
 				AA00010042 /* SettingsView.swift in Sources */,
 				AA00010043 /* ChangelogView.swift in Sources */,
 			);
