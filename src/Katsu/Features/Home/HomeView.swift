@@ -3,34 +3,60 @@ import SwiftUI
 /// Home screen for the active Mealie server.
 struct HomeView: View {
     @EnvironmentObject private var env: AppEnvironment
+    @State private var selectedTab: HomeTab = .recipes
 
     var body: some View {
         if env.activeProfile == nil && !env.hasServerProfiles {
             AddServerHomeView()
         } else {
-            TabView {
+            TabView(selection: $selectedTab) {
                 RecipesView()
                     .tabItem {
                         Label("Recipes", systemImage: "book.closed")
                     }
+                    .tag(HomeTab.recipes)
 
                 RecipeSearchView()
                     .tabItem {
                         Label("Search", systemImage: "magnifyingglass")
                     }
+                    .tag(HomeTab.search)
 
                 MealPlansView()
                     .tabItem {
                         Label("Meal Plans", systemImage: "calendar")
                     }
+                    .tag(HomeTab.mealPlans)
 
                 ShoppingListsView()
                     .tabItem {
                         Label("Shopping", systemImage: "cart")
                     }
+                    .tag(HomeTab.shopping)
+
+                NavigationStack {
+                    SettingsView()
+                }
+                .tabItem {
+                    Label("Settings", systemImage: "gearshape")
+                }
+                .tag(HomeTab.settings)
+            }
+            .onAppear {
+                if env.configuration.openSettingsOnLaunch {
+                    selectedTab = .settings
+                }
             }
         }
     }
+}
+
+private enum HomeTab: Hashable {
+    case recipes
+    case search
+    case mealPlans
+    case shopping
+    case settings
 }
 
 private struct AddServerHomeView: View {

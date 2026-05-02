@@ -1,9 +1,7 @@
 import SwiftUI
 
 struct RecipesView: View {
-    @EnvironmentObject private var env: AppEnvironment
     @StateObject private var recipeResultsState = RecipeResultsState()
-    @State private var showSettings = false
     @State private var showImportRecipe = false
     @State private var refreshTrigger = 0
 
@@ -39,19 +37,6 @@ struct RecipesView: View {
                     .accessibilityLabel("Import Recipe")
                 }
 
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showSettings = true
-                    } label: {
-                        Label("Settings", systemImage: "gearshape")
-                    }
-                    .accessibilityLabel("Settings")
-                }
-            }
-            .sheet(isPresented: $showSettings) {
-                NavigationStack {
-                    SettingsView()
-                }
             }
             .sheet(isPresented: $showImportRecipe) {
                 NavigationStack {
@@ -60,11 +45,6 @@ struct RecipesView: View {
                             refreshTrigger += 1
                         }
                     }
-                }
-            }
-            .onAppear {
-                if env.configuration.openSettingsOnLaunch {
-                    showSettings = true
                 }
             }
         }
