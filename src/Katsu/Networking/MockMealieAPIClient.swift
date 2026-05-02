@@ -61,56 +61,64 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
                     slug: "miso-ginger-salmon",
                     name: "Miso Ginger Salmon",
                     description: "A quick weeknight dinner with rice and greens.",
-                    recipeYield: "4 servings"
+                    recipeYield: "4 servings",
+                    image: nil
                 ),
                 MealieRecipeSummary(
                     recipeID: "00000000-0000-0000-0000-000000000102",
                     slug: "crispy-katsu-curry",
                     name: "Crispy Katsu Curry",
                     description: "Golden cutlets with a rich Japanese curry sauce.",
-                    recipeYield: "3 servings"
+                    recipeYield: "3 servings",
+                    image: nil
                 ),
                 MealieRecipeSummary(
                     recipeID: "00000000-0000-0000-0000-000000000103",
                     slug: "sesame-cucumber-salad",
                     name: "Sesame Cucumber Salad",
                     description: "Cool, crunchy cucumbers dressed with sesame and rice vinegar.",
-                    recipeYield: "2 servings"
+                    recipeYield: "2 servings",
+                    image: nil
                 ),
                 MealieRecipeSummary(
                     recipeID: "00000000-0000-0000-0000-000000000104",
                     slug: "garlic-noodles",
                     name: "Garlic Noodles",
                     description: "Buttery noodles with garlic, soy, and scallions.",
-                    recipeYield: "4 servings"
+                    recipeYield: "4 servings",
+                    image: nil
                 ),
                 MealieRecipeSummary(
                     recipeID: "00000000-0000-0000-0000-000000000105",
                     slug: "matcha-pancakes",
                     name: "Matcha Pancakes",
                     description: "Fluffy breakfast pancakes with a gentle green tea flavor.",
-                    recipeYield: "8 pancakes"
+                    recipeYield: "8 pancakes",
+                    image: nil
                 ),
                 MealieRecipeSummary(
                     recipeID: "00000000-0000-0000-0000-000000000106",
                     slug: "tahini-roasted-carrots",
                     name: "Tahini Roasted Carrots",
                     description: "Sweet roasted carrots finished with lemony tahini.",
-                    recipeYield: "4 servings"
+                    recipeYield: "4 servings",
+                    image: nil
                 ),
                 MealieRecipeSummary(
                     recipeID: "00000000-0000-0000-0000-000000000107",
                     slug: "chicken-rice-soup",
                     name: "Chicken Rice Soup",
                     description: "Comforting soup for busy evenings or chilly weekends.",
-                    recipeYield: "6 bowls"
+                    recipeYield: "6 bowls",
+                    image: nil
                 ),
                 MealieRecipeSummary(
                     recipeID: "00000000-0000-0000-0000-000000000108",
                     slug: "berry-yogurt-parfaits",
                     name: "Berry Yogurt Parfaits",
                     description: "Layered yogurt, berries, and granola for quick breakfasts.",
-                    recipeYield: "4 jars"
+                    recipeYield: "4 jars",
+                    image: nil
                 )
             ],
             mealPlanEntries: Self.sampleMealPlanEntries(),
@@ -327,7 +335,8 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
             slug: slug,
             name: title(from: slug),
             description: "Imported from \(source).",
-            recipeYield: "Imported recipe"
+            recipeYield: "Imported recipe",
+            image: nil
         )
         recipes.insert(recipe, at: 0)
         return slug
@@ -601,7 +610,8 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
                     slug: recipeSlug ?? id,
                     name: recipeName,
                     description: nil,
-                    recipeYield: nil
+                    recipeYield: nil,
+                    image: nil
                 )
             }
         )

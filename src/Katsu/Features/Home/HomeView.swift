@@ -92,7 +92,8 @@ private struct RecipesView: View {
                 idleStateTitle: "No recipes yet",
                 idleStateDescription: "Imported and saved recipes will appear here.",
                 idleStateImage: "book.closed",
-                footer: "Meal plans and shopping lists are coming soon."
+                footer: "Meal plans and shopping lists are coming soon.",
+                presentation: .cardFeed
             ) {
                 EmptyView()
             }
@@ -282,6 +283,7 @@ private struct RecipeResultsList<Header: View>: View {
     let idleStateDescription: LocalizedStringKey
     let idleStateImage: String
     let footer: LocalizedStringKey?
+    let presentation: RecipeResultsPresentation
     let header: Header
 
     @State private var recipes: [MealieRecipeSummary] = []
@@ -310,6 +312,7 @@ private struct RecipeResultsList<Header: View>: View {
         idleStateDescription: LocalizedStringKey,
         idleStateImage: String,
         footer: LocalizedStringKey?,
+        presentation: RecipeResultsPresentation = .groupedList,
         @ViewBuilder header: () -> Header
     ) {
         self.filters = filters
@@ -324,10 +327,31 @@ private struct RecipeResultsList<Header: View>: View {
         self.idleStateDescription = idleStateDescription
         self.idleStateImage = idleStateImage
         self.footer = footer
+        self.presentation = presentation
         self.header = header()
     }
 
     var body: some View {
+        content
+        .task(id: taskID) {
+            await refreshRecipesForCurrentFilters()
+        }
+        .refreshable {
+            await refreshRecipesForCurrentFilters(force: true)
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch presentation {
+        case .groupedList:
+            groupedListContent
+        case .cardFeed:
+            cardFeedContent
+        }
+    }
+
+    private var groupedListContent: some View {
         List {
             header
 
@@ -343,12 +367,27 @@ private struct RecipeResultsList<Header: View>: View {
         }
         .listStyle(.insetGrouped)
         .contentMargins(.top, DesignSystem.Spacing.sm, for: .scrollContent)
-        .task(id: taskID) {
-            await refreshRecipesForCurrentFilters()
+    }
+
+    private var cardFeedContent: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
+                header
+
+                if let resultsTitle {
+                    Text(resultsTitle)
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, DesignSystem.Spacing.lg)
+                        .padding(.top, DesignSystem.Spacing.xs)
+                }
+
+                feedResultsContent
+            }
+            .padding(.top, DesignSystem.Spacing.sm)
+            .padding(.bottom, DesignSystem.Spacing.xxl)
         }
-        .refreshable {
-            await refreshRecipesForCurrentFilters(force: true)
-        }
+        .background(DesignSystem.Colors.background)
     }
 
     @ViewBuilder
@@ -387,14 +426,19 @@ private struct RecipeResultsList<Header: View>: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .accessibilityLabel("Showing offline recipes")
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
             }
 
             ForEach(recipes) { recipe in
                 NavigationLink {
                     RecipeDetailView(recipe: recipe)
                 } label: {
-                    RecipeRow(recipe: recipe)
+                    RecipeRow(recipe: recipe, serverURL: env.activeProfile?.serverURL)
                 }
+                .listRowInsets(EdgeInsets(top: DesignSystem.Spacing.xs, leading: DesignSystem.Spacing.lg, bottom: DesignSystem.Spacing.xs, trailing: DesignSystem.Spacing.lg))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
                 .onAppear {
                     if recipe.id == recipes.last?.id {
                         Task { await loadMoreRecipesIfNeeded() }
@@ -404,11 +448,15 @@ private struct RecipeResultsList<Header: View>: View {
 
             if isLoadingMoreRecipes {
                 LoadingRecipeRow(title: "Loading more recipes…")
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
             } else if recipeLoadError != nil {
                 Button("Try Again") {
                     Task { await loadMoreRecipesIfNeeded(force: true) }
                 }
                 .frame(minHeight: DesignSystem.HitTarget.minimum)
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
             }
         }
 
@@ -416,6 +464,76 @@ private struct RecipeResultsList<Header: View>: View {
             Text(footer)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+        }
+    }
+
+    @ViewBuilder
+    private var feedResultsContent: some View {
+        if filters.isEmpty && !loadsWhenFiltersEmpty {
+            RecipeUnavailableCard(title: idleStateTitle, description: idleStateDescription, systemImage: idleStateImage)
+        } else if isLoadingRecipes && recipes.isEmpty {
+            RecipeStatusCard {
+                LoadingRecipeRow(title: "Loading recipes…")
+            }
+        } else if let recipeLoadError, recipes.isEmpty {
+            RecipeStatusCard {
+                RecipeErrorRow(errorMessage: recipeLoadError) {
+                    Task { await refreshRecipes() }
+                }
+            }
+        } else if recipes.isEmpty {
+            RecipeUnavailableCard(title: emptyStateTitle, description: emptyStateDescription, systemImage: emptyStateImage)
+        } else {
+            if showingCachedRecipes {
+                RecipeStatusCard {
+                    Label("Showing offline recipes", systemImage: "wifi.slash")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .accessibilityLabel("Showing offline recipes")
+                }
+            }
+
+            ForEach(recipes) { recipe in
+                NavigationLink {
+                    RecipeDetailView(recipe: recipe)
+                } label: {
+                    RecipeRow(
+                        recipe: recipe,
+                        serverURL: env.activeProfile?.serverURL,
+                        showsDisclosureIndicator: true
+                    )
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, DesignSystem.Spacing.lg)
+                .onAppear {
+                    if recipe.id == recipes.last?.id {
+                        Task { await loadMoreRecipesIfNeeded() }
+                    }
+                }
+            }
+
+            if isLoadingMoreRecipes {
+                RecipeStatusCard {
+                    LoadingRecipeRow(title: "Loading more recipes…")
+                }
+            } else if recipeLoadError != nil {
+                RecipeStatusCard {
+                    Button("Try Again") {
+                        Task { await loadMoreRecipesIfNeeded(force: true) }
+                    }
+                    .frame(minHeight: DesignSystem.HitTarget.minimum)
+                }
+            }
+        }
+
+        if let footer {
+            Text(footer)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, DesignSystem.Spacing.lg)
+                .padding(.top, DesignSystem.Spacing.xs)
         }
     }
 
@@ -514,6 +632,62 @@ private struct RecipeResultsTaskID: Equatable {
     let profileID: UUID?
     let filters: MealieRecipeFilters
     let refreshTrigger: Int
+}
+
+private enum RecipeResultsPresentation {
+    case groupedList
+    case cardFeed
+}
+
+private struct RecipeStatusCard<Content: View>: View {
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        content
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(DesignSystem.Spacing.md)
+            .background(DesignSystem.Colors.surface, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
+            .overlay {
+                RoundedRectangle(cornerRadius: DesignSystem.Radius.lg)
+                    .stroke(DesignSystem.Colors.separator.opacity(0.16))
+            }
+            .padding(.horizontal, DesignSystem.Spacing.lg)
+    }
+}
+
+private struct RecipeUnavailableCard: View {
+    let title: LocalizedStringKey
+    let description: LocalizedStringKey
+    let systemImage: String
+
+    var body: some View {
+        VStack(spacing: DesignSystem.Spacing.sm) {
+            Image(systemName: systemImage)
+                .font(.title2)
+                .foregroundStyle(DesignSystem.Colors.accentDeep)
+                .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                .background(DesignSystem.Colors.accentSoft.opacity(0.75), in: RoundedRectangle(cornerRadius: DesignSystem.Radius.md))
+                .accessibilityHidden(true)
+
+            Text(title)
+                .font(.headline)
+
+            Text(description)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(DesignSystem.Spacing.xl)
+        .background(DesignSystem.Colors.surface, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
+        .overlay {
+            RoundedRectangle(cornerRadius: DesignSystem.Radius.lg)
+                .stroke(DesignSystem.Colors.separator.opacity(0.16))
+        }
+        .padding(.horizontal, DesignSystem.Spacing.lg)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text(title))
+    }
 }
 
 private struct RecipeSearchHeroCard: View {
@@ -647,35 +821,97 @@ private func recipeFilterTokens(from rawValue: String) -> [String] {
 
 private struct RecipeRow: View {
     let recipe: MealieRecipeSummary
+    let serverURL: URL?
+    var showsDisclosureIndicator = false
+
+    private var imageURL: URL? {
+        guard let serverURL else { return nil }
+        return recipe.imageURL(serverURL: serverURL)
+    }
+
+    private var accentSymbol: String {
+        let lowercasedName = recipe.displayName.lowercased()
+        if lowercasedName.contains("salmon") || lowercasedName.contains("soup") {
+            return "flame.fill"
+        }
+        if lowercasedName.contains("salad") || lowercasedName.contains("carrot") {
+            return "leaf.fill"
+        }
+        if lowercasedName.contains("pancake") || lowercasedName.contains("parfait") {
+            return "sun.max.fill"
+        }
+        return "fork.knife"
+    }
+
+    private var categoryHint: LocalizedStringKey {
+        let lowercasedName = recipe.displayName.lowercased()
+        if lowercasedName.contains("salmon") || lowercasedName.contains("curry") || lowercasedName.contains("noodle") || lowercasedName.contains("soup") {
+            return "Dinner"
+        }
+        if lowercasedName.contains("salad") || lowercasedName.contains("carrot") {
+            return "Fresh"
+        }
+        if lowercasedName.contains("pancake") || lowercasedName.contains("parfait") {
+            return "Breakfast"
+        }
+        return "Recipe"
+    }
 
     var body: some View {
-        HStack(alignment: .top, spacing: DesignSystem.Spacing.md) {
-            Image(systemName: "fork.knife")
-                .font(.subheadline)
-                .foregroundStyle(DesignSystem.Colors.accentDeep)
-                .frame(width: 36, height: 36)
-                .background(DesignSystem.Colors.accentSoft.opacity(0.75), in: RoundedRectangle(cornerRadius: DesignSystem.Radius.md))
-                .accessibilityHidden(true)
+        HStack(alignment: .center, spacing: DesignSystem.Spacing.lg) {
+            RecipeRowArtwork(imageURL: imageURL, accentSymbol: accentSymbol)
 
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
-                Text(recipe.displayName)
-                    .font(.headline)
-                    .foregroundStyle(.primary)
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                HStack(alignment: .top, spacing: DesignSystem.Spacing.sm) {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                        Text(recipe.displayName)
+                            .font(.headline)
+                            .foregroundStyle(.primary)
 
-                if let description = recipe.description, !description.isEmpty {
-                    Text(description)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        if let description = recipe.description, !description.isEmpty {
+                            Text(description)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(2)
+                        }
+                    }
+
+                    Spacer(minLength: DesignSystem.Spacing.xs)
                 }
 
-                if let recipeYield = recipe.recipeYield, !recipeYield.isEmpty {
-                    Label(recipeYield, systemImage: "person.2")
+                HStack(spacing: DesignSystem.Spacing.sm) {
+                    Text(categoryHint)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(DesignSystem.Colors.accentDeep)
+                        .lineLimit(1)
+                        .padding(.horizontal, DesignSystem.Spacing.sm)
+                        .padding(.vertical, DesignSystem.Spacing.xs)
+                        .background(DesignSystem.Colors.accentSoft.opacity(0.75), in: Capsule())
+
+                    if let recipeYield = recipe.recipeYield, !recipeYield.isEmpty {
+                        Label(recipeYield, systemImage: "person.2")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
                 }
             }
+
+            if showsDisclosureIndicator {
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+                    .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                    .accessibilityHidden(true)
+            }
         }
-        .padding(.vertical, DesignSystem.Spacing.sm)
+        .padding(DesignSystem.Spacing.md)
+        .background(DesignSystem.Colors.surface, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
+        .overlay {
+            RoundedRectangle(cornerRadius: DesignSystem.Radius.lg)
+                .stroke(DesignSystem.Colors.separator.opacity(0.16))
+        }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
     }
@@ -687,6 +923,68 @@ private struct RecipeRow: View {
                 return value
             }
             .joined(separator: ", ")
+    }
+}
+
+private struct RecipeRowArtwork: View {
+    let imageURL: URL?
+    let accentSymbol: String
+
+    var body: some View {
+        Group {
+            if let imageURL {
+                AsyncImage(url: imageURL) { phase in
+                    switch phase {
+                    case .empty:
+                        fallback
+                            .overlay {
+                                ProgressView()
+                                    .controlSize(.small)
+                                    .tint(DesignSystem.Colors.accentDeep)
+                            }
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    case .failure:
+                        fallback
+                    @unknown default:
+                        fallback
+                    }
+                }
+            } else {
+                fallback
+            }
+        }
+        .frame(width: 76, height: 76)
+        .contentShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
+        .accessibilityHidden(true)
+    }
+
+    private var fallback: some View {
+        ZStack(alignment: .bottomTrailing) {
+            RoundedRectangle(cornerRadius: DesignSystem.Radius.lg)
+                .fill(LinearGradient(
+                    colors: [
+                        DesignSystem.Colors.accentSoft,
+                        DesignSystem.Colors.accent.opacity(0.22)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                ))
+
+            Image(systemName: accentSymbol)
+                .font(.title2)
+                .foregroundStyle(DesignSystem.Colors.accentDeep)
+                .frame(width: 32, height: 32)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            Image(systemName: "sparkle")
+                .font(.caption)
+                .foregroundStyle(DesignSystem.Colors.accentDeep.opacity(0.55))
+                .padding(DesignSystem.Spacing.sm)
+        }
     }
 }
 

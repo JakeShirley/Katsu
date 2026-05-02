@@ -222,6 +222,7 @@ struct MealieRecipeSummary: Codable, Equatable, Identifiable {
     let name: String?
     let description: String?
     let recipeYield: String?
+    let image: MealieRecipeImage?
 
     var id: String { recipeID ?? slug }
     var displayName: String {
@@ -231,12 +232,18 @@ struct MealieRecipeSummary: Codable, Equatable, Identifiable {
         return slug
     }
 
+    func imageURL(serverURL: URL) -> URL? {
+        guard image != nil, let recipeID else { return nil }
+        return MealieRecipeImage.url(serverURL: serverURL, recipeID: recipeID)
+    }
+
     enum CodingKeys: String, CodingKey {
         case recipeID = "id"
         case slug
         case name
         case description
         case recipeYield
+        case image
     }
 }
 
@@ -274,16 +281,14 @@ struct MealieRecipeDetail: Codable, Equatable, Identifiable {
             slug: slug,
             name: name,
             description: description,
-            recipeYield: recipeYield
+            recipeYield: recipeYield,
+            image: image
         )
     }
 
     func imageURL(serverURL: URL) -> URL? {
         guard image != nil, let recipeID else { return nil }
-        return serverURL
-            .appendingPathComponent("api/media/recipes")
-            .appendingPathComponent(recipeID)
-            .appendingPathComponent("images/min-original.webp")
+        return MealieRecipeImage.url(serverURL: serverURL, recipeID: recipeID)
     }
 
     enum CodingKeys: String, CodingKey {
@@ -311,6 +316,13 @@ struct MealieRecipeImage: Codable, Equatable {
     init() {}
     init(from decoder: Decoder) throws {}
     func encode(to encoder: Encoder) throws {}
+
+    static func url(serverURL: URL, recipeID: String) -> URL {
+        serverURL
+            .appendingPathComponent("api/media/recipes")
+            .appendingPathComponent(recipeID)
+            .appendingPathComponent("images/min-original.webp")
+    }
 }
 
 struct MealieRecipeToken: Codable, Equatable, Identifiable {
