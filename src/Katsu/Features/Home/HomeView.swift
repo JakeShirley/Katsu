@@ -74,6 +74,7 @@ private struct AddServerHomeView: View {
 
 private struct RecipesView: View {
     @EnvironmentObject private var env: AppEnvironment
+    @StateObject private var recipeResultsState = RecipeResultsState()
     @State private var showSettings = false
     @State private var showImportRecipe = false
     @State private var refreshTrigger = 0
@@ -81,6 +82,7 @@ private struct RecipesView: View {
     var body: some View {
         NavigationStack {
             RecipeResultsList(
+                state: recipeResultsState,
                 filters: MealieRecipeFilters(),
                 refreshTrigger: refreshTrigger,
                 loadsWhenFiltersEmpty: true,
@@ -142,6 +144,7 @@ private struct RecipesView: View {
 }
 
 private struct RecipeSearchView: View {
+    @StateObject private var recipeResultsState = RecipeResultsState()
     @State private var searchText = ""
     @State private var categoryFilter = ""
     @State private var tagFilter = ""
@@ -165,6 +168,7 @@ private struct RecipeSearchView: View {
     var body: some View {
         NavigationStack {
             RecipeResultsList(
+                state: recipeResultsState,
                 filters: appliedFilters,
                 refreshTrigger: 0,
                 loadsWhenFiltersEmpty: false,
@@ -271,6 +275,7 @@ private struct RecipeSearchView: View {
 
 private struct RecipeResultsList<Header: View>: View {
     @EnvironmentObject private var env: AppEnvironment
+    @ObservedObject var state: RecipeResultsState
     let filters: MealieRecipeFilters
     let refreshTrigger: Int
     let loadsWhenFiltersEmpty: Bool
@@ -286,20 +291,13 @@ private struct RecipeResultsList<Header: View>: View {
     let presentation: RecipeResultsPresentation
     let header: Header
 
-    @State private var recipes: [MealieRecipeSummary] = []
-    @State private var recipePage = 1
-    @State private var recipeTotalPages: Int?
-    @State private var recipeLoadError: String?
-    @State private var isLoadingRecipes = false
-    @State private var isLoadingMoreRecipes = false
-    @State private var showingCachedRecipes = false
-
     private let recipesPerPage = 5
     private var taskID: RecipeResultsTaskID {
         RecipeResultsTaskID(profileID: env.activeProfile?.id, filters: filters, refreshTrigger: refreshTrigger)
     }
 
     init(
+        state: RecipeResultsState,
         filters: MealieRecipeFilters,
         refreshTrigger: Int,
         loadsWhenFiltersEmpty: Bool,
@@ -315,6 +313,7 @@ private struct RecipeResultsList<Header: View>: View {
         presentation: RecipeResultsPresentation = .groupedList,
         @ViewBuilder header: () -> Header
     ) {
+        self.state = state
         self.filters = filters
         self.refreshTrigger = refreshTrigger
         self.loadsWhenFiltersEmpty = loadsWhenFiltersEmpty
@@ -403,13 +402,13 @@ private struct RecipeResultsList<Header: View>: View {
                 Text(idleStateDescription)
             }
             .listRowBackground(Color.clear)
-        } else if isLoadingRecipes && recipes.isEmpty {
+        } else if state.isLoadingRecipes && state.recipes.isEmpty {
             LoadingRecipeRow(title: "Loading recipes…")
-        } else if let recipeLoadError, recipes.isEmpty {
+        } else if let recipeLoadError = state.recipeLoadError, state.recipes.isEmpty {
             RecipeErrorRow(errorMessage: recipeLoadError) {
                 Task { await refreshRecipes() }
             }
-        } else if recipes.isEmpty {
+        } else if state.recipes.isEmpty {
             ContentUnavailableView {
                 Label {
                     Text(emptyStateTitle)
@@ -421,7 +420,7 @@ private struct RecipeResultsList<Header: View>: View {
             }
             .listRowBackground(Color.clear)
         } else {
-            if showingCachedRecipes {
+            if state.showingCachedRecipes {
                 Label("Showing offline recipes", systemImage: "wifi.slash")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -430,7 +429,7 @@ private struct RecipeResultsList<Header: View>: View {
                     .listRowBackground(Color.clear)
             }
 
-            ForEach(recipes) { recipe in
+            ForEach(state.recipes) { recipe in
                 NavigationLink {
                     RecipeDetailView(recipe: recipe)
                 } label: {
@@ -440,17 +439,17 @@ private struct RecipeResultsList<Header: View>: View {
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
                 .onAppear {
-                    if recipe.id == recipes.last?.id {
+                    if recipe.id == state.recipes.last?.id {
                         Task { await loadMoreRecipesIfNeeded() }
                     }
                 }
             }
 
-            if isLoadingMoreRecipes {
+            if state.isLoadingMoreRecipes {
                 LoadingRecipeRow(title: "Loading more recipes…")
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
-            } else if recipeLoadError != nil {
+            } else if state.recipeLoadError != nil {
                 Button("Try Again") {
                     Task { await loadMoreRecipesIfNeeded(force: true) }
                 }
@@ -473,20 +472,20 @@ private struct RecipeResultsList<Header: View>: View {
     private var feedResultsContent: some View {
         if filters.isEmpty && !loadsWhenFiltersEmpty {
             RecipeUnavailableCard(title: idleStateTitle, description: idleStateDescription, systemImage: idleStateImage)
-        } else if isLoadingRecipes && recipes.isEmpty {
+        } else if state.isLoadingRecipes && state.recipes.isEmpty {
             RecipeStatusCard {
                 LoadingRecipeRow(title: "Loading recipes…")
             }
-        } else if let recipeLoadError, recipes.isEmpty {
+        } else if let recipeLoadError = state.recipeLoadError, state.recipes.isEmpty {
             RecipeStatusCard {
                 RecipeErrorRow(errorMessage: recipeLoadError) {
                     Task { await refreshRecipes() }
                 }
             }
-        } else if recipes.isEmpty {
+        } else if state.recipes.isEmpty {
             RecipeUnavailableCard(title: emptyStateTitle, description: emptyStateDescription, systemImage: emptyStateImage)
         } else {
-            if showingCachedRecipes {
+            if state.showingCachedRecipes {
                 RecipeStatusCard {
                     Label("Showing offline recipes", systemImage: "wifi.slash")
                         .font(.subheadline)
@@ -495,7 +494,7 @@ private struct RecipeResultsList<Header: View>: View {
                 }
             }
 
-            ForEach(recipes) { recipe in
+            ForEach(state.recipes) { recipe in
                 NavigationLink {
                     RecipeDetailView(recipe: recipe)
                 } label: {
@@ -508,17 +507,17 @@ private struct RecipeResultsList<Header: View>: View {
                 .buttonStyle(.plain)
                 .padding(.horizontal, DesignSystem.Spacing.lg)
                 .onAppear {
-                    if recipe.id == recipes.last?.id {
+                    if recipe.id == state.recipes.last?.id {
                         Task { await loadMoreRecipesIfNeeded() }
                     }
                 }
             }
 
-            if isLoadingMoreRecipes {
+            if state.isLoadingMoreRecipes {
                 RecipeStatusCard {
                     LoadingRecipeRow(title: "Loading more recipes…")
                 }
-            } else if recipeLoadError != nil {
+            } else if state.recipeLoadError != nil {
                 RecipeStatusCard {
                     Button("Try Again") {
                         Task { await loadMoreRecipesIfNeeded(force: true) }
@@ -539,10 +538,11 @@ private struct RecipeResultsList<Header: View>: View {
 
     private func refreshRecipesForCurrentFilters(force: Bool = false) async {
         guard loadsWhenFiltersEmpty || !filters.isEmpty else {
-            resetResults()
+            state.reset()
             return
         }
-        if force || recipes.isEmpty || !isLoadingRecipes {
+        if force || state.recipes.isEmpty || state.taskID != taskID {
+            state.taskID = taskID
             await refreshRecipes()
         }
     }
@@ -553,33 +553,33 @@ private struct RecipeResultsList<Header: View>: View {
 
     private func loadMoreRecipesIfNeeded(force: Bool = false) async {
         guard force || hasMoreRecipes else { return }
-        await loadRecipes(page: recipePage + 1, replacingExisting: false)
+        await loadRecipes(page: state.recipePage + 1, replacingExisting: false)
     }
 
     private var hasMoreRecipes: Bool {
-        if let recipeTotalPages {
-            return recipePage < recipeTotalPages
+        if let recipeTotalPages = state.recipeTotalPages {
+            return state.recipePage < recipeTotalPages
         }
-        return !recipes.isEmpty
+        return !state.recipes.isEmpty
     }
 
     private func loadRecipes(page: Int, replacingExisting: Bool) async {
         guard let profile = env.activeProfile else { return }
         let filters = filters
         guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            recipeLoadError = AppError.unauthorized.errorDescription
+            state.recipeLoadError = AppError.unauthorized.errorDescription
             return
         }
         if replacingExisting {
-            guard !isLoadingRecipes else { return }
-            isLoadingRecipes = true
+            guard !state.isLoadingRecipes else { return }
+            state.isLoadingRecipes = true
         } else {
-            guard !isLoadingMoreRecipes else { return }
-            isLoadingMoreRecipes = true
+            guard !state.isLoadingMoreRecipes else { return }
+            state.isLoadingMoreRecipes = true
         }
         defer {
-            isLoadingRecipes = false
-            isLoadingMoreRecipes = false
+            state.isLoadingRecipes = false
+            state.isLoadingMoreRecipes = false
         }
 
         do {
@@ -590,41 +590,31 @@ private struct RecipeResultsList<Header: View>: View {
                 perPage: recipesPerPage,
                 filters: filters
             )
-            recipePage = page.page
-            recipeTotalPages = page.totalPages ?? page.total.map { total in
+            state.recipePage = page.page
+            state.recipeTotalPages = page.totalPages ?? page.total.map { total in
                 Int(ceil(Double(total) / Double(page.perPage)))
             }
-            recipes = replacingExisting ? page.items : recipes + page.items
-            showingCachedRecipes = false
-            recipeLoadError = nil
+            state.recipes = replacingExisting ? page.items : state.recipes + page.items
+            state.showingCachedRecipes = false
+            state.recipeLoadError = nil
         } catch let error as AppError {
             if error == .offline, replacingExisting, allowsOfflineCache, filters.isEmpty {
                 let cachedRecipes = env.preferenceStore.cachedRecipeSummaries(profileID: profile.id)
                 if !cachedRecipes.isEmpty {
-                    recipes = cachedRecipes
-                    recipePage = 1
-                    recipeTotalPages = 1
-                    showingCachedRecipes = true
-                    recipeLoadError = nil
+                    state.recipes = cachedRecipes
+                    state.recipePage = 1
+                    state.recipeTotalPages = 1
+                    state.showingCachedRecipes = true
+                    state.recipeLoadError = nil
                 } else {
-                    recipeLoadError = error.errorDescription
+                    state.recipeLoadError = error.errorDescription
                 }
             } else {
-                recipeLoadError = error.errorDescription
+                state.recipeLoadError = error.errorDescription
             }
         } catch {
-            recipeLoadError = error.localizedDescription
+            state.recipeLoadError = error.localizedDescription
         }
-    }
-
-    private func resetResults() {
-        recipes = []
-        recipePage = 1
-        recipeTotalPages = nil
-        recipeLoadError = nil
-        isLoadingRecipes = false
-        isLoadingMoreRecipes = false
-        showingCachedRecipes = false
     }
 }
 
@@ -632,6 +622,29 @@ private struct RecipeResultsTaskID: Equatable {
     let profileID: UUID?
     let filters: MealieRecipeFilters
     let refreshTrigger: Int
+}
+
+@MainActor
+private final class RecipeResultsState: ObservableObject {
+    @Published var recipes: [MealieRecipeSummary] = []
+    @Published var recipePage = 1
+    @Published var recipeTotalPages: Int?
+    @Published var recipeLoadError: String?
+    @Published var isLoadingRecipes = false
+    @Published var isLoadingMoreRecipes = false
+    @Published var showingCachedRecipes = false
+    var taskID: RecipeResultsTaskID?
+
+    func reset() {
+        recipes = []
+        recipePage = 1
+        recipeTotalPages = nil
+        recipeLoadError = nil
+        isLoadingRecipes = false
+        isLoadingMoreRecipes = false
+        showingCachedRecipes = false
+        taskID = nil
+    }
 }
 
 private enum RecipeResultsPresentation {
