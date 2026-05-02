@@ -334,8 +334,18 @@ private struct RecipeResultsList<Header: View>: View {
         content
         .task(id: taskID) {
             await refreshRecipesForCurrentFilters()
+            if filters.isEmpty, loadsWhenFiltersEmpty {
+                await env.syncOfflineRecipesIfNeeded()
+            }
         }
         .refreshable {
+            await refreshRecipesForCurrentFilters(force: true)
+            if filters.isEmpty, loadsWhenFiltersEmpty {
+                await env.syncOfflineRecipes(force: true)
+            }
+        }
+        .task(id: env.networkReachabilityTrigger) {
+            guard state.showingCachedRecipes else { return }
             await refreshRecipesForCurrentFilters(force: true)
         }
     }
@@ -433,7 +443,7 @@ private struct RecipeResultsList<Header: View>: View {
                 NavigationLink {
                     RecipeDetailView(recipe: recipe)
                 } label: {
-                    RecipeRow(recipe: recipe, serverURL: env.activeProfile?.serverURL)
+                    RecipeRow(recipe: recipe, profileID: env.activeProfile?.id, serverURL: env.activeProfile?.serverURL)
                 }
                 .listRowInsets(EdgeInsets(top: DesignSystem.Spacing.xs, leading: DesignSystem.Spacing.lg, bottom: DesignSystem.Spacing.xs, trailing: DesignSystem.Spacing.lg))
                 .listRowBackground(Color.clear)
@@ -500,6 +510,7 @@ private struct RecipeResultsList<Header: View>: View {
                 } label: {
                     RecipeRow(
                         recipe: recipe,
+                        profileID: env.activeProfile?.id,
                         serverURL: env.activeProfile?.serverURL,
                         showsDisclosureIndicator: true
                     )
@@ -597,9 +608,12 @@ private struct RecipeResultsList<Header: View>: View {
             state.recipes = replacingExisting ? page.items : state.recipes + page.items
             state.showingCachedRecipes = false
             state.recipeLoadError = nil
+            if replacingExisting, filters.isEmpty {
+                await env.cacheRecipesOffline(page.items, profile: profile, token: token)
+            }
         } catch let error as AppError {
             if error == .offline, replacingExisting, allowsOfflineCache, filters.isEmpty {
-                let cachedRecipes = env.preferenceStore.cachedRecipeSummaries(profileID: profile.id)
+                let cachedRecipes = env.recipeOfflineCache.cachedRecipeSummaries(profileID: profile.id)
                 if !cachedRecipes.isEmpty {
                     state.recipes = cachedRecipes
                     state.recipePage = 1
@@ -834,6 +848,7 @@ private func recipeFilterTokens(from rawValue: String) -> [String] {
 
 private struct RecipeRow: View {
     let recipe: MealieRecipeSummary
+    let profileID: UUID?
     let serverURL: URL?
     var showsDisclosureIndicator = false
 
@@ -872,7 +887,7 @@ private struct RecipeRow: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: DesignSystem.Spacing.lg) {
-            RecipeRowArtwork(imageURL: imageURL, accentSymbol: accentSymbol)
+            RecipeRowArtwork(recipe: recipe, profileID: profileID, imageURL: imageURL, accentSymbol: accentSymbol)
 
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
                 HStack(alignment: .top, spacing: DesignSystem.Spacing.sm) {
@@ -940,12 +955,35 @@ private struct RecipeRow: View {
 }
 
 private struct RecipeRowArtwork: View {
+    @EnvironmentObject private var env: AppEnvironment
+    let recipe: MealieRecipeSummary
+    let profileID: UUID?
     let imageURL: URL?
     let accentSymbol: String
 
+    private var localImageURL: URL? {
+        guard let profileID, let recipeID = recipe.recipeID else { return nil }
+        return env.recipeOfflineCache.localImageURL(profileID: profileID, recipeID: recipeID, slug: recipe.slug, fileName: "min-original.webp")
+    }
+
     var body: some View {
         Group {
-            if let imageURL {
+            if let localImageURL {
+                AsyncImage(url: localImageURL) { phase in
+                    switch phase {
+                    case .empty:
+                        fallback
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    case .failure:
+                        fallback
+                    @unknown default:
+                        fallback
+                    }
+                }
+            } else if let imageURL {
                 AsyncImage(url: imageURL) { phase in
                     switch phase {
                     case .empty:
@@ -1148,7 +1186,7 @@ private struct RecipeDetailView: View {
                     }
                 }
 
-                RecipeHeroSection(detail: detail, serverURL: env.activeProfile?.serverURL)
+                RecipeHeroSection(detail: detail, profileID: env.activeProfile?.id, serverURL: env.activeProfile?.serverURL)
 
                 if let recipeID = detail.recipeID {
                     RecipeRatingSection(
@@ -1222,11 +1260,12 @@ private struct RecipeDetailView: View {
         defer { isLoading = false }
 
         do {
-            let loadedDetail = try await env.apiClient.fetchRecipeDetail(
+            let rawData = try await env.apiClient.fetchRecipeDetailData(
                 serverURL: profile.serverURL,
                 token: token,
                 slug: recipe.slug
             )
+            let loadedDetail = try JSONDecoder().decode(MealieRecipeDetail.self, from: rawData)
             detail = loadedDetail
             if let recipeID = loadedDetail.recipeID {
                 userRating = try await env.apiClient.fetchUserRating(
@@ -1235,11 +1274,11 @@ private struct RecipeDetailView: View {
                     recipeID: recipeID
                 )
             }
-            env.preferenceStore.cacheRecipeDetail(loadedDetail, profileID: profile.id)
+            await env.cacheLoadedRecipeOffline(loadedDetail, rawData: rawData, profile: profile, token: token)
             showingCachedDetail = false
             loadError = nil
         } catch let error as AppError {
-            if error == .offline, let cached = env.preferenceStore.cachedRecipeDetail(profileID: profile.id, slug: recipe.slug) {
+            if error == .offline, let cached = env.recipeOfflineCache.cachedRecipeDetail(profileID: profile.id, slug: recipe.slug) {
                 detail = cached
                 showingCachedDetail = true
                 loadError = nil
@@ -1348,14 +1387,27 @@ private struct RecipeRatingSection: View {
 }
 
 private struct RecipeHeroSection: View {
+    @EnvironmentObject private var env: AppEnvironment
     let detail: MealieRecipeDetail
+    let profileID: UUID?
     let serverURL: URL?
     @State private var isShowingImageViewer = false
+
+    private var localImageURL: URL? {
+        guard let profileID, let recipeID = detail.recipeID else { return nil }
+        return env.recipeOfflineCache.localImageURL(profileID: profileID, recipeID: recipeID, slug: detail.slug, fileName: "min-original.webp")
+    }
+
+    private var displayImageURL: URL? {
+        if let localImageURL { return localImageURL }
+        guard let serverURL else { return nil }
+        return detail.imageURL(serverURL: serverURL)
+    }
 
     var body: some View {
         Section {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
-                if let serverURL, let imageURL = detail.imageURL(serverURL: serverURL) {
+                if let imageURL = displayImageURL {
                     Button {
                         isShowingImageViewer = true
                     } label: {

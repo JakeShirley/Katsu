@@ -250,22 +250,38 @@ struct MealieRecipeSummary: Codable, Equatable, Identifiable {
 /// Full recipe payload returned by `/api/recipes/{slug}`.
 struct MealieRecipeDetail: Codable, Equatable, Identifiable {
     let recipeID: String?
+    let userID: String?
+    let householdID: String?
+    let groupID: String?
     let slug: String
     let name: String?
     let description: String?
     let recipeYield: String?
+    let recipeYieldQuantity: Double?
     let recipeServings: Double?
     let totalTime: String?
     let prepTime: String?
     let cookTime: String?
+    let performTime: String?
     let recipeCategory: [MealieRecipeToken]?
     let tags: [MealieRecipeToken]?
+    let tools: [MealieRecipeToken]?
     let rating: Double?
     let image: MealieRecipeImage?
+    let orgURL: String?
+    let dateAdded: String?
+    let dateUpdated: String?
+    let createdAt: String?
+    let updateAt: String?
+    let lastMade: String?
     let recipeIngredient: [MealieRecipeIngredient]
     let recipeInstructions: [MealieRecipeInstruction]?
     let nutrition: MealieRecipeNutrition?
     let settings: MealieRecipeSettings?
+    let assets: [MealieRecipeAsset]?
+    let notes: [MealieRecipeNote]?
+    let extras: [String: MealieJSONValue]?
+    let comments: [MealieRecipeComment]?
 
     var id: String { recipeID ?? slug }
     var displayName: String {
@@ -293,22 +309,94 @@ struct MealieRecipeDetail: Codable, Equatable, Identifiable {
 
     enum CodingKeys: String, CodingKey {
         case recipeID = "id"
+        case userID = "userId"
+        case householdID = "householdId"
+        case groupID = "groupId"
         case slug
         case name
         case description
         case recipeYield
+        case recipeYieldQuantity
         case recipeServings
         case totalTime
         case prepTime
         case cookTime
+        case performTime
         case recipeCategory
         case tags
+        case tools
         case rating
         case image
+        case orgURL = "orgURL"
+        case dateAdded
+        case dateUpdated
+        case createdAt
+        case updateAt
+        case lastMade
         case recipeIngredient
         case recipeInstructions
         case nutrition
         case settings
+        case assets
+        case notes
+        case extras
+        case comments
+    }
+}
+
+extension MealieRecipeDetail {
+    init(
+        recipeID: String?,
+        slug: String,
+        name: String?,
+        description: String?,
+        recipeYield: String?,
+        recipeServings: Double?,
+        totalTime: String?,
+        prepTime: String?,
+        cookTime: String?,
+        recipeCategory: [MealieRecipeToken]?,
+        tags: [MealieRecipeToken]?,
+        rating: Double?,
+        image: MealieRecipeImage?,
+        recipeIngredient: [MealieRecipeIngredient],
+        recipeInstructions: [MealieRecipeInstruction]?,
+        nutrition: MealieRecipeNutrition?,
+        settings: MealieRecipeSettings?
+    ) {
+        self.recipeID = recipeID
+        self.userID = nil
+        self.householdID = nil
+        self.groupID = nil
+        self.slug = slug
+        self.name = name
+        self.description = description
+        self.recipeYield = recipeYield
+        self.recipeYieldQuantity = nil
+        self.recipeServings = recipeServings
+        self.totalTime = totalTime
+        self.prepTime = prepTime
+        self.cookTime = cookTime
+        self.performTime = nil
+        self.recipeCategory = recipeCategory
+        self.tags = tags
+        self.tools = nil
+        self.rating = rating
+        self.image = image
+        self.orgURL = nil
+        self.dateAdded = nil
+        self.dateUpdated = nil
+        self.createdAt = nil
+        self.updateAt = nil
+        self.lastMade = nil
+        self.recipeIngredient = recipeIngredient
+        self.recipeInstructions = recipeInstructions
+        self.nutrition = nutrition
+        self.settings = settings
+        self.assets = nil
+        self.notes = nil
+        self.extras = nil
+        self.comments = nil
     }
 }
 
@@ -442,6 +530,90 @@ struct MealieRecipeNutritionEntry: Identifiable, Equatable {
 
 struct MealieRecipeSettings: Codable, Equatable {
     let showNutrition: Bool?
+}
+
+struct MealieRecipeAsset: Codable, Equatable, Identifiable {
+    let name: String?
+    let icon: String?
+    let fileName: String?
+
+    var id: String { fileName ?? name ?? icon ?? UUID().uuidString }
+}
+
+struct MealieRecipeNote: Codable, Equatable, Identifiable {
+    let noteID: String?
+    let title: String?
+    let text: String?
+
+    var id: String { noteID ?? title ?? text ?? UUID().uuidString }
+
+    enum CodingKeys: String, CodingKey {
+        case noteID = "id"
+        case title
+        case text
+    }
+}
+
+struct MealieRecipeComment: Codable, Equatable, Identifiable {
+    let commentID: String?
+    let text: String?
+    let comment: String?
+    let createdAt: String?
+    let updateAt: String?
+
+    var id: String { commentID ?? text ?? comment ?? createdAt ?? UUID().uuidString }
+
+    enum CodingKeys: String, CodingKey {
+        case commentID = "id"
+        case text
+        case comment
+        case createdAt
+        case updateAt
+    }
+}
+
+enum MealieJSONValue: Codable, Equatable {
+    case string(String)
+    case number(Double)
+    case bool(Bool)
+    case object([String: MealieJSONValue])
+    case array([MealieJSONValue])
+    case null
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if container.decodeNil() {
+            self = .null
+        } else if let value = try? container.decode(Bool.self) {
+            self = .bool(value)
+        } else if let value = try? container.decode(Double.self) {
+            self = .number(value)
+        } else if let value = try? container.decode(String.self) {
+            self = .string(value)
+        } else if let value = try? container.decode([String: MealieJSONValue].self) {
+            self = .object(value)
+        } else {
+            self = .array(try container.decode([MealieJSONValue].self))
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .string(let value):
+            try container.encode(value)
+        case .number(let value):
+            try container.encode(value)
+        case .bool(let value):
+            try container.encode(value)
+        case .object(let value):
+            try container.encode(value)
+        case .array(let value):
+            try container.encode(value)
+        case .null:
+            try container.encodeNil()
+        }
+    }
 }
 
 /// Paginated shopping-list browser response from `/api/households/shopping/lists`.

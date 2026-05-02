@@ -13,6 +13,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
     private let validUsername: String
     private let validPassword: String
     private let mintedToken: MealieAuthToken
+    private let encoder = JSONEncoder()
 
     init(
         serverInfo: MealieServerInfo,
@@ -319,6 +320,27 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
             throw AppError.server(status: 404)
         }
         return detail(for: summary)
+    }
+
+    func fetchRecipeDetailData(serverURL: URL, token: MealieAuthToken, slug: String) async throws -> Data {
+        let detail = try await fetchRecipeDetail(serverURL: serverURL, token: token, slug: slug)
+        return try encoder.encode(detail)
+    }
+
+    func fetchRecipeImageData(serverURL: URL, token: MealieAuthToken, recipeID: String, fileName: String) async throws -> Data {
+        try await Task.sleep(nanoseconds: 80_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+        throw AppError.server(status: 404)
+    }
+
+    func fetchRecipeAssetData(serverURL: URL, token: MealieAuthToken, recipeID: String, fileName: String) async throws -> Data {
+        try await Task.sleep(nanoseconds: 80_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+        throw AppError.server(status: 404)
     }
 
     func importRecipeFromURL(serverURL: URL, token: MealieAuthToken, url: URL, includeTags: Bool, includeCategories: Bool) async throws -> String {

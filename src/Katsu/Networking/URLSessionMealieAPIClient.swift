@@ -123,10 +123,35 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
     }
 
     func fetchRecipeDetail(serverURL: URL, token: MealieAuthToken, slug: String) async throws -> MealieRecipeDetail {
+        let data = try await fetchRecipeDetailData(serverURL: serverURL, token: token, slug: slug)
+        do {
+            return try decoder.decode(MealieRecipeDetail.self, from: data)
+        } catch {
+            throw AppError.invalidServerResponse
+        }
+    }
+
+    func fetchRecipeDetailData(serverURL: URL, token: MealieAuthToken, slug: String) async throws -> Data {
         let encodedSlug = slug.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? slug
         var request = URLRequest(url: serverURL.appendingPathComponent("api/recipes/\(encodedSlug)"))
         request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
-        return try await perform(request)
+        return try await performData(request)
+    }
+
+    func fetchRecipeImageData(serverURL: URL, token: MealieAuthToken, recipeID: String, fileName: String) async throws -> Data {
+        let encodedID = recipeID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? recipeID
+        let encodedFileName = fileName.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? fileName
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/media/recipes/\(encodedID)/images/\(encodedFileName)"))
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        return try await performData(request)
+    }
+
+    func fetchRecipeAssetData(serverURL: URL, token: MealieAuthToken, recipeID: String, fileName: String) async throws -> Data {
+        let encodedID = recipeID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? recipeID
+        let encodedFileName = fileName.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? fileName
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/media/recipes/\(encodedID)/assets/\(encodedFileName)"))
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        return try await performData(request)
     }
 
     func importRecipeFromURL(serverURL: URL, token: MealieAuthToken, url: URL, includeTags: Bool, includeCategories: Bool) async throws -> String {
@@ -219,6 +244,18 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
     // MARK: - Helpers
 
     private func perform<T: Decodable>(_ request: URLRequest) async throws -> T {
+        let data = try await performData(request)
+        do {
+            if T.self == EmptyResponse.self, data.isEmpty {
+                return EmptyResponse() as! T
+            }
+            return try decoder.decode(T.self, from: data)
+        } catch {
+            throw AppError.invalidServerResponse
+        }
+    }
+
+    private func performData(_ request: URLRequest) async throws -> Data {
         let data: Data
         let response: URLResponse
         do {
@@ -235,14 +272,7 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
         switch http.statusCode {
         case 200..<300:
-            do {
-                if T.self == EmptyResponse.self, data.isEmpty {
-                    return EmptyResponse() as! T
-                }
-                return try decoder.decode(T.self, from: data)
-            } catch {
-                throw AppError.invalidServerResponse
-            }
+            return data
         case 401:
             throw AppError.unauthorized
         case 403:

@@ -20,6 +20,7 @@
 		AA00010030 /* ServerProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010030 /* ServerProfileStore.swift */; };
 		AA00010031 /* AppPreferenceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010031 /* AppPreferenceStore.swift */; };
 		AA00010032 /* KeychainCredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010032 /* KeychainCredentialStore.swift */; };
+		AA00010033 /* RecipeOfflineCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010033 /* RecipeOfflineCache.swift */; };
 		AA00010040 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010040 /* OnboardingFlowView.swift */; };
 		AA00010041 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010041 /* HomeView.swift */; };
 		AA00010044 /* MealPlansView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010044 /* MealPlansView.swift */; };
@@ -45,6 +46,7 @@
 		BB00010030 /* ServerProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerProfileStore.swift; sourceTree = "<group>"; };
 		BB00010031 /* AppPreferenceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPreferenceStore.swift; sourceTree = "<group>"; };
 		BB00010032 /* KeychainCredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainCredentialStore.swift; sourceTree = "<group>"; };
+		BB00010033 /* RecipeOfflineCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeOfflineCache.swift; sourceTree = "<group>"; };
 		BB00010040 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
 		BB00010041 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		BB00010044 /* MealPlansView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlansView.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				BB00010030 /* ServerProfileStore.swift */,
 				BB00010031 /* AppPreferenceStore.swift */,
 				BB00010032 /* KeychainCredentialStore.swift */,
+				BB00010033 /* RecipeOfflineCache.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -284,6 +287,7 @@
 				AA00010030 /* ServerProfileStore.swift in Sources */,
 				AA00010031 /* AppPreferenceStore.swift in Sources */,
 				AA00010032 /* KeychainCredentialStore.swift in Sources */,
+				AA00010033 /* RecipeOfflineCache.swift in Sources */,
 				AA00010040 /* OnboardingFlowView.swift in Sources */,
 				AA00010041 /* HomeView.swift in Sources */,
 				AA00010044 /* MealPlansView.swift in Sources */,
