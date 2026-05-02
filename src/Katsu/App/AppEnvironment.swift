@@ -109,13 +109,10 @@ final class AppEnvironment: ObservableObject {
         refreshRecipeCacheSnapshot()
     }
 
-    func signOut() {
-        let signedOutID = activeProfile?.id ?? profileStore.activeProfileID()
-        if let id = signedOutID {
-            try? credentialStore.deleteToken(for: id)
-            profileStore.remove(id: id)
-            recipeOfflineCache.clear(profileID: id)
-        }
+    func removeServer(_ profile: ServerProfile) {
+        try? credentialStore.deleteToken(for: profile.id)
+        profileStore.remove(id: profile.id)
+        recipeOfflineCache.clear(profileID: profile.id)
         activeProfile = profileStore.activeProfile()
         currentUser = nil
         hasServerProfiles = !profileStore.allProfiles().isEmpty

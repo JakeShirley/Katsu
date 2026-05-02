@@ -3,9 +3,9 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject private var env: AppEnvironment
     @Environment(\.dismiss) private var dismiss
-    @State private var confirmSignOut = false
     @State private var confirmClearOfflineRecipes = false
     @State private var showAddServer = false
+    @State private var revealedServerID: UUID?
 
     private var profiles: [ServerProfile] {
         env.profileStore.allProfiles()
@@ -30,19 +30,6 @@ struct SettingsView: View {
                 Button("Done") { dismiss() }
             }
         }
-        .confirmationDialog(
-            "Sign out and remove this server from this device?",
-            isPresented: $confirmSignOut,
-            titleVisibility: .visible
-        ) {
-            Button("Sign Out", role: .destructive) {
-                env.signOut()
-                if !env.hasServerProfiles {
-                    dismiss()
-                }
-            }
-            Button("Cancel", role: .cancel) {}
-        }
         .navigationDestination(isPresented: $showAddServer) {
             OnboardingFlowView {
                 showAddServer = false
@@ -64,101 +51,407 @@ struct SettingsView: View {
     }
 
     private var settingsForm: some View {
-        Form {
-            Section("Servers") {
-                if profiles.isEmpty {
-                    Text("No servers added")
-                        .foregroundStyle(.secondary)
-                } else {
-                    ForEach(profiles) { profile in
-                        Button {
-                            env.switchToProfile(profile)
-                        } label: {
-                            HStack(alignment: .firstTextBaseline, spacing: DesignSystem.Spacing.md) {
-                                VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
-                                    Text(profile.displayName)
-                                        .foregroundStyle(.primary)
-                                    Text(profile.serverURL.absoluteString)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+        ScrollView {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xxl) {
+                SettingsSection("Servers") {
+                    SettingsGroup {
+                        if profiles.isEmpty {
+                            SettingsRowContent(
+                                title: Text("No servers added"),
+                                systemImage: "server.rack",
+                                accessory: .none
+                            )
+                        } else {
+                            ForEach(Array(profiles.enumerated()), id: \.element.id) { index, profile in
+                                SwipeToRemoveRow(
+                                    isRevealed: Binding(
+                                        get: { revealedServerID == profile.id },
+                                        set: { isRevealed in
+                                            revealedServerID = isRevealed ? profile.id : nil
+                                        }
+                                    ),
+                                    onRemove: { removeServer(profile) }
+                                ) {
+                                    Button {
+                                        revealedServerID = nil
+                                        env.switchToProfile(profile)
+                                    } label: {
+                                        SettingsRowContent(
+                                            title: Text(verbatim: profile.displayName),
+                                            subtitle: Text(verbatim: profile.serverURL.absoluteString),
+                                            systemImage: "server.rack",
+                                            accessory: profile.id == env.activeProfile?.id ? .checkmark : .none
+                                        )
+                                    }
+                                    .buttonStyle(.plain)
+                                    .accessibilityLabel(serverAccessibilityLabel(for: profile))
+                                    .accessibilityAction(named: Text("Delete")) {
+                                        removeServer(profile)
+                                    }
                                 }
 
-                                Spacer()
-
-                                if profile.id == env.activeProfile?.id {
-                                    Image(systemName: "checkmark")
-                                        .foregroundStyle(DesignSystem.Colors.accent)
-                                        .accessibilityHidden(true)
+                                if index < profiles.count - 1 {
+                                    SettingsDivider()
                                 }
                             }
-                            .frame(minHeight: DesignSystem.HitTarget.minimum)
                         }
-                        .accessibilityLabel(serverAccessibilityLabel(for: profile))
+
+                        SettingsDivider()
+
+                        Button {
+                            showAddServer = true
+                        } label: {
+                            SettingsRowContent(
+                                title: Text("Add Server"),
+                                systemImage: "plus.circle",
+                                accessory: .chevron
+                            )
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
 
-                Button {
-                    showAddServer = true
-                } label: {
-                    Label("Add Server", systemImage: "plus.circle")
-                        .frame(minHeight: DesignSystem.HitTarget.minimum)
-                }
-            }
+                SettingsSection("Offline Recipes") {
+                    SettingsGroup {
+                        SettingsRowContent(
+                            title: Text("Recipes Cached"),
+                            systemImage: "book.closed",
+                            accessory: .value(env.recipeCacheSnapshot.recipeCount.formatted())
+                        )
 
-            Section("Offline Recipes") {
-                LabeledContent("Recipes Cached", value: env.recipeCacheSnapshot.recipeCount.formatted())
-                LabeledContent("Storage Used", value: cacheSizeText)
-                LabeledContent("Last Updated", value: lastSyncText)
+                        SettingsDivider()
 
-                if env.isSyncingOfflineRecipes {
-                    HStack(spacing: DesignSystem.Spacing.sm) {
-                        ProgressView()
-                        Text("Syncing offline recipes…")
-                            .foregroundStyle(.secondary)
+                        SettingsRowContent(
+                            title: Text("Storage Used"),
+                            systemImage: "internaldrive",
+                            accessory: .value(cacheSizeText)
+                        )
+
+                        SettingsDivider()
+
+                        SettingsRowContent(
+                            title: Text("Last Updated"),
+                            systemImage: "clock.arrow.circlepath",
+                            accessory: .value(lastSyncText)
+                        )
+
+                        if env.isSyncingOfflineRecipes {
+                            SettingsDivider()
+
+                            HStack(spacing: DesignSystem.Spacing.md) {
+                                ProgressView()
+                                    .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+
+                                Text("Syncing offline recipes…")
+                                    .foregroundStyle(.secondary)
+
+                                Spacer(minLength: DesignSystem.Spacing.md)
+                            }
+                            .padding(.horizontal, DesignSystem.Spacing.lg)
+                            .padding(.vertical, DesignSystem.Spacing.md)
+                            .accessibilityElement(children: .combine)
+                            .accessibilityLabel("Syncing offline recipes")
+                        }
+
+                        SettingsDivider()
+
+                        Button {
+                            Task { await env.syncOfflineRecipes(force: true) }
+                        } label: {
+                            SettingsRowContent(
+                                title: Text("Sync Offline Recipes"),
+                                systemImage: "arrow.triangle.2.circlepath",
+                                accessory: .chevron
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(env.activeProfile == nil || env.isSyncingOfflineRecipes)
+
+                        SettingsDivider()
+
+                        Button(role: .destructive) {
+                            confirmClearOfflineRecipes = true
+                        } label: {
+                            SettingsRowContent(
+                                title: Text("Clear Offline Recipes"),
+                                systemImage: "trash",
+                                accessory: .none,
+                                isDestructive: true
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(env.recipeCacheSnapshot.byteCount == 0)
                     }
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel("Syncing offline recipes")
                 }
 
-                Button {
-                    Task { await env.syncOfflineRecipes(force: true) }
-                } label: {
-                    Label("Sync Offline Recipes", systemImage: "arrow.triangle.2.circlepath")
-                        .frame(minHeight: DesignSystem.HitTarget.minimum)
-                }
-                .disabled(env.activeProfile == nil || env.isSyncingOfflineRecipes)
+                SettingsSection("About") {
+                    SettingsGroup {
+                        NavigationLink {
+                            ChangelogView()
+                        } label: {
+                            SettingsRowContent(
+                                title: Text("Changelog"),
+                                systemImage: "sparkles",
+                                accessory: .chevron
+                            )
+                        }
+                        .buttonStyle(.plain)
 
-                Button(role: .destructive) {
-                    confirmClearOfflineRecipes = true
-                } label: {
-                    Label("Clear Offline Recipes", systemImage: "trash")
-                        .frame(minHeight: DesignSystem.HitTarget.minimum)
+                        SettingsDivider()
+
+                        SettingsRowContent(
+                            title: Text("App"),
+                            systemImage: "app.badge",
+                            accessory: .value("Katsu")
+                        )
+
+                        SettingsDivider()
+
+                        SettingsRowContent(
+                            title: Text("Bundle"),
+                            systemImage: "shippingbox",
+                            accessory: .value(Bundle.main.bundleIdentifier ?? "—")
+                        )
+                    }
                 }
-                .disabled(env.recipeCacheSnapshot.byteCount == 0)
+
             }
-
-            Section("About") {
-                NavigationLink("Changelog") {
-                    ChangelogView()
-                }
-                LabeledContent("App", value: "Katsu")
-                LabeledContent("Bundle", value: Bundle.main.bundleIdentifier ?? "—")
-            }
-
-            Section {
-                Button(role: .destructive) {
-                    confirmSignOut = true
-                } label: {
-                    Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
-                        .frame(minHeight: DesignSystem.HitTarget.minimum)
-                }
-            }
+            .padding(.horizontal, DesignSystem.Spacing.lg)
+            .padding(.top, DesignSystem.Spacing.lg)
+            .padding(.bottom, DesignSystem.Spacing.xxl)
         }
+        .background(DesignSystem.Colors.background)
+        .scrollContentBackground(.hidden)
     }
 
     private func serverAccessibilityLabel(for profile: ServerProfile) -> String {
         let status = profile.id == env.activeProfile?.id ? String(localized: "Active") : String(localized: "Inactive")
         return String(localized: "\(profile.displayName), \(profile.serverURL.absoluteString), \(status)")
+    }
+
+    private func removeServer(_ profile: ServerProfile) {
+        env.removeServer(profile)
+        if !env.hasServerProfiles {
+            dismiss()
+        }
+    }
+}
+
+private struct SwipeToRemoveRow<Content: View>: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Binding var isRevealed: Bool
+    let onRemove: () -> Void
+    @ViewBuilder let content: Content
+
+    @State private var dragTranslation: CGFloat = 0
+
+    private let actionWidth: CGFloat = 112
+
+    init(isRevealed: Binding<Bool>, onRemove: @escaping () -> Void, @ViewBuilder content: () -> Content) {
+        self._isRevealed = isRevealed
+        self.onRemove = onRemove
+        self.content = content()
+    }
+
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            Button(role: .destructive, action: onRemove) {
+                VStack(spacing: DesignSystem.Spacing.xs) {
+                    Image(systemName: "trash")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                        .frame(width: 70, height: 42)
+                        .background(DesignSystem.Colors.destructive, in: Capsule())
+                        .scaleEffect(actionScale)
+
+                    Text("Delete")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .opacity(actionLabelOpacity)
+                }
+                .frame(width: actionWidth)
+                .frame(minHeight: DesignSystem.HitTarget.minimum + DesignSystem.Spacing.xl)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Delete")
+            .accessibilityHidden(!isRevealed)
+            .opacity(actionOpacity)
+
+            content
+                .frame(maxWidth: .infinity)
+                .background(DesignSystem.Colors.surface)
+                .offset(x: rowOffset)
+                .highPriorityGesture(removeRevealGesture)
+                .animation(reduceMotion ? nil : DesignSystem.Motion.standard, value: isRevealed)
+                .animation(reduceMotion ? nil : DesignSystem.Motion.standard, value: dragTranslation)
+        }
+        .frame(maxWidth: .infinity)
+        .clipped()
+    }
+
+    private var rowOffset: CGFloat {
+        let baseOffset = isRevealed ? -actionWidth : 0
+        return min(0, max(-actionWidth, baseOffset + dragTranslation))
+    }
+
+    private var actionProgress: CGFloat {
+        min(1, max(0, abs(rowOffset) / actionWidth))
+    }
+
+    private var actionScale: CGFloat {
+        0.72 + (actionProgress * 0.28)
+    }
+
+    private var actionOpacity: CGFloat {
+        min(1, max(0, (actionProgress - 0.15) / 0.85))
+    }
+
+    private var actionLabelOpacity: CGFloat {
+        min(1, max(0, (actionProgress - 0.35) / 0.65))
+    }
+
+    private var removeRevealGesture: some Gesture {
+        DragGesture(minimumDistance: DesignSystem.Spacing.sm)
+            .onChanged { value in
+                guard abs(value.translation.width) > abs(value.translation.height) else { return }
+                let baseOffset = isRevealed ? -actionWidth : 0
+                dragTranslation = min(0, max(-actionWidth, baseOffset + value.translation.width)) - baseOffset
+            }
+            .onEnded { value in
+                guard abs(value.translation.width) > abs(value.translation.height) else {
+                    dragTranslation = 0
+                    return
+                }
+                let baseOffset = isRevealed ? -actionWidth : 0
+                let projectedOffset = baseOffset + value.translation.width + (value.predictedEndTranslation.width - value.translation.width) * 0.25
+                isRevealed = projectedOffset < -actionWidth / 2
+                dragTranslation = 0
+            }
+    }
+}
+
+private struct SettingsSection<Content: View>: View {
+    let title: LocalizedStringKey
+    @ViewBuilder let content: Content
+
+    init(_ title: LocalizedStringKey, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, DesignSystem.Spacing.lg)
+
+            content
+        }
+    }
+}
+
+private struct SettingsGroup<Content: View>: View {
+    @ViewBuilder let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            content
+        }
+        .frame(maxWidth: .infinity)
+        .background(
+            DesignSystem.Colors.surface,
+            in: RoundedRectangle(cornerRadius: DesignSystem.Radius.lg * 1.5, style: .continuous)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.lg * 1.5, style: .continuous))
+    }
+}
+
+private struct SettingsRowContent: View {
+    let title: Text
+    var subtitle: Text?
+    let systemImage: String
+    let accessory: SettingsRowAccessory
+    var isDestructive = false
+
+    var body: some View {
+        HStack(spacing: DesignSystem.Spacing.md) {
+            Image(systemName: systemImage)
+                .font(.title3)
+                .fontWeight(.semibold)
+                .foregroundStyle(rowTint)
+                .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                .background(DesignSystem.Colors.background, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.md, style: .continuous))
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                title
+                    .font(.body)
+                    .foregroundStyle(rowTint)
+
+                if let subtitle {
+                    subtitle
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                }
+            }
+
+            Spacer(minLength: DesignSystem.Spacing.md)
+
+            accessoryView
+        }
+        .padding(.horizontal, DesignSystem.Spacing.lg)
+        .padding(.vertical, DesignSystem.Spacing.md)
+        .frame(maxWidth: .infinity, minHeight: DesignSystem.HitTarget.minimum + DesignSystem.Spacing.xl)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+    }
+
+    private var rowTint: Color {
+        isDestructive ? DesignSystem.Colors.destructive : DesignSystem.Colors.textPrimary
+    }
+
+    @ViewBuilder private var accessoryView: some View {
+        switch accessory {
+        case .none:
+            EmptyView()
+        case .chevron:
+            Image(systemName: "chevron.right")
+                .font(.body.weight(.semibold))
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
+        case .checkmark:
+            Image(systemName: "checkmark")
+                .font(.body.weight(.semibold))
+                .foregroundStyle(DesignSystem.Colors.accent)
+                .accessibilityHidden(true)
+        case .value(let value):
+            Text(verbatim: value)
+                .font(.body)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.trailing)
+        }
+    }
+}
+
+private enum SettingsRowAccessory {
+    case none
+    case chevron
+    case checkmark
+    case value(String)
+}
+
+private struct SettingsDivider: View {
+    var body: some View {
+        Divider()
+            .padding(.leading, DesignSystem.Spacing.lg + DesignSystem.HitTarget.minimum + DesignSystem.Spacing.md)
     }
 }
 
