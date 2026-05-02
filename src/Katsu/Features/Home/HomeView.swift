@@ -1163,9 +1163,7 @@ private struct RecipeDetailView: View {
                 if !detail.recipeIngredient.isEmpty {
                     Section("Ingredients") {
                         ForEach(detail.recipeIngredient) { ingredient in
-                            Text(ingredient.displayText)
-                                .font(.body)
-                                .accessibilityLabel(ingredient.displayText)
+                            RecipeIngredientRow(ingredient: ingredient)
                         }
                     }
                 }
@@ -1352,63 +1350,75 @@ private struct RecipeRatingSection: View {
 private struct RecipeHeroSection: View {
     let detail: MealieRecipeDetail
     let serverURL: URL?
+    @State private var isShowingImageViewer = false
 
     var body: some View {
         Section {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
                 if let serverURL, let imageURL = detail.imageURL(serverURL: serverURL) {
-                    AsyncImage(url: imageURL) { phase in
-                        switch phase {
-                        case .empty:
-                            ProgressView()
-                                .frame(maxWidth: .infinity, minHeight: 180)
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .scaledToFill()
-                                .frame(maxWidth: .infinity, minHeight: 180, maxHeight: 220)
-                                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
-                        case .failure:
-                            EmptyView()
-                        @unknown default:
-                            EmptyView()
+                    Button {
+                        isShowingImageViewer = true
+                    } label: {
+                        AsyncImage(url: imageURL) { phase in
+                            switch phase {
+                            case .empty:
+                                ProgressView()
+                                    .frame(maxWidth: .infinity, minHeight: 180)
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(maxWidth: .infinity, minHeight: 180, maxHeight: 220)
+                                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
+                            case .failure:
+                                EmptyView()
+                            @unknown default:
+                                EmptyView()
+                            }
                         }
                     }
-                    .accessibilityHidden(true)
-                }
-
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
-                    Text(detail.displayName)
-                        .font(.title2)
-                        .fontWeight(.semibold)
-
-                    if let description = detail.description, !description.isEmpty {
-                        Text(description)
-                            .font(.body)
-                            .foregroundStyle(.secondary)
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(String(localized: "Open recipe photo for \(detail.displayName)"))
+                    .accessibilityHint("Opens a full-screen image viewer")
+                    .fullScreenCover(isPresented: $isShowingImageViewer) {
+                        RecipeImageViewer(imageURL: imageURL, title: detail.displayName)
                     }
                 }
 
-                RecipeMetadataView(detail: detail)
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                        Text(detail.displayName)
+                            .font(.title2)
+                            .fontWeight(.semibold)
 
-                let chips = (detail.recipeCategory ?? []) + (detail.tags ?? [])
-                if !chips.isEmpty {
-                    FlowLayout(spacing: DesignSystem.Spacing.sm) {
-                        ForEach(chips) { chip in
-                            Text(chip.name)
-                                .font(.caption)
-                                .padding(.horizontal, DesignSystem.Spacing.sm)
-                                .padding(.vertical, DesignSystem.Spacing.xs)
-                                .background(DesignSystem.Colors.accentSoft, in: Capsule())
-                                .foregroundStyle(DesignSystem.Colors.accentDeep)
-                                .accessibilityLabel(chip.name)
+                        if let description = detail.description, !description.isEmpty {
+                            Text(description)
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    RecipeMetadataView(detail: detail)
+
+                    let chips = (detail.recipeCategory ?? []) + (detail.tags ?? [])
+                    if !chips.isEmpty {
+                        FlowLayout(spacing: DesignSystem.Spacing.sm) {
+                            ForEach(chips) { chip in
+                                Text(chip.name)
+                                    .font(.caption)
+                                    .padding(.horizontal, DesignSystem.Spacing.sm)
+                                    .padding(.vertical, DesignSystem.Spacing.xs)
+                                    .background(DesignSystem.Colors.accentSoft, in: Capsule())
+                                    .foregroundStyle(DesignSystem.Colors.accentDeep)
+                                    .accessibilityLabel(chip.name)
+                            }
                         }
                     }
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(heroAccessibilityLabel)
             }
             .padding(.vertical, DesignSystem.Spacing.xs)
-            .accessibilityElement(children: .combine)
-            .accessibilityLabel(heroAccessibilityLabel)
         }
     }
 
@@ -1417,7 +1427,7 @@ private struct RecipeHeroSection: View {
             detail.displayName,
             detail.description,
             detail.recipeYield,
-            detail.totalTime.map { String(localized: "Total time \($0)") },
+            detail.totalTime.flatMap(recipeReadableDuration).map { String(localized: "Total time \($0)") },
             detail.rating.map { String(localized: "Rating \($0)") }
         ]
         .compactMap { value -> String? in
@@ -1428,29 +1438,363 @@ private struct RecipeHeroSection: View {
     }
 }
 
+private struct RecipeImageViewer: View {
+    let imageURL: URL
+    let title: String
+    @Environment(\.dismiss) private var dismiss
+    @State private var scale: CGFloat = 1
+    @State private var committedScale: CGFloat = 1
+    @State private var offset: CGSize = .zero
+    @State private var committedOffset: CGSize = .zero
+    @State private var dragTranslation: CGSize = .zero
+
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            Color.black
+                .ignoresSafeArea()
+
+            AsyncImage(url: imageURL) { phase in
+                switch phase {
+                case .empty:
+                    ProgressView()
+                        .tint(.white)
+                case .success(let image):
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .offset(x: offset.width + dragTranslation.width, y: offset.height + dragTranslation.height)
+                        .scaleEffect(scale)
+                        .gesture(imageGestures)
+                        .onTapGesture(count: 2) {
+                            withAnimation(DesignSystem.Motion.standard) {
+                                if scale > 1 {
+                                    resetImageTransform()
+                                } else {
+                                    scale = 2
+                                    committedScale = 2
+                                }
+                            }
+                        }
+                        .accessibilityLabel(title)
+                case .failure:
+                    ContentUnavailableView("Could not load image", systemImage: "photo")
+                        .foregroundStyle(.white)
+                @unknown default:
+                    EmptyView()
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.headline)
+                    .foregroundStyle(.white)
+                    .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                    .background(.black.opacity(0.55), in: Circle())
+            }
+            .padding(DesignSystem.Spacing.lg)
+            .accessibilityLabel("Close image viewer")
+        }
+    }
+
+    private var imageGestures: some Gesture {
+        MagnifyGesture()
+            .onChanged { value in
+                scale = max(1, min(committedScale * value.magnification, 5))
+            }
+            .onEnded { _ in
+                committedScale = scale
+                if scale == 1 {
+                    resetImageTransform()
+                }
+            }
+            .simultaneously(with: DragGesture()
+                .onChanged { value in
+                    dragTranslation = value.translation
+                }
+                .onEnded { value in
+                    if scale <= 1, value.translation.height > 120, abs(value.translation.width) < 80 {
+                        dismiss()
+                    } else {
+                        committedOffset.width += value.translation.width
+                        committedOffset.height += value.translation.height
+                        offset = committedOffset
+                    }
+                    dragTranslation = .zero
+                }
+            )
+    }
+
+    private func resetImageTransform() {
+        scale = 1
+        committedScale = 1
+        offset = .zero
+        committedOffset = .zero
+        dragTranslation = .zero
+    }
+}
+
+private struct RecipeIngredientRow: View {
+    let ingredient: MealieRecipeIngredient
+
+    private var display: RecipeIngredientDisplay {
+        RecipeIngredientDisplay(ingredient: ingredient)
+    }
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: DesignSystem.Spacing.md) {
+            if let measurement = display.measurement {
+                Text(measurement)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(DesignSystem.Colors.accentDeep)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.8)
+                    .frame(width: 76)
+                    .frame(minHeight: DesignSystem.HitTarget.minimum)
+                    .padding(.vertical, DesignSystem.Spacing.xs)
+                    .background(DesignSystem.Colors.accentSoft, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.md))
+            }
+
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                Text(display.name)
+                    .font(.body)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.primary)
+
+                if let note = display.note {
+                    Text(note)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.vertical, DesignSystem.Spacing.xs)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(display.accessibilityLabel)
+    }
+}
+
+private struct RecipeIngredientDisplay {
+    let measurement: String?
+    let name: String
+    let note: String?
+
+    init(measurement: String?, name: String, note: String?) {
+        self.measurement = measurement
+        self.name = name
+        self.note = note
+    }
+
+    var accessibilityLabel: String {
+        [measurement, name, note]
+            .compactMap { value -> String? in
+                guard let value, !value.isEmpty else { return nil }
+                return value
+            }
+            .joined(separator: ", ")
+    }
+
+    init(ingredient: MealieRecipeIngredient) {
+        let structuredMeasurement = Self.structuredMeasurement(for: ingredient)
+        let structuredName = ingredient.food?.name?.nilIfBlank
+
+        if let structuredMeasurement, let structuredName {
+            measurement = structuredMeasurement
+            name = structuredName
+            note = Self.distinctNote(ingredient.note, from: [structuredMeasurement, structuredName, ingredient.display])
+            return
+        }
+
+        if let structuredName {
+            measurement = nil
+            name = structuredName
+            note = Self.distinctNote(ingredient.note, from: [structuredName, ingredient.display])
+            return
+        }
+
+        measurement = nil
+        name = ingredient.displayText
+        note = Self.distinctNote(ingredient.note, from: [ingredient.displayText, ingredient.display])
+    }
+
+    private static func structuredMeasurement(for ingredient: MealieRecipeIngredient) -> String? {
+        guard let quantity = ingredient.quantity.flatMap(formatQuantity),
+              let unit = ingredient.unit?.abbreviation?.nilIfBlank ?? ingredient.unit?.name?.nilIfBlank else {
+            return nil
+        }
+        return "\(quantity) \(unit)"
+    }
+
+    private static func formatQuantity(_ quantity: Double) -> String? {
+        guard quantity > 0 else { return nil }
+        if quantity.rounded() == quantity {
+            return String(Int(quantity))
+        }
+        return String(format: "%.2f", quantity)
+            .trimmingCharacters(in: CharacterSet(charactersIn: "0"))
+            .trimmingCharacters(in: CharacterSet(charactersIn: "."))
+    }
+
+    private static func distinctNote(_ note: String?, from displayedValues: [String?]) -> String? {
+        guard let note = note?.nilIfBlank else { return nil }
+        let normalizedNote = normalizedIngredientText(note)
+        let duplicatesDisplayedValue = displayedValues
+            .compactMap { $0?.nilIfBlank }
+            .map(normalizedIngredientText)
+            .contains(normalizedNote)
+        return duplicatesDisplayedValue ? nil : note
+    }
+
+    private static func normalizedIngredientText(_ value: String) -> String {
+        value
+            .lowercased()
+            .replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
+private extension String {
+    var nilIfBlank: String? {
+        let trimmed = trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
+    }
+}
+
 private struct RecipeMetadataView: View {
     let detail: MealieRecipeDetail
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+        let totalTime = detail.totalTime.flatMap(recipeReadableDuration)
+        let prepTime = detail.prepTime.flatMap(recipeReadableDuration)
+        let cookTime = detail.cookTime.flatMap(recipeReadableDuration)
+
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
             if let recipeYield = detail.recipeYield, !recipeYield.isEmpty {
                 Label(recipeYield, systemImage: "fork.knife")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
-            if let totalTime = detail.totalTime, !totalTime.isEmpty {
-                Label(String(localized: "Total time: \(totalTime)"), systemImage: "clock")
+            if let totalTime {
+                RecipeTotalTimeCard(totalTime: totalTime)
             }
-            if let prepTime = detail.prepTime, !prepTime.isEmpty {
-                Label(String(localized: "Prep: \(prepTime)"), systemImage: "timer")
-            }
-            if let cookTime = detail.cookTime, !cookTime.isEmpty {
-                Label(String(localized: "Cook: \(cookTime)"), systemImage: "flame")
+            HStack(alignment: .top, spacing: DesignSystem.Spacing.sm) {
+                if let prepTime {
+                    RecipeTimeMetric(label: "Prep", value: prepTime, systemImage: "timer")
+                }
+                if let cookTime {
+                    RecipeTimeMetric(label: "Cook", value: cookTime, systemImage: "flame")
+                }
             }
             if let rating = detail.rating {
                 Label(String(localized: "Rating: \(rating, specifier: "%.1f")"), systemImage: "star.fill")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
         }
-        .font(.subheadline)
-        .foregroundStyle(.secondary)
+    }
+}
+
+private func recipeReadableDuration(_ value: String) -> String? {
+    let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+    guard !trimmed.isEmpty else { return nil }
+    guard trimmed.hasPrefix("PT") else { return trimmed }
+
+    var hours = 0
+    var minutes = 0
+    var number = ""
+
+    for character in trimmed.dropFirst(2) {
+        if character.isNumber {
+            number.append(character)
+        } else {
+            guard let durationValue = Int(number) else { return trimmed }
+            switch character {
+            case "H":
+                hours = durationValue
+            case "M":
+                minutes = durationValue
+            default:
+                return trimmed
+            }
+            number = ""
+        }
+    }
+
+    guard number.isEmpty else { return trimmed }
+    let parts = [
+        hours > 0 ? String(localized: "\(hours) hr") : nil,
+        minutes > 0 ? String(localized: "\(minutes) min") : nil
+    ].compactMap(\.self)
+    return parts.isEmpty ? trimmed : parts.joined(separator: " ")
+}
+
+private struct RecipeTotalTimeCard: View {
+    let totalTime: String
+
+    var body: some View {
+        HStack(spacing: DesignSystem.Spacing.md) {
+            Image(systemName: "clock.fill")
+                .font(.title3)
+                .foregroundStyle(DesignSystem.Colors.accentDeep)
+                .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                .background(DesignSystem.Colors.accentSoft, in: Circle())
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xxs) {
+                Text("Total Time")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+                Text(totalTime)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.primary)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(DesignSystem.Spacing.md)
+        .background(DesignSystem.Colors.surface, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
+        .overlay {
+            RoundedRectangle(cornerRadius: DesignSystem.Radius.lg)
+                .stroke(DesignSystem.Colors.separator.opacity(0.5), lineWidth: 1)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(String(localized: "Total time: \(totalTime)"))
+    }
+}
+
+private struct RecipeTimeMetric: View {
+    let label: LocalizedStringKey
+    let value: String
+    let systemImage: String
+
+    var body: some View {
+        HStack(spacing: DesignSystem.Spacing.sm) {
+            Image(systemName: systemImage)
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xxs) {
+                Text(label)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(value)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.primary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, DesignSystem.Spacing.md)
+        .padding(.vertical, DesignSystem.Spacing.sm)
+        .background(DesignSystem.Colors.background, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.md))
+        .accessibilityElement(children: .combine)
     }
 }
 

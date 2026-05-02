@@ -516,10 +516,10 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
                 tags: [token("Weeknight", "weeknight"), token("Seafood", "seafood")],
                 rating: 4.5,
                 ingredients: [
-                    ingredient("4 salmon fillets"),
-                    ingredient("2 tbsp white miso"),
-                    ingredient("1 tbsp grated ginger"),
-                    ingredient("2 cups cooked rice"),
+                    ingredient(quantity: 4, unit: nil, food: "salmon fillets"),
+                    ingredient(quantity: 2, unit: "tbsp", food: "white miso"),
+                    ingredient(quantity: 1, unit: "tbsp", food: "grated ginger"),
+                    ingredient(quantity: 2, unit: "cups", food: "cooked rice"),
                     ingredient("Steamed greens, to serve")
                 ],
                 instructions: [
@@ -540,8 +540,8 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
                 tags: [token("Japanese", "japanese"), token("Comfort food", "comfort-food")],
                 rating: 5,
                 ingredients: [
-                    ingredient("3 chicken cutlets"),
-                    ingredient("1 cup panko breadcrumbs"),
+                    ingredient(quantity: 3, unit: nil, food: "chicken cutlets"),
+                    ingredient(quantity: 1, unit: "cup", food: "panko breadcrumbs"),
                     ingredient("Japanese curry sauce"),
                     ingredient("Cooked short-grain rice")
                 ],
@@ -776,6 +776,18 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
             quantity: nil,
             unit: nil,
             food: nil
+        )
+    }
+
+    private func ingredient(quantity: Double, unit: String?, food: String) -> MealieRecipeIngredient {
+        MealieRecipeIngredient(
+            referenceID: [String(quantity), unit, food].compactMap { $0 }.joined(separator: " "),
+            display: nil,
+            title: nil,
+            note: nil,
+            quantity: quantity,
+            unit: unit.map { MealieIngredientUnit(name: $0, abbreviation: $0) },
+            food: MealieIngredientFood(name: food)
         )
     }
 
