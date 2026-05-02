@@ -20,7 +20,9 @@ final class AppEnvironment: ObservableObject {
     @Published var currentUser: MealieUser?
     @Published var hasServerProfiles: Bool
     @Published var recipeCacheSnapshot: RecipeOfflineCacheSnapshot = .empty
+    @Published var allRecipeCacheSnapshot: RecipeOfflineCacheSnapshot = .empty
     @Published var isSyncingOfflineRecipes = false
+    @Published var offlineRecipeSyncProgress: Double?
     @Published var networkReachabilityTrigger = 0
     private var isNetworkReachable = false
 
@@ -45,6 +47,7 @@ final class AppEnvironment: ObservableObject {
             profileStore.setActiveProfileID(activeProfile.id)
             recipeCacheSnapshot = recipeOfflineCache.snapshot(profileID: activeProfile.id)
         }
+        refreshAllRecipeCacheSnapshot()
 
         if configuration.useMockServer,
            let token = configuration.debugAuthToken,
@@ -61,6 +64,7 @@ final class AppEnvironment: ObservableObject {
             self.activeProfile = profile
             self.hasServerProfiles = true
             recipeCacheSnapshot = recipeOfflineCache.snapshot(profileID: profile.id)
+            refreshAllRecipeCacheSnapshot()
         }
 
         startNetworkMonitor()
@@ -122,14 +126,26 @@ final class AppEnvironment: ObservableObject {
     func refreshRecipeCacheSnapshot() {
         guard let activeProfile else {
             recipeCacheSnapshot = .empty
+            refreshAllRecipeCacheSnapshot()
             return
         }
         recipeCacheSnapshot = recipeOfflineCache.snapshot(profileID: activeProfile.id)
+        refreshAllRecipeCacheSnapshot()
+    }
+
+    func refreshAllRecipeCacheSnapshot() {
+        let snapshots = profileStore.allProfiles().map { recipeOfflineCache.snapshot(profileID: $0.id) }
+        allRecipeCacheSnapshot = RecipeOfflineCacheSnapshot(
+            recipeCount: snapshots.reduce(0) { $0 + $1.recipeCount },
+            byteCount: snapshots.reduce(0) { $0 + $1.byteCount },
+            lastUpdated: snapshots.compactMap(\.lastUpdated).max()
+        )
     }
 
     func clearOfflineRecipes() {
-        guard let activeProfile else { return }
-        recipeOfflineCache.clear(profileID: activeProfile.id)
+        for profile in profileStore.allProfiles() {
+            recipeOfflineCache.clear(profileID: profile.id)
+        }
         refreshRecipeCacheSnapshot()
     }
 
@@ -144,7 +160,13 @@ final class AppEnvironment: ObservableObject {
               let profile = activeProfile,
               let token = try? credentialStore.loadToken(for: profile.id) else { return }
         isSyncingOfflineRecipes = true
-        defer { isSyncingOfflineRecipes = false }
+        offlineRecipeSyncProgress = 0
+        var downloadedRecipeCount = 0
+        var expectedRecipeCount: Int?
+        defer {
+            isSyncingOfflineRecipes = false
+            offlineRecipeSyncProgress = nil
+        }
 
         var pageNumber = 1
         var totalPages = 1
@@ -158,7 +180,13 @@ final class AppEnvironment: ObservableObject {
                     filters: MealieRecipeFilters()
                 )
                 totalPages = page.totalPages ?? page.total.map { Int(ceil(Double($0) / Double(page.perPage))) } ?? pageNumber
-                await cacheRecipesOffline(page.items, profile: profile, token: token, force: force)
+                expectedRecipeCount = page.total ?? expectedRecipeCount ?? (totalPages * page.perPage)
+                await cacheRecipesOffline(page.items, profile: profile, token: token, force: force) {
+                    downloadedRecipeCount += 1
+                    if let expectedRecipeCount, expectedRecipeCount > 0 {
+                        self.offlineRecipeSyncProgress = min(Double(downloadedRecipeCount) / Double(expectedRecipeCount), 1)
+                    }
+                }
                 pageNumber += 1
             } catch {
                 break
@@ -168,12 +196,20 @@ final class AppEnvironment: ObservableObject {
         refreshRecipeCacheSnapshot()
     }
 
-    func cacheRecipesOffline(_ recipes: [MealieRecipeSummary], profile: ServerProfile, token: MealieAuthToken, force: Bool = false) async {
+    func cacheRecipesOffline(
+        _ recipes: [MealieRecipeSummary],
+        profile: ServerProfile,
+        token: MealieAuthToken,
+        force: Bool = false,
+        onRecipeCached: (() -> Void)? = nil
+    ) async {
         for recipe in recipes {
             if !force, recipeOfflineCache.cachedRecipeDetail(profileID: profile.id, slug: recipe.slug) != nil {
+                onRecipeCached?()
                 continue
             }
             await cacheRecipeOffline(recipe, profile: profile, token: token)
+            onRecipeCached?()
         }
         refreshRecipeCacheSnapshot()
     }

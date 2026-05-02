@@ -3,23 +3,11 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject private var env: AppEnvironment
     @Environment(\.dismiss) private var dismiss
-    @State private var confirmClearOfflineRecipes = false
     @State private var showAddServer = false
     @State private var revealedServerID: UUID?
 
     private var profiles: [ServerProfile] {
         env.profileStore.allProfiles()
-    }
-
-    private var cacheSizeText: String {
-        ByteCountFormatter.string(fromByteCount: env.recipeCacheSnapshot.byteCount, countStyle: .file)
-    }
-
-    private var lastSyncText: String {
-        guard let lastUpdated = env.recipeCacheSnapshot.lastUpdated else {
-            return String(localized: "Never")
-        }
-        return lastUpdated.formatted(date: .abbreviated, time: .shortened)
     }
 
     var body: some View {
@@ -34,19 +22,6 @@ struct SettingsView: View {
             OnboardingFlowView {
                 showAddServer = false
             }
-        }
-        .task(id: env.activeProfile?.id) {
-            env.refreshRecipeCacheSnapshot()
-        }
-        .background {
-            DestructiveConfirmationPresenter(
-                isPresented: $confirmClearOfflineRecipes,
-                title: String(localized: "Clear offline recipes from this device?"),
-                message: String(localized: "Recipes will stay on your Mealie server, but cached copies and images on this device will be removed."),
-                destructiveTitle: String(localized: "Clear Offline Recipes"),
-                onConfirm: env.clearOfflineRecipes
-            )
-            .frame(width: 0, height: 0)
         }
     }
 
@@ -113,74 +88,16 @@ struct SettingsView: View {
 
                 SettingsSection("Offline Recipes") {
                     SettingsGroup {
-                        SettingsRowContent(
-                            title: Text("Recipes Cached"),
-                            systemImage: "book.closed",
-                            accessory: .value(env.recipeCacheSnapshot.recipeCount.formatted())
-                        )
-
-                        SettingsDivider()
-
-                        SettingsRowContent(
-                            title: Text("Storage Used"),
-                            systemImage: "internaldrive",
-                            accessory: .value(cacheSizeText)
-                        )
-
-                        SettingsDivider()
-
-                        SettingsRowContent(
-                            title: Text("Last Updated"),
-                            systemImage: "clock.arrow.circlepath",
-                            accessory: .value(lastSyncText)
-                        )
-
-                        if env.isSyncingOfflineRecipes {
-                            SettingsDivider()
-
-                            HStack(spacing: DesignSystem.Spacing.md) {
-                                ProgressView()
-                                    .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
-
-                                Text("Syncing offline recipes…")
-                                    .foregroundStyle(.secondary)
-
-                                Spacer(minLength: DesignSystem.Spacing.md)
-                            }
-                            .padding(.horizontal, DesignSystem.Spacing.lg)
-                            .padding(.vertical, DesignSystem.Spacing.md)
-                            .accessibilityElement(children: .combine)
-                            .accessibilityLabel("Syncing offline recipes")
-                        }
-
-                        SettingsDivider()
-
-                        Button {
-                            Task { await env.syncOfflineRecipes(force: true) }
+                        NavigationLink {
+                            StorageSettingsView()
                         } label: {
                             SettingsRowContent(
-                                title: Text("Sync Offline Recipes"),
-                                systemImage: "arrow.triangle.2.circlepath",
+                                title: Text("Storage"),
+                                systemImage: "internaldrive",
                                 accessory: .chevron
                             )
                         }
                         .buttonStyle(.plain)
-                        .disabled(env.activeProfile == nil || env.isSyncingOfflineRecipes)
-
-                        SettingsDivider()
-
-                        Button(role: .destructive) {
-                            confirmClearOfflineRecipes = true
-                        } label: {
-                            SettingsRowContent(
-                                title: Text("Clear Offline Recipes"),
-                                systemImage: "trash",
-                                accessory: .none,
-                                isDestructive: true
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .disabled(env.recipeCacheSnapshot.byteCount == 0)
                     }
                 }
 
@@ -234,6 +151,120 @@ struct SettingsView: View {
         if !env.hasServerProfiles {
             dismiss()
         }
+    }
+}
+
+private struct StorageSettingsView: View {
+    @EnvironmentObject private var env: AppEnvironment
+    @State private var confirmClearOfflineRecipes = false
+
+    private var cacheSizeText: String {
+        ByteCountFormatter.string(fromByteCount: env.allRecipeCacheSnapshot.byteCount, countStyle: .file)
+    }
+
+    private var lastSyncText: String {
+        guard let lastUpdated = env.allRecipeCacheSnapshot.lastUpdated else {
+            return String(localized: "Never")
+        }
+        return lastUpdated.formatted(date: .abbreviated, time: .shortened)
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xxl) {
+                SettingsSection("Offline Recipes") {
+                    SettingsGroup {
+                        SettingsRowContent(
+                            title: Text("Recipes Cached"),
+                            systemImage: "book.closed",
+                            accessory: .value(env.allRecipeCacheSnapshot.recipeCount.formatted())
+                        )
+
+                        SettingsDivider()
+
+                        SettingsRowContent(
+                            title: Text("Storage Used"),
+                            systemImage: "internaldrive",
+                            accessory: .value(cacheSizeText)
+                        )
+
+                        SettingsDivider()
+
+                        SettingsRowContent(
+                            title: Text("Last Updated"),
+                            systemImage: "clock.arrow.circlepath",
+                            accessory: .value(lastSyncText)
+                        )
+
+                        SettingsDivider()
+
+                        Button(role: .destructive) {
+                            confirmClearOfflineRecipes = true
+                        } label: {
+                            SettingsRowContent(
+                                title: Text("Clear Offline Recipes"),
+                                systemImage: "trash",
+                                accessory: .none,
+                                isDestructive: true
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(env.allRecipeCacheSnapshot.byteCount == 0)
+                    }
+
+                    Button {
+                        Task { await env.syncOfflineRecipes(force: true) }
+                    } label: {
+                        ZStack(alignment: .bottomLeading) {
+                            Label("Download Recipes", systemImage: "arrow.down.circle.fill")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity, minHeight: DesignSystem.HitTarget.minimum)
+
+                            if env.isSyncingOfflineRecipes {
+                                ProgressView(value: env.offlineRecipeSyncProgress ?? 0, total: 1)
+                                    .progressViewStyle(.linear)
+                                    .tint(.white)
+                                    .padding(.horizontal, DesignSystem.Spacing.lg)
+                                    .padding(.bottom, DesignSystem.Spacing.xs)
+                            }
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(env.activeProfile == nil || env.isSyncingOfflineRecipes)
+                    .accessibilityLabel(env.isSyncingOfflineRecipes ? downloadProgressAccessibilityLabel : String(localized: "Download Recipes"))
+                }
+            }
+            .padding(.horizontal, DesignSystem.Spacing.lg)
+            .padding(.top, DesignSystem.Spacing.lg)
+            .padding(.bottom, DesignSystem.Spacing.xxl)
+        }
+        .background(DesignSystem.Colors.background)
+        .scrollContentBackground(.hidden)
+        .navigationTitle("Storage")
+        .task(id: env.activeProfile?.id) {
+            env.refreshAllRecipeCacheSnapshot()
+        }
+        .background {
+            DestructiveConfirmationPresenter(
+                isPresented: $confirmClearOfflineRecipes,
+                title: String(localized: "Clear offline recipes from this device?"),
+                message: String(localized: "Recipes will stay on your Mealie server, but cached copies and images on this device will be removed."),
+                destructiveTitle: String(localized: "Clear Offline Recipes"),
+                onConfirm: env.clearOfflineRecipes
+            )
+            .frame(width: 0, height: 0)
+        }
+    }
+
+    private var downloadProgressText: String {
+        guard let progress = env.offlineRecipeSyncProgress else {
+            return String(localized: "Downloading recipes…")
+        }
+        return progress.formatted(.percent.precision(.fractionLength(0)))
+    }
+
+    private var downloadProgressAccessibilityLabel: String {
+        String(localized: "Downloading recipes, \(downloadProgressText)")
     }
 }
 
