@@ -93,9 +93,13 @@ struct RecipeHeroSection: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 Button(action: onStartMaking) {
-                    Label("Start Making", systemImage: "play.circle.fill")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity, minHeight: DesignSystem.HitTarget.minimum)
+                    HStack(spacing: DesignSystem.Spacing.sm) {
+                        Image(systemName: "play.circle.fill")
+                            .accessibilityHidden(true)
+                        Text("Start Making")
+                    }
+                    .font(.headline)
+                    .frame(maxWidth: .infinity, minHeight: DesignSystem.HitTarget.minimum, alignment: .center)
                 }
                 .buttonStyle(.borderedProminent)
                 .accessibilityLabel("Start making mode")
