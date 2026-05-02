@@ -58,13 +58,20 @@ struct RecipeHeroSection: View {
                         Text(detail.displayName)
                             .font(.title2)
                             .fontWeight(.semibold)
+                            .lineLimit(nil)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
 
                         if let description = detail.description, !description.isEmpty {
                             Text(description)
                                 .font(.body)
                                 .foregroundStyle(.secondary)
+                                .lineLimit(nil)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                     RecipeMetadataView(detail: detail, adjustedServings: $adjustedServings)
 
@@ -83,6 +90,7 @@ struct RecipeHeroSection: View {
                         }
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 Button(action: onStartMaking) {
                     Label("Start Making", systemImage: "play.circle.fill")
