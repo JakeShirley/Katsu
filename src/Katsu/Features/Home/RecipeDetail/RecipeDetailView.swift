@@ -111,7 +111,7 @@ struct RecipeDetailView: View {
         }
         .fullScreenCover(isPresented: $isShowingMakingMode) {
             if let detail {
-                RecipeMakingModeView(detail: detail)
+                RecipeMakingModeView(detail: detail, ingredientScaleFactor: ingredientScaleFactor(for: detail))
             }
         }
     }

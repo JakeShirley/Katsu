@@ -3,6 +3,7 @@ import SwiftUI
 
 struct RecipeMakingModeView: View {
     let detail: MealieRecipeDetail
+    let ingredientScaleFactor: Double
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var selectedPage = 0
@@ -36,6 +37,7 @@ struct RecipeMakingModeView: View {
                 TabView(selection: $selectedPage) {
                     ForEach(Array(pages.enumerated()), id: \.offset) { index, page in
                         RecipeMakingCard(page: page, totalSteps: max(pages.count - 1, 0))
+                            .environment(\.recipeIngredientScaleFactor, ingredientScaleFactor)
                             .tag(index)
                             .padding(.horizontal, DesignSystem.Spacing.lg)
                             .accessibilityElement(children: .contain)
@@ -353,10 +355,11 @@ private struct RecipeMakingCard: View {
 }
 
 private struct RecipeMakingIngredientRow: View {
+    @Environment(\.recipeIngredientScaleFactor) private var scaleFactor
     let ingredient: MealieRecipeIngredient
 
     private var display: RecipeIngredientDisplay {
-        RecipeIngredientDisplay(ingredient: ingredient)
+        RecipeIngredientDisplay(ingredient: ingredient, scaleFactor: scaleFactor)
     }
 
     var body: some View {
@@ -387,5 +390,16 @@ private struct RecipeMakingIngredientRow: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(display.accessibilityLabel)
+    }
+}
+
+private struct RecipeIngredientScaleFactorKey: EnvironmentKey {
+    static let defaultValue = 1.0
+}
+
+private extension EnvironmentValues {
+    var recipeIngredientScaleFactor: Double {
+        get { self[RecipeIngredientScaleFactorKey.self] }
+        set { self[RecipeIngredientScaleFactorKey.self] = newValue }
     }
 }
