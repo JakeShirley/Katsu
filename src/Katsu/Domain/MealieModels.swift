@@ -530,6 +530,12 @@ struct MealieRecipeNutritionEntry: Identifiable, Equatable {
 
 struct MealieRecipeSettings: Codable, Equatable {
     let showNutrition: Bool?
+    let disableAmount: Bool?
+
+    init(showNutrition: Bool?, disableAmount: Bool? = nil) {
+        self.showNutrition = showNutrition
+        self.disableAmount = disableAmount
+    }
 }
 
 struct MealieRecipeAsset: Codable, Equatable, Identifiable {

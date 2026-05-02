@@ -3,6 +3,7 @@ import SwiftUI
 struct RecipeHeroSection: View {
     @EnvironmentObject private var env: AppEnvironment
     let detail: MealieRecipeDetail
+    @Binding var adjustedServings: Double?
     let profileID: UUID?
     let serverURL: URL?
     let onStartMaking: () -> Void
@@ -65,7 +66,7 @@ struct RecipeHeroSection: View {
                         }
                     }
 
-                    RecipeMetadataView(detail: detail)
+                    RecipeMetadataView(detail: detail, adjustedServings: $adjustedServings)
 
                     let chips = (detail.recipeCategory ?? []) + (detail.tags ?? [])
                     if !chips.isEmpty {
@@ -82,8 +83,6 @@ struct RecipeHeroSection: View {
                         }
                     }
                 }
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel(heroAccessibilityLabel)
 
                 Button(action: onStartMaking) {
                     Label("Start Making", systemImage: "play.circle.fill")
@@ -97,18 +96,4 @@ struct RecipeHeroSection: View {
         }
     }
 
-    private var heroAccessibilityLabel: String {
-        [
-            detail.displayName,
-            detail.description,
-            detail.recipeYield,
-            detail.totalTime.flatMap(recipeReadableDuration).map { String(localized: "Total time \($0)") },
-            detail.rating.map { String(localized: "Rating \($0)") }
-        ]
-        .compactMap { value -> String? in
-            guard let value, !value.isEmpty else { return nil }
-            return value
-        }
-        .joined(separator: ", ")
-    }
 }

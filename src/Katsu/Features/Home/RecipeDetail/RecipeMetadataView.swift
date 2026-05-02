@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RecipeMetadataView: View {
     let detail: MealieRecipeDetail
+    @Binding var adjustedServings: Double?
 
     var body: some View {
         let totalTime = detail.totalTime.flatMap(recipeReadableDuration)
@@ -9,11 +10,6 @@ struct RecipeMetadataView: View {
         let cookTime = detail.cookTime.flatMap(recipeReadableDuration)
 
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
-            if let recipeYield = detail.recipeYield, !recipeYield.isEmpty {
-                Label(recipeYield, systemImage: "fork.knife")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
             if let totalTime {
                 RecipeTotalTimeCard(totalTime: totalTime)
             }
@@ -31,6 +27,94 @@ struct RecipeMetadataView: View {
                     .foregroundStyle(.secondary)
             }
         }
+    }
+}
+
+extension MealieRecipeDetail {
+    var defaultServings: Double? {
+        if let recipeServings, recipeServings > 0 {
+            return recipeServings
+        }
+        if let recipeYieldQuantity, recipeYieldQuantity > 0 {
+            return recipeYieldQuantity
+        }
+        return nil
+    }
+
+    var canAdjustServings: Bool {
+        guard defaultServings != nil, settings?.disableAmount != true else { return false }
+        return recipeIngredient.contains { ingredient in
+            (ingredient.quantity ?? 0) > 0
+        }
+    }
+}
+
+struct RecipeServingsMetric: View {
+    let detail: MealieRecipeDetail
+    @Binding var adjustedServings: Double?
+
+    private var servingValue: Binding<Double> {
+        Binding(
+            get: { adjustedServings ?? detail.defaultServings ?? 1 },
+            set: { adjustedServings = max(1, $0) }
+        )
+    }
+
+    private var servingDisplayValue: String {
+        Self.formatServings(adjustedServings ?? detail.defaultServings) ?? detail.recipeYield?.nilIfBlank ?? "-"
+    }
+
+    var body: some View {
+        Group {
+            if detail.canAdjustServings {
+                Stepper(value: servingValue, in: 1...99, step: 1) {
+                    label
+                }
+                .accessibilityLabel("Adjust servings")
+                .accessibilityValue(servingDisplayValue)
+            } else {
+                label
+            }
+        }
+        .padding(DesignSystem.Spacing.md)
+        .background(DesignSystem.Colors.background, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.md))
+        .accessibilityElement(children: detail.canAdjustServings ? .contain : .combine)
+        .accessibilityLabel(detail.canAdjustServings ? "Adjust servings" : String(localized: "Servings: \(servingDisplayValue)"))
+    }
+
+    private var label: some View {
+        HStack(spacing: DesignSystem.Spacing.md) {
+            Image(systemName: "person.2.fill")
+                .foregroundStyle(DesignSystem.Colors.accentDeep)
+                .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                .background(DesignSystem.Colors.accentSoft, in: Circle())
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xxs) {
+                Text("Servings")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(servingDisplayValue)
+                    .font(.title3.monospacedDigit())
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.primary)
+                if detail.defaultServings == nil,
+                   let recipeYield = detail.recipeYield?.nilIfBlank,
+                   recipeYield != servingDisplayValue {
+                    Text(recipeYield)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+
+    private static func formatServings(_ value: Double?) -> String? {
+        guard let value else { return nil }
+        if value.rounded() == value {
+            return String(Int(value))
+        }
+        return String(format: "%.1f", value).trimmingTrailingZeros()
     }
 }
 

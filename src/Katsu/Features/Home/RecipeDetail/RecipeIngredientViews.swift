@@ -2,9 +2,10 @@ import SwiftUI
 
 struct RecipeIngredientRow: View {
     let ingredient: MealieRecipeIngredient
+    var scaleFactor = 1.0
 
     private var display: RecipeIngredientDisplay {
-        RecipeIngredientDisplay(ingredient: ingredient)
+        RecipeIngredientDisplay(ingredient: ingredient, scaleFactor: scaleFactor)
     }
 
     var body: some View {
@@ -63,8 +64,8 @@ struct RecipeIngredientDisplay {
             .joined(separator: ", ")
     }
 
-    init(ingredient: MealieRecipeIngredient) {
-        let structuredMeasurement = Self.structuredMeasurement(for: ingredient)
+    init(ingredient: MealieRecipeIngredient, scaleFactor: Double = 1) {
+        let structuredMeasurement = Self.structuredMeasurement(for: ingredient, scaleFactor: scaleFactor)
         let structuredName = ingredient.food?.name?.nilIfBlank
 
         if let structuredMeasurement, let structuredName {
@@ -86,8 +87,9 @@ struct RecipeIngredientDisplay {
         note = Self.distinctNote(ingredient.note, from: [ingredient.displayText, ingredient.display])
     }
 
-    private static func structuredMeasurement(for ingredient: MealieRecipeIngredient) -> String? {
-        guard let quantity = ingredient.quantity.flatMap(formatQuantity),
+    private static func structuredMeasurement(for ingredient: MealieRecipeIngredient, scaleFactor: Double) -> String? {
+        guard let rawQuantity = ingredient.quantity,
+              let quantity = formatQuantity(rawQuantity * scaleFactor),
               let unit = ingredient.unit?.abbreviation?.nilIfBlank ?? ingredient.unit?.name?.nilIfBlank else {
             return nil
         }
@@ -99,9 +101,7 @@ struct RecipeIngredientDisplay {
         if quantity.rounded() == quantity {
             return String(Int(quantity))
         }
-        return String(format: "%.2f", quantity)
-            .trimmingCharacters(in: CharacterSet(charactersIn: "0"))
-            .trimmingCharacters(in: CharacterSet(charactersIn: "."))
+        return String(format: "%.2f", quantity).trimmingTrailingZeros()
     }
 
     private static func distinctNote(_ note: String?, from displayedValues: [String?]) -> String? {
@@ -126,5 +126,17 @@ extension String {
     var nilIfBlank: String? {
         let trimmed = trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed.isEmpty ? nil : trimmed
+    }
+
+    func trimmingTrailingZeros() -> String {
+        guard contains(".") else { return self }
+        var value = self
+        while value.last == "0" {
+            value.removeLast()
+        }
+        if value.last == "." {
+            value.removeLast()
+        }
+        return value
     }
 }

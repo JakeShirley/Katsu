@@ -12,6 +12,7 @@ struct RecipeDetailView: View {
     @State private var ratingError: String?
     @State private var showingCachedDetail = false
     @State private var isShowingMakingMode = false
+    @State private var adjustedServings: Double?
 
     var body: some View {
         List {
@@ -45,6 +46,7 @@ struct RecipeDetailView: View {
 
                 RecipeHeroSection(
                     detail: detail,
+                    adjustedServings: $adjustedServings,
                     profileID: env.activeProfile?.id,
                     serverURL: env.activeProfile?.serverURL,
                     onStartMaking: { isShowingMakingMode = true }
@@ -62,8 +64,12 @@ struct RecipeDetailView: View {
 
                 if !detail.recipeIngredient.isEmpty {
                     Section("Ingredients") {
+                        if detail.defaultServings != nil || detail.recipeYield?.nilIfBlank != nil {
+                            RecipeServingsMetric(detail: detail, adjustedServings: $adjustedServings)
+                        }
+
                         ForEach(detail.recipeIngredient) { ingredient in
-                            RecipeIngredientRow(ingredient: ingredient)
+                            RecipeIngredientRow(ingredient: ingredient, scaleFactor: ingredientScaleFactor(for: detail))
                         }
                     }
                 }
@@ -134,6 +140,7 @@ struct RecipeDetailView: View {
             )
             let loadedDetail = try JSONDecoder().decode(MealieRecipeDetail.self, from: rawData)
             detail = loadedDetail
+            adjustedServings = loadedDetail.defaultServings
             if let recipeID = loadedDetail.recipeID {
                 userRating = try await env.apiClient.fetchUserRating(
                     serverURL: profile.serverURL,
@@ -147,6 +154,7 @@ struct RecipeDetailView: View {
         } catch let error as AppError {
             if error == .offline, let cached = env.recipeOfflineCache.cachedRecipeDetail(profileID: profile.id, slug: recipe.slug) {
                 detail = cached
+                adjustedServings = cached.defaultServings
                 showingCachedDetail = true
                 loadError = nil
             } else {
@@ -208,5 +216,16 @@ struct RecipeDetailView: View {
         let currentUser = try await env.apiClient.fetchCurrentUser(serverURL: profile.serverURL, token: token)
         env.currentUser = currentUser
         return currentUser
+    }
+
+    private func ingredientScaleFactor(for detail: MealieRecipeDetail) -> Double {
+        guard detail.canAdjustServings,
+              let defaultServings = detail.defaultServings,
+              defaultServings > 0,
+              let adjustedServings,
+              adjustedServings > 0 else {
+            return 1
+        }
+        return adjustedServings / defaultServings
     }
 }
