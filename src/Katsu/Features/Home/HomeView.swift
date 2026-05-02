@@ -5,58 +5,103 @@ struct HomeView: View {
     @EnvironmentObject private var env: AppEnvironment
     @State private var selectedTab: HomeTab = .recipes
 
+    private var enabledTabs: [HomeTab] {
+        env.tabLayout.filter(\.isEnabled).map(\.tab)
+    }
+
     var body: some View {
         if env.activeProfile == nil && !env.hasServerProfiles {
             AddServerHomeView()
         } else {
             TabView(selection: $selectedTab) {
-                RecipesView()
-                    .tabItem {
-                        Label("Recipes", systemImage: "book.closed")
-                    }
-                    .tag(HomeTab.recipes)
-
-                RecipeSearchView()
-                    .tabItem {
-                        Label("Search", systemImage: "magnifyingglass")
-                    }
-                    .tag(HomeTab.search)
-
-                MealPlansView()
-                    .tabItem {
-                        Label("Meal Plans", systemImage: "calendar")
-                    }
-                    .tag(HomeTab.mealPlans)
-
-                ShoppingListsView()
-                    .tabItem {
-                        Label("Shopping", systemImage: "cart")
-                    }
-                    .tag(HomeTab.shopping)
-
-                NavigationStack {
-                    SettingsView()
+                ForEach(enabledTabs) { tab in
+                    tab.destination
+                        .tabItem { tab.label }
+                        .tag(tab)
                 }
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape")
+            }
+            .onChange(of: enabledTabs) { _, tabs in
+                if !tabs.contains(selectedTab) {
+                    selectedTab = tabs.first ?? .settings
                 }
-                .tag(HomeTab.settings)
             }
             .onAppear {
                 if env.configuration.openSettingsOnLaunch {
                     selectedTab = .settings
+                } else if !enabledTabs.contains(selectedTab) {
+                    selectedTab = enabledTabs.first ?? .settings
                 }
             }
         }
     }
 }
 
-private enum HomeTab: Hashable {
-    case recipes
-    case search
-    case mealPlans
-    case shopping
-    case settings
+extension HomeTab {
+    var title: LocalizedStringKey {
+        switch self {
+        case .recipes:
+            "Recipes"
+        case .shopping:
+            "Shopping"
+        case .settings:
+            "Settings"
+        case .search:
+            "Search"
+        case .mealPlans:
+            "Meal Plans"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .recipes:
+            "book.closed"
+        case .shopping:
+            "cart"
+        case .settings:
+            "gearshape"
+        case .search:
+            "magnifyingglass"
+        case .mealPlans:
+            "calendar"
+        }
+    }
+
+    var label: some View {
+        Label(title, systemImage: systemImage)
+    }
+
+    @ViewBuilder var destination: some View {
+        switch self {
+        case .recipes:
+            RecipesView()
+        case .shopping:
+            ShoppingListsView()
+        case .settings:
+            NavigationStack {
+                SettingsView()
+            }
+        case .search:
+            RecipeSearchView()
+        case .mealPlans:
+            MealPlansView()
+        }
+    }
+
+    var localizedTitle: String {
+        switch self {
+        case .recipes:
+            String(localized: "Recipes")
+        case .shopping:
+            String(localized: "Shopping")
+        case .settings:
+            String(localized: "Settings")
+        case .search:
+            String(localized: "Search")
+        case .mealPlans:
+            String(localized: "Meal Plans")
+        }
+    }
 }
 
 private struct AddServerHomeView: View {

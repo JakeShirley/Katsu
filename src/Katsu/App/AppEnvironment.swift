@@ -24,6 +24,7 @@ final class AppEnvironment: ObservableObject {
     @Published var isSyncingOfflineRecipes = false
     @Published var offlineRecipeSyncProgress: Double?
     @Published var networkReachabilityTrigger = 0
+    @Published var tabLayout: [HomeTabLayoutItem]
     private var isNetworkReachable = false
 
     init(
@@ -40,6 +41,7 @@ final class AppEnvironment: ObservableObject {
         self.profileStore = profileStore
         self.preferenceStore = preferenceStore
         self.recipeOfflineCache = recipeOfflineCache
+        self.tabLayout = preferenceStore.tabLayout
         let storedProfiles = profileStore.allProfiles()
         self.activeProfile = profileStore.activeProfile() ?? storedProfiles.first
         self.hasServerProfiles = !storedProfiles.isEmpty
@@ -147,6 +149,11 @@ final class AppEnvironment: ObservableObject {
             recipeOfflineCache.clear(profileID: profile.id)
         }
         refreshRecipeCacheSnapshot()
+    }
+
+    func updateTabLayout(_ layout: [HomeTabLayoutItem]) {
+        tabLayout = HomeTabLayoutItem.normalized(layout)
+        preferenceStore.tabLayout = tabLayout
     }
 
     func syncOfflineRecipesIfNeeded() async {

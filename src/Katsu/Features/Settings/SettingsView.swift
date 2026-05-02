@@ -101,6 +101,21 @@ struct SettingsView: View {
                     }
                 }
 
+                SettingsSection("Layout") {
+                    SettingsGroup {
+                        NavigationLink {
+                            LayoutSettingsView()
+                        } label: {
+                            SettingsRowContent(
+                                title: Text("Tabs"),
+                                systemImage: "rectangle.3.group",
+                                accessory: .chevron
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
                 SettingsSection("About") {
                     SettingsGroup {
                         NavigationLink {
@@ -151,6 +166,79 @@ struct SettingsView: View {
         if !env.hasServerProfiles {
             dismiss()
         }
+    }
+}
+
+private struct LayoutSettingsView: View {
+    @EnvironmentObject private var env: AppEnvironment
+    @State private var tabLayout = HomeTabLayoutItem.defaultLayout
+
+    var body: some View {
+        List {
+            Section("Tabs") {
+                ForEach($tabLayout) { $item in
+                    if item.tab.isRequired {
+                        HomeTabLayoutRow(item: item)
+                            .accessibilityLabel(Text(item.tab.title))
+                    } else {
+                        Toggle(isOn: Binding(
+                            get: { item.isEnabled },
+                            set: { isEnabled in
+                                item.isEnabled = isEnabled
+                                saveLayout()
+                            }
+                        )) {
+                            HomeTabLayoutRow(item: item)
+                        }
+                        .accessibilityLabel(Text(item.tab.title))
+                    }
+                }
+                .onMove { source, destination in
+                    tabLayout.move(fromOffsets: source, toOffset: destination)
+                    saveLayout()
+                }
+            }
+        }
+        .listStyle(.insetGrouped)
+        .background(DesignSystem.Colors.background)
+        .scrollContentBackground(.hidden)
+        .navigationTitle("Layout")
+        .environment(\.editMode, .constant(.active))
+        .onAppear {
+            tabLayout = env.tabLayout
+        }
+        .onChange(of: env.tabLayout) { _, newLayout in
+            if tabLayout != newLayout {
+                tabLayout = newLayout
+            }
+        }
+    }
+
+    private func saveLayout() {
+        tabLayout = HomeTabLayoutItem.normalized(tabLayout)
+        env.updateTabLayout(tabLayout)
+    }
+}
+
+private struct HomeTabLayoutRow: View {
+    let item: HomeTabLayoutItem
+
+    var body: some View {
+        HStack(spacing: DesignSystem.Spacing.md) {
+            Image(systemName: item.tab.systemImage)
+                .font(.title3)
+                .fontWeight(.semibold)
+                .foregroundStyle(DesignSystem.Colors.accent)
+                .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                .background(DesignSystem.Colors.background, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.md, style: .continuous))
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                Text(item.tab.title)
+                    .font(.body)
+            }
+        }
+        .frame(minHeight: DesignSystem.HitTarget.minimum)
     }
 }
 
