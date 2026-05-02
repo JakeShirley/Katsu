@@ -7,7 +7,7 @@ struct RecipeMetadataView: View {
     var body: some View {
         let totalTime = detail.totalTime.flatMap(recipeReadableDuration)
         let prepTime = detail.prepTime.flatMap(recipeReadableDuration)
-        let cookTime = detail.cookTime.flatMap(recipeReadableDuration)
+        let cookTime = (detail.cookTime ?? detail.performTime).flatMap(recipeReadableDuration)
 
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
             if let totalTime {
@@ -121,22 +121,35 @@ struct RecipeServingsMetric: View {
 func recipeReadableDuration(_ value: String) -> String? {
     let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
     guard !trimmed.isEmpty else { return nil }
-    guard trimmed.hasPrefix("PT") else { return trimmed }
+
+    guard trimmed.hasPrefix("P") else { return trimmed }
 
     var hours = 0
     var minutes = 0
+    var isTimeComponent = false
     var number = ""
 
-    for character in trimmed.dropFirst(2) {
+    for character in trimmed.dropFirst() {
         if character.isNumber {
             number.append(character)
+        } else if character == "T" {
+            isTimeComponent = true
         } else {
             guard let durationValue = Int(number) else { return trimmed }
             switch character {
+            case "D":
+                hours += durationValue * 24
             case "H":
-                hours = durationValue
+                guard isTimeComponent else { return trimmed }
+                hours += durationValue
             case "M":
-                minutes = durationValue
+                guard isTimeComponent else { return trimmed }
+                minutes += durationValue
+            case "S":
+                guard isTimeComponent else { return trimmed }
+                if durationValue >= 30 {
+                    minutes += 1
+                }
             default:
                 return trimmed
             }
