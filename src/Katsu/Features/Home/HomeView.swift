@@ -46,10 +46,10 @@ extension HomeTab {
             "Shopping"
         case .settings:
             "Settings"
-        case .search:
-            "Search"
         case .mealPlans:
             "Meal Plans"
+        case .search:
+            "Search"
         }
     }
 
@@ -61,10 +61,10 @@ extension HomeTab {
             "cart"
         case .settings:
             "gearshape"
-        case .search:
-            "magnifyingglass"
         case .mealPlans:
             "calendar"
+        case .search:
+            "magnifyingglass"
         }
     }
 
@@ -82,10 +82,10 @@ extension HomeTab {
             NavigationStack {
                 SettingsView()
             }
-        case .search:
-            RecipeSearchView()
         case .mealPlans:
             MealPlansView()
+        case .search:
+            RecipesView()
         }
     }
 
@@ -97,10 +97,10 @@ extension HomeTab {
             String(localized: "Shopping")
         case .settings:
             String(localized: "Settings")
-        case .search:
-            String(localized: "Search")
         case .mealPlans:
             String(localized: "Meal Plans")
+        case .search:
+            String(localized: "Search")
         }
     }
 }

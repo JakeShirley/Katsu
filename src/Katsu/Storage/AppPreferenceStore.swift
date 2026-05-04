@@ -21,7 +21,11 @@ enum HomeTab: String, Codable, CaseIterable, Hashable, Identifiable {
         self == .settings
     }
 
-    static let defaultOrder: [HomeTab] = [.recipes, .shopping, .search, .mealPlans, .settings]
+    var isAvailableInTabBar: Bool {
+        self != .search
+    }
+
+    static let defaultOrder: [HomeTab] = [.recipes, .shopping, .mealPlans, .settings]
     static let defaultEnabled: Set<HomeTab> = [.recipes, .shopping, .settings]
 }
 
@@ -41,7 +45,7 @@ struct HomeTabLayoutItem: Codable, Equatable, Identifiable {
         var seenTabs = Set<HomeTab>()
         var normalized = [HomeTabLayoutItem]()
 
-        for item in layout where !seenTabs.contains(item.tab) {
+        for item in layout where item.tab.isAvailableInTabBar && !seenTabs.contains(item.tab) {
             seenTabs.insert(item.tab)
             normalized.append(HomeTabLayoutItem(tab: item.tab, isEnabled: item.isEnabled || item.tab.isRequired))
         }

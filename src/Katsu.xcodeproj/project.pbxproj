@@ -26,7 +26,6 @@
 		AA00010044 /* MealPlansView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010044 /* MealPlansView.swift */; };
 		AA00010045 /* ShoppingListsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010045 /* ShoppingListsView.swift */; };
 		AA00010100 /* RecipesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010100 /* RecipesView.swift */; };
-		AA00010101 /* RecipeSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010101 /* RecipeSearchView.swift */; };
 		AA00010102 /* RecipeResultsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010102 /* RecipeResultsList.swift */; };
 		AA00010103 /* RecipeRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010103 /* RecipeRow.swift */; };
 		AA00010104 /* ImportRecipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010104 /* ImportRecipeView.swift */; };
@@ -73,7 +72,6 @@
 		BB00010044 /* MealPlansView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlansView.swift; sourceTree = "<group>"; };
 		BB00010045 /* ShoppingListsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListsView.swift; sourceTree = "<group>"; };
 		BB00010100 /* RecipesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesView.swift; sourceTree = "<group>"; };
-		BB00010101 /* RecipeSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeSearchView.swift; sourceTree = "<group>"; };
 		BB00010102 /* RecipeResultsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeResultsList.swift; sourceTree = "<group>"; };
 		BB00010103 /* RecipeRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeRow.swift; sourceTree = "<group>"; };
 		BB00010104 /* ImportRecipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportRecipeView.swift; sourceTree = "<group>"; };
@@ -216,7 +214,6 @@
 			isa = PBXGroup;
 			children = (
 				BB00010100 /* RecipesView.swift */,
-				BB00010101 /* RecipeSearchView.swift */,
 				BB00010102 /* RecipeResultsList.swift */,
 				BB00010103 /* RecipeRow.swift */,
 				BB00010104 /* ImportRecipeView.swift */,
@@ -394,7 +391,6 @@
 				AA00010040 /* OnboardingFlowView.swift in Sources */,
 				AA00010041 /* HomeView.swift in Sources */,
 				AA00010100 /* RecipesView.swift in Sources */,
-				AA00010101 /* RecipeSearchView.swift in Sources */,
 				AA00010102 /* RecipeResultsList.swift in Sources */,
 				AA00010103 /* RecipeRow.swift in Sources */,
 				AA00010104 /* ImportRecipeView.swift in Sources */,

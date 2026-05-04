@@ -236,11 +236,12 @@ private struct LayoutSettingsView: View {
         .navigationTitle("Layout")
         .environment(\.editMode, .constant(.active))
         .onAppear {
-            tabLayout = env.tabLayout
+            tabLayout = HomeTabLayoutItem.normalized(env.tabLayout)
         }
         .onChange(of: env.tabLayout) { _, newLayout in
-            if tabLayout != newLayout {
-                tabLayout = newLayout
+            let normalizedLayout = HomeTabLayoutItem.normalized(newLayout)
+            if tabLayout != normalizedLayout {
+                tabLayout = normalizedLayout
             }
         }
     }
