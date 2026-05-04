@@ -21,7 +21,6 @@ struct ShoppingListsView: View {
                     ShoppingListsHeroCard(listCount: lists.count)
                 }
                 .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
 
                 Section("Lists") {
                     if isLoading && lists.isEmpty {

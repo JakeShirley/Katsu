@@ -33,12 +33,6 @@ struct ShoppingListsHeroCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(DesignSystem.Spacing.md)
-        .background(DesignSystem.Colors.surface, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
-        .overlay {
-            RoundedRectangle(cornerRadius: DesignSystem.Radius.lg)
-                .stroke(DesignSystem.Colors.separator.opacity(0.35))
-        }
-        .padding(.horizontal, DesignSystem.Spacing.lg)
         .padding(.top, DesignSystem.Spacing.sm)
         .padding(.bottom, DesignSystem.Spacing.xs)
         .accessibilityElement(children: .combine)

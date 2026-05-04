@@ -42,7 +42,6 @@ struct MealPlansView: View {
                 MealPlanWeekSummaryCard(week: week, plannedCount: entries.count)
             }
             .listRowInsets(EdgeInsets())
-            .listRowBackground(Color.clear)
 
             Section("This Week") {
                 weekRows
