@@ -25,7 +25,13 @@ final class AppEnvironment: ObservableObject {
     @Published var offlineRecipeSyncProgress: Double?
     @Published var networkReachabilityTrigger = 0
     @Published var tabLayout: [HomeTabLayoutItem]
+    @Published private(set) var authenticationIssueProfileIDs: Set<UUID> = []
     private var isNetworkReachable = false
+
+    var activeProfileNeedsSignIn: Bool {
+        guard let activeProfile else { return false }
+        return authenticationIssueProfileIDs.contains(activeProfile.id)
+    }
 
     init(
         configuration: AppConfiguration,
@@ -45,6 +51,9 @@ final class AppEnvironment: ObservableObject {
         let storedProfiles = profileStore.allProfiles()
         self.activeProfile = profileStore.activeProfile() ?? storedProfiles.first
         self.hasServerProfiles = !storedProfiles.isEmpty
+        self.authenticationIssueProfileIDs = Set(storedProfiles.compactMap { profile in
+            (try? credentialStore.loadToken(for: profile.id)) == nil ? profile.id : nil
+        })
         if let activeProfile = self.activeProfile {
             profileStore.setActiveProfileID(activeProfile.id)
             recipeCacheSnapshot = recipeOfflineCache.snapshot(profileID: activeProfile.id)
@@ -101,6 +110,7 @@ final class AppEnvironment: ObservableObject {
         try? credentialStore.saveToken(token, for: profile.id)
         profileStore.upsert(profile)
         profileStore.setActiveProfileID(profile.id)
+        authenticationIssueProfileIDs.remove(profile.id)
         activeProfile = profile
         currentUser = user
         hasServerProfiles = true
@@ -111,6 +121,9 @@ final class AppEnvironment: ObservableObject {
         profileStore.setActiveProfileID(profile.id)
         activeProfile = profile
         currentUser = nil
+        if (try? credentialStore.loadToken(for: profile.id)) == nil {
+            markAuthenticationIssue(for: profile)
+        }
         hasServerProfiles = !profileStore.allProfiles().isEmpty
         refreshRecipeCacheSnapshot()
     }
@@ -118,6 +131,7 @@ final class AppEnvironment: ObservableObject {
     func removeServer(_ profile: ServerProfile) {
         try? credentialStore.deleteToken(for: profile.id)
         profileStore.remove(id: profile.id)
+        authenticationIssueProfileIDs.remove(profile.id)
         recipeOfflineCache.clear(profileID: profile.id)
         activeProfile = profileStore.activeProfile()
         currentUser = nil
@@ -154,6 +168,14 @@ final class AppEnvironment: ObservableObject {
     func updateTabLayout(_ layout: [HomeTabLayoutItem]) {
         tabLayout = HomeTabLayoutItem.normalized(layout)
         preferenceStore.tabLayout = tabLayout
+    }
+
+    func markAuthenticationIssue(for profile: ServerProfile) {
+        authenticationIssueProfileIDs.insert(profile.id)
+    }
+
+    func clearAuthenticationIssue(for profile: ServerProfile) {
+        authenticationIssueProfileIDs.remove(profile.id)
     }
 
     func syncOfflineRecipesIfNeeded() async {

@@ -4,6 +4,7 @@ struct SettingsView: View {
     @EnvironmentObject private var env: AppEnvironment
     @Environment(\.dismiss) private var dismiss
     @State private var showAddServer = false
+    @State private var profileToSignIn: ServerProfile?
     @State private var revealedServerID: UUID?
 
     private var profiles: [ServerProfile] {
@@ -21,6 +22,11 @@ struct SettingsView: View {
         .navigationDestination(isPresented: $showAddServer) {
             OnboardingFlowView {
                 showAddServer = false
+            }
+        }
+        .navigationDestination(item: $profileToSignIn) { profile in
+            ReauthenticationView(profile: profile) {
+                profileToSignIn = nil
             }
         }
     }
@@ -50,12 +56,13 @@ struct SettingsView: View {
                                     Button {
                                         revealedServerID = nil
                                         env.switchToProfile(profile)
+                                        showSignInIfNeeded(for: profile)
                                     } label: {
                                         SettingsRowContent(
                                             title: Text(verbatim: profile.displayName),
-                                            subtitle: Text(verbatim: profile.serverURL.absoluteString),
+                                            subtitle: serverSubtitle(for: profile),
                                             systemImage: "server.rack",
-                                            accessory: profile.id == env.activeProfile?.id ? .checkmark : .none
+                                            accessory: serverAccessory(for: profile)
                                         )
                                     }
                                     .buttonStyle(.plain)
@@ -158,7 +165,31 @@ struct SettingsView: View {
 
     private func serverAccessibilityLabel(for profile: ServerProfile) -> String {
         let status = profile.id == env.activeProfile?.id ? String(localized: "Active") : String(localized: "Inactive")
+        if env.authenticationIssueProfileIDs.contains(profile.id) {
+            let issue = String(localized: "Sign in needed")
+            return String(localized: "\(profile.displayName), \(profile.serverURL.absoluteString), \(status), \(issue)")
+        }
         return String(localized: "\(profile.displayName), \(profile.serverURL.absoluteString), \(status)")
+    }
+
+    private func serverSubtitle(for profile: ServerProfile) -> Text {
+        if env.authenticationIssueProfileIDs.contains(profile.id) {
+            return Text("Sign in needed")
+        }
+        return Text(verbatim: profile.serverURL.absoluteString)
+    }
+
+    private func serverAccessory(for profile: ServerProfile) -> SettingsRowAccessory {
+        if env.authenticationIssueProfileIDs.contains(profile.id) {
+            return .warning
+        }
+        return profile.id == env.activeProfile?.id ? .checkmark : .none
+    }
+
+    private func showSignInIfNeeded(for profile: ServerProfile) {
+        if env.authenticationIssueProfileIDs.contains(profile.id) {
+            profileToSignIn = profile
+        }
     }
 
     private func removeServer(_ profile: ServerProfile) {
@@ -551,6 +582,11 @@ private struct SettingsRowContent: View {
                 .font(.body.weight(.semibold))
                 .foregroundStyle(DesignSystem.Colors.accent)
                 .accessibilityHidden(true)
+        case .warning:
+            Image(systemName: "exclamationmark.circle.fill")
+                .font(.body.weight(.semibold))
+                .foregroundStyle(DesignSystem.Colors.destructive)
+                .accessibilityHidden(true)
         case .value(let value):
             Text(verbatim: value)
                 .font(.body)
@@ -564,7 +600,100 @@ private enum SettingsRowAccessory {
     case none
     case chevron
     case checkmark
+    case warning
     case value(String)
+}
+
+private struct ReauthenticationView: View {
+    @EnvironmentObject private var env: AppEnvironment
+    let profile: ServerProfile
+    let onConnected: () -> Void
+
+    @State private var username: String = ""
+    @State private var password: String = ""
+    @State private var isSubmitting = false
+    @State private var errorMessage: String?
+
+    var body: some View {
+        Form {
+            Section {
+                LabeledContent("Server", value: profile.displayName)
+                Text("Sign in again to restore syncing with this Mealie server. Offline recipes stay available on this device.")
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section("Sign in") {
+                TextField("Username or email", text: $username)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .submitLabel(.next)
+                SecureField("Password", text: $password)
+                    .submitLabel(.go)
+                    .onSubmit(submit)
+            }
+
+            if let errorMessage {
+                Section {
+                    Text(errorMessage)
+                        .foregroundStyle(DesignSystem.Colors.destructive)
+                        .font(.subheadline)
+                }
+            }
+
+            Section {
+                Button {
+                    submit()
+                } label: {
+                    if isSubmitting {
+                        HStack(spacing: DesignSystem.Spacing.sm) {
+                            ProgressView()
+                            Text("Signing in…")
+                        }
+                    } else {
+                        Text("Sign In")
+                    }
+                }
+                .disabled(isSubmitting || username.isEmpty || password.isEmpty)
+            }
+        }
+        .navigationTitle("Sign in")
+        .onAppear {
+            username = profile.lastUsername ?? username
+        }
+    }
+
+    private func submit() {
+        guard !password.isEmpty else {
+            errorMessage = AppError.missingPassword.errorDescription
+            return
+        }
+        errorMessage = nil
+        isSubmitting = true
+
+        Task {
+            defer { isSubmitting = false }
+            do {
+                let token = try await env.apiClient.login(
+                    serverURL: profile.serverURL,
+                    username: username,
+                    password: password
+                )
+                let user = try await env.apiClient.fetchCurrentUser(
+                    serverURL: profile.serverURL,
+                    token: token
+                )
+                var saved = profile
+                saved.lastUsername = username
+                env.adoptAuthenticatedSession(profile: saved, token: token, user: user)
+                onConnected()
+            } catch let error as AppError {
+                errorMessage = error.errorDescription
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
 }
 
 private struct SettingsDivider: View {

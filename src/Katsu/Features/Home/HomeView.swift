@@ -17,6 +17,7 @@ struct HomeView: View {
                 ForEach(enabledTabs) { tab in
                     tab.destination
                         .tabItem { tab.label }
+                        .badge(tab == .settings && env.activeProfileNeedsSignIn ? Text(verbatim: "!") : nil)
                         .tag(tab)
                 }
             }

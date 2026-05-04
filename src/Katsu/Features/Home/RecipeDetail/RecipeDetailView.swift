@@ -125,7 +125,8 @@ struct RecipeDetailView: View {
     private func loadDetail() async {
         guard let profile = env.activeProfile else { return }
         guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            loadError = AppError.unauthorized.errorDescription
+            env.markAuthenticationIssue(for: profile)
+            showCachedDetailOrError(AppError.unauthorized, profile: profile)
             return
         }
         guard !isLoading else { return }
@@ -151,17 +152,28 @@ struct RecipeDetailView: View {
             await env.cacheLoadedRecipeOffline(loadedDetail, rawData: rawData, profile: profile, token: token)
             showingCachedDetail = false
             loadError = nil
+            env.clearAuthenticationIssue(for: profile)
         } catch let error as AppError {
-            if error == .offline, let cached = env.recipeOfflineCache.cachedRecipeDetail(profileID: profile.id, slug: recipe.slug) {
-                detail = cached
-                adjustedServings = cached.defaultServings
-                showingCachedDetail = true
-                loadError = nil
-            } else {
-                loadError = error.errorDescription
+            if error == .unauthorized {
+                env.markAuthenticationIssue(for: profile)
+            } else if error != .offline {
+                env.clearAuthenticationIssue(for: profile)
             }
+            showCachedDetailOrError(error, profile: profile)
         } catch {
             loadError = error.localizedDescription
+        }
+    }
+
+    private func showCachedDetailOrError(_ error: AppError, profile: ServerProfile) {
+        if (error == .offline || error == .unauthorized),
+           let cached = env.recipeOfflineCache.cachedRecipeDetail(profileID: profile.id, slug: recipe.slug) {
+            detail = cached
+            adjustedServings = cached.defaultServings
+            showingCachedDetail = true
+            loadError = nil
+        } else {
+            loadError = error.errorDescription
         }
     }
 

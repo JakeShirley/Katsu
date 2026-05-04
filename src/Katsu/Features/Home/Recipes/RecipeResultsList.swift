@@ -305,7 +305,8 @@ struct RecipeResultsList<Header: View>: View {
         guard let profile = env.activeProfile else { return }
         let filters = filters
         guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            state.recipeLoadError = AppError.unauthorized.errorDescription
+            env.markAuthenticationIssue(for: profile)
+            showCachedRecipesOrError(AppError.unauthorized, profile: profile, replacingExisting: replacingExisting)
             return
         }
         if replacingExisting {
@@ -335,27 +336,36 @@ struct RecipeResultsList<Header: View>: View {
             state.recipes = replacingExisting ? page.items : state.recipes + page.items
             state.showingCachedRecipes = false
             state.recipeLoadError = nil
+            env.clearAuthenticationIssue(for: profile)
             if replacingExisting, filters.isEmpty {
                 await env.cacheRecipesOffline(page.items, profile: profile, token: token)
             }
         } catch let error as AppError {
-            if error == .offline, replacingExisting, allowsOfflineCache, filters.isEmpty {
-                let cachedRecipes = env.recipeOfflineCache.cachedRecipeSummaries(profileID: profile.id)
-                if !cachedRecipes.isEmpty {
-                    state.recipes = cachedRecipes
-                    state.recipePage = 1
-                    state.recipeTotalPages = 1
-                    state.showingCachedRecipes = true
-                    state.recipeLoadError = nil
-                } else {
-                    state.recipeLoadError = error.errorDescription
-                }
-            } else {
-                state.recipeLoadError = error.errorDescription
+            if error == .unauthorized {
+                env.markAuthenticationIssue(for: profile)
+            } else if error != .offline {
+                env.clearAuthenticationIssue(for: profile)
             }
+            showCachedRecipesOrError(error, profile: profile, replacingExisting: replacingExisting)
         } catch {
             state.recipeLoadError = error.localizedDescription
         }
+    }
+
+    private func showCachedRecipesOrError(_ error: AppError, profile: ServerProfile, replacingExisting: Bool) {
+        if (error == .offline || error == .unauthorized), replacingExisting, allowsOfflineCache, filters.isEmpty {
+            let cachedRecipes = env.recipeOfflineCache.cachedRecipeSummaries(profileID: profile.id)
+            if !cachedRecipes.isEmpty {
+                state.recipes = cachedRecipes
+                state.recipePage = 1
+                state.recipeTotalPages = 1
+                state.showingCachedRecipes = true
+                state.recipeLoadError = nil
+                return
+            }
+        }
+
+        state.recipeLoadError = error.errorDescription
     }
 }
 

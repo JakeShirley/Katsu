@@ -957,7 +957,7 @@ struct MealieShoppingItemRecipeReferenceCreate: Encodable, Equatable {
 }
 
 /// Persistable record of a Mealie server the user has connected to.
-struct ServerProfile: Codable, Equatable, Identifiable {
+struct ServerProfile: Codable, Equatable, Hashable, Identifiable {
     let id: UUID
     var displayName: String
     var serverURL: URL
