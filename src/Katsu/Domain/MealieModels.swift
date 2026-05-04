@@ -81,6 +81,16 @@ struct MealieRecipeFilters: Equatable, Sendable {
     }
 }
 
+extension MealieRecipeSummary {
+    func matches(_ filters: MealieRecipeFilters) -> Bool {
+        let search = filters.search.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let searchableText = [displayName, description, slug]
+            .compactMap { $0?.lowercased() }
+            .joined(separator: " ")
+        return search.isEmpty || searchableText.contains(search)
+    }
+}
+
 struct MealieMealPlanPage: Codable, Equatable {
     let items: [MealieMealPlanEntry]
     let page: Int

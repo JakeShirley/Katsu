@@ -353,8 +353,10 @@ struct RecipeResultsList<Header: View>: View {
     }
 
     private func showCachedRecipesOrError(_ error: AppError, profile: ServerProfile, replacingExisting: Bool) {
-        if (error == .offline || error == .unauthorized), replacingExisting, allowsOfflineCache, filters.isEmpty {
-            let cachedRecipes = env.recipeOfflineCache.cachedRecipeSummaries(profileID: profile.id)
+        if (error == .offline || error == .unauthorized), replacingExisting, allowsOfflineCache {
+            let cachedRecipes = env.recipeOfflineCache.cachedRecipeSummaries(profileID: profile.id).filter { recipe in
+                recipe.matches(filters)
+            }
             if !cachedRecipes.isEmpty {
                 state.recipes = cachedRecipes
                 state.recipePage = 1

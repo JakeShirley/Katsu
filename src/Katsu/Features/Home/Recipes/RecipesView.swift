@@ -34,7 +34,7 @@ struct RecipesView: View {
                 filters: appliedFilters,
                 refreshTrigger: refreshTrigger,
                 loadsWhenFiltersEmpty: true,
-                allowsOfflineCache: appliedFilters.isEmpty,
+                allowsOfflineCache: true,
                 resultsTitle: nil,
                 emptyStateTitle: isSearching ? "No matching recipes" : "No recipes yet",
                 emptyStateDescription: isSearching ? "Try another recipe name." : "Imported and saved recipes will appear here.",
