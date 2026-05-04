@@ -50,8 +50,8 @@ These are examples, not required exact sequences. Use the smallest setup flow th
 ### Boot a simulator and open an app
 
 ```bash
-./node_modules/.bin/agent-device ensure-simulator --platform ios --device "iPhone 17 Pro" --boot
-./node_modules/.bin/agent-device open MyApp --platform ios --device "iPhone 17 Pro" --relaunch
+./node_modules/.bin/agent-device ensure-simulator --platform ios --device "iPhone 17" --boot
+./node_modules/.bin/agent-device open MyApp --platform ios --device "iPhone 17" --relaunch
 ```
 
 ### Install an app artifact
@@ -61,7 +61,7 @@ These are examples, not required exact sequences. Use the smallest setup flow th
 ```
 
 ```bash
-./node_modules/.bin/agent-device install com.example.app ./build/MyApp.app --platform ios --device "iPhone 17 Pro"
+./node_modules/.bin/agent-device install com.example.app ./build/MyApp.app --platform ios --device "iPhone 17"
 ```
 
 ```bash
@@ -111,7 +111,7 @@ Project config can provide an artifact name instead:
 
 ## Choose the right starting point
 
-- iOS local QA: prefer simulators unless the task explicitly requires physical hardware.
+- iOS local QA: always use an iPhone 17 simulator unless the task explicitly requires physical hardware.
 - iOS in mixed simulator and device environments: run `ensure-simulator` first, then keep using `--device` or `--udid`.
 - TV targets: use `--target tv` together with `--platform` when the task is for tvOS or Android TV rather than phone or tablet surfaces.
 - Android binary flow: use `install` or `reinstall` for `.apk` or `.aab`, then open by installed package name.
@@ -153,7 +153,7 @@ Once you have opened the correct session on the correct target, default to the c
 Good shared-host pattern:
 
 ```bash
-./node_modules/.bin/agent-device --session auth open Settings --platform ios --device "iPhone 17 Pro"
+./node_modules/.bin/agent-device --session auth open Settings --platform ios --device "iPhone 17"
 ./node_modules/.bin/agent-device --session auth snapshot -i
 ./node_modules/.bin/agent-device --session auth press @e3
 ./node_modules/.bin/agent-device --session auth close
@@ -162,8 +162,8 @@ Good shared-host pattern:
 Bad shared-host pattern:
 
 ```bash
-./node_modules/.bin/agent-device --session auth open Settings --platform ios --device "iPhone 17 Pro"
-./node_modules/.bin/agent-device --session auth snapshot -i --platform ios --device "iPhone 17 Pro"
+./node_modules/.bin/agent-device --session auth open Settings --platform ios --device "iPhone 17"
+./node_modules/.bin/agent-device --session auth snapshot -i --platform ios --device "iPhone 17"
 ```
 
 Use target-selection flags again only when you are choosing the target before opening a session, or when you explicitly mean to retarget.
@@ -236,7 +236,7 @@ Use scoped discovery when one run must not see host-global device lists.
 ```
 
 ```bash
-./node_modules/.bin/agent-device install com.example.app ./build/MyApp.ipa --platform ios --device "iPhone 17 Pro"
+./node_modules/.bin/agent-device install com.example.app ./build/MyApp.ipa --platform ios --device "iPhone 17"
 ```
 
 Do not use `open <apk|aab> --relaunch` on Android.

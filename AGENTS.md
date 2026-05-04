@@ -104,10 +104,10 @@ When adding or changing user-facing copy:
 Any change that touches a `.swift` file is not "done" until it has been
 exercised in the running app. After editing Swift sources you MUST:
 
-1. Build the app for the iOS Simulator and resolve every compiler error and
-   warning you introduce. Treat new warnings as failures unless the user
-   explicitly says otherwise.
-2. Install and launch the freshly built binary on the simulator. Use
+1. Build the app for the iPhone 17 iOS Simulator and resolve every compiler
+   error and warning you introduce. Treat new warnings as failures unless the
+   user explicitly says otherwise.
+2. Install and launch the freshly built binary on an iPhone 17 simulator. Use
    `-debugUseMockServer` for offline iteration; use `-serverURL` against a
    real Mealie instance for end-to-end checks.
 3. Drive the affected UI with the `agent-device` skill
@@ -132,10 +132,12 @@ For visual verification, exploratory checks, and any task that requires
 interacting with the running app, use the bundled
 [`agent-device`](https://github.com/callstackincubator/agent-device) skill at
 `.opencode/skills/agent-device/`. Load it via the `skill` tool when you need
-to drive the simulator. Do not fall back to synthetic taps via
-`osascript`/`CGEventPost`. Prefer accessibility-ref targeting
-(`agent-device snapshot -i` then `agent-device click @e6`) over screen
-coordinates.
+to drive the simulator. Local simulator testing MUST use an iPhone 17 target;
+pass `--device "iPhone 17"` to `agent-device` setup/open/install commands and
+use an `xcodebuild` destination such as `platform=iOS Simulator,name=iPhone 17`.
+Do not fall back to synthetic taps via `osascript`/`CGEventPost`. Prefer
+accessibility-ref targeting (`agent-device snapshot -i` then
+`agent-device click @e6`) over screen coordinates.
 
 `docs/DEVELOPMENT.md` carries the full simulator workflow (mock server vs.
 real server, build/install, and the standard inspect/act/verify loop).

@@ -132,9 +132,9 @@ Access tokens live in the Keychain.
 Any change that touches a `.swift` file is not "done" until it has been
 exercised in the running app. After editing Swift sources you MUST:
 
-1. Build the app for the iOS Simulator and resolve every compiler error and
-   warning you introduce.
-2. Install and launch the freshly built binary on the simulator. Use
+1. Build the app for the iPhone 17 iOS Simulator and resolve every compiler
+   error and warning you introduce.
+2. Install and launch the freshly built binary on an iPhone 17 simulator. Use
    `-debugUseMockServer` for offline iteration; use `-serverURL` against your
    real Mealie instance for end-to-end checks.
 3. Drive the affected UI with the `agent-device` skill
@@ -144,7 +144,9 @@ exercised in the running app. After editing Swift sources you MUST:
 4. Visually confirm the new behavior — capture a snapshot or screenshot and
    verify it matches the intended outcome.
 
-Do not rely solely on "it compiles" for Swift work.
+Do not rely solely on "it compiles" for Swift work. Local simulator testing
+must always use an iPhone 17 simulator, including `agent-device` setup/open
+commands and any `xcodebuild` simulator destination.
 
 ## App Structure
 
