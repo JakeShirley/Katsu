@@ -14,11 +14,6 @@ struct SettingsView: View {
     var body: some View {
         settingsForm
         .navigationTitle("Settings")
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button("Done") { dismiss() }
-            }
-        }
         .navigationDestination(isPresented: $showAddServer) {
             OnboardingFlowView {
                 showAddServer = false
