@@ -208,6 +208,16 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return try await perform(request)
     }
 
+    func createShoppingList(serverURL: URL, token: MealieAuthToken, list: MealieShoppingListCreate) async throws -> MealieShoppingListDetail {
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/households/shopping/lists"))
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = try encoder.encode(list)
+        return try await perform(request)
+    }
+
     func createShoppingListItem(serverURL: URL, token: MealieAuthToken, item: MealieShoppingListItemCreate) async throws -> MealieShoppingListItemsCollection {
         var request = URLRequest(url: serverURL.appendingPathComponent("api/households/shopping/items"))
         request.httpMethod = "POST"

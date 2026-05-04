@@ -751,6 +751,10 @@ struct MealieShoppingListDetail: Codable, Equatable, Identifiable {
     }
 }
 
+struct MealieShoppingListCreate: Encodable, Equatable {
+    let name: String?
+}
+
 struct MealieShoppingListItem: Codable, Equatable, Identifiable {
     let id: String
     let shoppingListID: String
@@ -774,7 +778,9 @@ struct MealieShoppingListItem: Codable, Equatable, Identifiable {
     }
 
     var quantityText: String? {
+        guard quantity > 0 else { return nil }
         guard quantity != 1 else { return nil }
+        guard !displayStartsWithMeasurement else { return nil }
         let formatted = quantity.formatted(.number.precision(.fractionLength(0...2)))
         if let abbreviation = unit?.abbreviation, !abbreviation.isEmpty {
             return "\(formatted) \(abbreviation)"
@@ -783,6 +789,18 @@ struct MealieShoppingListItem: Codable, Equatable, Identifiable {
             return "\(formatted) \(unitName)"
         }
         return formatted
+    }
+
+    private var displayStartsWithMeasurement: Bool {
+        let trimmed = display.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.first?.isNumber == true else { return false }
+        guard let unit else { return true }
+
+        let lowercased = trimmed.lowercased()
+        let unitNames = [unit.abbreviation, unit.name]
+            .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
+            .filter { !$0.isEmpty }
+        return unitNames.contains { lowercased.hasPrefix("\($0) ") || lowercased.contains(" \($0) ") }
     }
 
     func withChecked(_ checked: Bool) -> MealieShoppingListItem {

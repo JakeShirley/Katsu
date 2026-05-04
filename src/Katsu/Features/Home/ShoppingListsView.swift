@@ -8,6 +8,9 @@ struct ShoppingListsView: View {
     @State private var isLoading = false
     @State private var isLoadingMore = false
     @State private var errorMessage: String?
+    @State private var isShowingAddList = false
+    @State private var isSavingNewList = false
+    @State private var addListErrorMessage: String?
 
     private let listsPerPage = 20
 
@@ -31,7 +34,7 @@ struct ShoppingListsView: View {
                         ContentUnavailableView {
                             Label("No shopping lists", systemImage: "cart")
                         } description: {
-                            Text("Create a shopping list in Mealie and it will appear here.")
+                            Text("Add a shopping list to Mealie and it will appear here.")
                         }
                         .listRowBackground(Color.clear)
                     } else {
@@ -62,6 +65,21 @@ struct ShoppingListsView: View {
             .listStyle(.insetGrouped)
             .navigationTitle("Shopping Lists")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar { addToolbarItem }
+            .sheet(isPresented: $isShowingAddList) {
+                NavigationStack {
+                    ShoppingListAddView(
+                        isSaving: isSavingNewList,
+                        errorMessage: addListErrorMessage,
+                        onSave: saveNewList
+                    )
+                }
+            }
+            .onChange(of: isShowingAddList) { _, isShowing in
+                if isShowing {
+                    addListErrorMessage = nil
+                }
+            }
             .contentMargins(.top, DesignSystem.Spacing.sm, for: .scrollContent)
             .task(id: env.activeProfile?.id) {
                 await loadListsIfNeeded()
@@ -69,6 +87,18 @@ struct ShoppingListsView: View {
             .refreshable {
                 await loadLists()
             }
+        }
+    }
+
+    private var addToolbarItem: some ToolbarContent {
+        ToolbarItem(placement: .primaryAction) {
+            Button {
+                isShowingAddList = true
+            } label: {
+                Label("Add Shopping List", systemImage: "plus")
+            }
+            .accessibilityLabel("Add Shopping List")
+            .disabled(isSavingNewList)
         }
     }
 
@@ -129,6 +159,34 @@ struct ShoppingListsView: View {
             errorMessage = error.errorDescription
         } catch {
             errorMessage = error.localizedDescription
+        }
+    }
+
+    private func saveNewList(_ value: ShoppingListAddValue) async {
+        guard let profile = env.activeProfile else { return }
+        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
+            addListErrorMessage = AppError.unauthorized.errorDescription
+            return
+        }
+        guard !isSavingNewList else { return }
+        isSavingNewList = true
+        addListErrorMessage = nil
+        defer { isSavingNewList = false }
+
+        do {
+            let created = try await env.apiClient.createShoppingList(
+                serverURL: profile.serverURL,
+                token: token,
+                list: MealieShoppingListCreate(name: value.name)
+            )
+            lists.removeAll { $0.id == created.id }
+            lists.insert(created.summary, at: 0)
+            errorMessage = nil
+            isShowingAddList = false
+        } catch let error as AppError {
+            addListErrorMessage = error.errorDescription
+        } catch {
+            addListErrorMessage = error.localizedDescription
         }
     }
 }

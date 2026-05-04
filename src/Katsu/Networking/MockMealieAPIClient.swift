@@ -422,6 +422,24 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return list
     }
 
+    func createShoppingList(serverURL: URL, token: MealieAuthToken, list: MealieShoppingListCreate) async throws -> MealieShoppingListDetail {
+        try await Task.sleep(nanoseconds: 180_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+
+        let created = MealieShoppingListDetail(
+            id: UUID().uuidString.lowercased(),
+            name: list.name,
+            createdAt: nil,
+            updatedAt: nil,
+            listItems: [],
+            recipeReferences: []
+        )
+        shoppingLists.insert(created, at: 0)
+        return created
+    }
+
     func createShoppingListItem(serverURL: URL, token: MealieAuthToken, item: MealieShoppingListItemCreate) async throws -> MealieShoppingListItemsCollection {
         try await Task.sleep(nanoseconds: 180_000_000)
         guard token.accessToken == mintedToken.accessToken else {

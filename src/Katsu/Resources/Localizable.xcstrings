@@ -514,6 +514,35 @@
         }
       }
     },
+    "Add a shopping list to Mealie and it will appear here." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Füge eine Einkaufsliste zu Mealie hinzu, und sie erscheint hier."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a shopping list to Mealie and it will appear here."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Agrega una lista de compras a Mealie y aparecerá aquí."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mealie に買い物リストを追加すると、ここに表示されます。"
+          }
+        }
+      }
+    },
     "Add Favorite" : {
 
     },
@@ -629,6 +658,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "買い物項目を追加"
+          }
+        }
+      }
+    },
+    "Add Shopping List" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Einkaufsliste hinzufügen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Shopping List"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Agregar lista de compras"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "買い物リストを追加"
           }
         }
       }
@@ -1818,35 +1876,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "画像を読み込めませんでした"
-          }
-        }
-      }
-    },
-    "Create a shopping list in Mealie and it will appear here." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Erstelle eine Einkaufsliste in Mealie, und sie erscheint hier."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create a shopping list in Mealie and it will appear here."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Crea una lista de compras en Mealie y aparecerá aquí."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Mealie で買い物リストを作成すると、ここに表示されます。"
           }
         }
       }
@@ -3119,6 +3148,64 @@
         }
       }
     },
+    "List Details" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Listendetails"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "List Details"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Detalles de la lista"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "リストの詳細"
+          }
+        }
+      }
+    },
+    "List Name" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Listenname"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "List Name"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nombre de la lista"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "リスト名"
+          }
+        }
+      }
+    },
     "Lists" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3235,7 +3322,7 @@
         }
       }
     },
-    "Loading meal plan…" : {
+    "Loading meal plan..." : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
@@ -3263,6 +3350,9 @@
           }
         }
       }
+    },
+    "Loading meal plan…" : {
+
     },
     "Loading more recipes" : {
       "extractionState" : "manual",
@@ -3872,6 +3962,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "名前"
+          }
+        }
+      }
+    },
+    "Name the list you want to add to Mealie." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Benenne die Liste, die du zu Mealie hinzufügen möchtest."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name the list you want to add to Mealie."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nombra la lista que quieres agregar a Mealie."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mealie に追加するリストに名前を付けます。"
           }
         }
       }

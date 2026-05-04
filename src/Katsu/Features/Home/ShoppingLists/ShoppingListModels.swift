@@ -30,6 +30,10 @@ struct ShoppingItemAddValue {
     let recipeQuantity: Double
 }
 
+struct ShoppingListAddValue {
+    let name: String
+}
+
 func shoppingItemSort(_ lhs: MealieShoppingListItem, _ rhs: MealieShoppingListItem) -> Bool {
     if lhs.checked != rhs.checked {
         return !lhs.checked

@@ -44,6 +44,7 @@
 		AA00010131 /* ShoppingItemAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010131 /* ShoppingItemAddView.swift */; };
 		AA00010132 /* ShoppingListModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010132 /* ShoppingListModels.swift */; };
 		AA00010133 /* ShoppingListDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010133 /* ShoppingListDetailView.swift */; };
+		AA00010134 /* ShoppingListAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010134 /* ShoppingListAddView.swift */; };
 		AA00010140 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010140 /* FlowLayout.swift */; };
 		AA00010042 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010042 /* SettingsView.swift */; };
 		AA00010043 /* ChangelogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010043 /* ChangelogView.swift */; };
@@ -90,6 +91,7 @@
 		BB00010131 /* ShoppingItemAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingItemAddView.swift; sourceTree = "<group>"; };
 		BB00010132 /* ShoppingListModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListModels.swift; sourceTree = "<group>"; };
 		BB00010133 /* ShoppingListDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListDetailView.swift; sourceTree = "<group>"; };
+		BB00010134 /* ShoppingListAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListAddView.swift; sourceTree = "<group>"; };
 		BB00010140 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
 		BB00010042 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BB00010043 /* ChangelogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangelogView.swift; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 			children = (
 				BB00010133 /* ShoppingListDetailView.swift */,
 				BB00010130 /* ShoppingListRows.swift */,
+				BB00010134 /* ShoppingListAddView.swift */,
 				BB00010131 /* ShoppingItemAddView.swift */,
 				BB00010132 /* ShoppingListModels.swift */,
 			);
@@ -411,6 +414,7 @@
 				AA00010131 /* ShoppingItemAddView.swift in Sources */,
 				AA00010132 /* ShoppingListModels.swift in Sources */,
 				AA00010133 /* ShoppingListDetailView.swift in Sources */,
+				AA00010134 /* ShoppingListAddView.swift in Sources */,
 				AA00010140 /* FlowLayout.swift in Sources */,
 				AA00010042 /* SettingsView.swift in Sources */,
 				AA00010043 /* ChangelogView.swift in Sources */,

@@ -114,6 +114,14 @@ struct ShoppingItemToggleRow: View {
     let isSaving: Bool
     let onToggle: () -> Void
 
+    private var isRecipeIngredient: Bool {
+        !item.recipeReferences.isEmpty
+    }
+
+    private var recipeIngredientDisplay: RecipeIngredientDisplay {
+        RecipeIngredientDisplay(shoppingItem: item)
+    }
+
     var body: some View {
         Button(action: onToggle) {
             HStack(alignment: .top, spacing: DesignSystem.Spacing.md) {
@@ -123,24 +131,7 @@ struct ShoppingItemToggleRow: View {
                     .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
                     .accessibilityHidden(true)
 
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
-                    Text(item.displayName)
-                        .font(.body)
-                        .strikethrough(item.checked)
-                        .foregroundStyle(item.checked ? .secondary : .primary)
-
-                    if let quantityText = item.quantityText {
-                        Text(quantityText)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    if let note = item.note, !note.isEmpty {
-                        Text(note)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
+                itemContent
 
                 Spacer(minLength: DesignSystem.Spacing.sm)
 
@@ -160,12 +151,48 @@ struct ShoppingItemToggleRow: View {
         .accessibilityHint(item.checked ? "Marks this item unchecked" : "Marks this item checked")
     }
 
+    @ViewBuilder private var itemContent: some View {
+        if isRecipeIngredient {
+            RecipeIngredientContent(display: recipeIngredientDisplay)
+                .strikethrough(item.checked)
+                .foregroundStyle(item.checked ? .secondary : .primary)
+        } else {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                Text(item.displayName)
+                    .font(.body)
+                    .strikethrough(item.checked)
+                    .foregroundStyle(item.checked ? .secondary : .primary)
+
+                if let quantityText = item.quantityText {
+                    Text(quantityText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                if let note = item.note, !note.isEmpty, note != item.displayName {
+                    Text(note)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+
     private var accessibilityLabel: String {
-        [
+        if isRecipeIngredient {
+            return [
+                recipeIngredientDisplay.accessibilityLabel,
+                item.checked ? String(localized: "Checked") : String(localized: "Unchecked")
+            ]
+            .filter { !$0.isEmpty }
+            .joined(separator: ", ")
+        }
+
+        return [
             item.displayName,
             item.checked ? String(localized: "Checked") : String(localized: "Unchecked"),
             item.quantityText,
-            item.note
+            item.note == item.displayName ? nil : item.note
         ]
         .compactMap { value -> String? in
             guard let value, !value.isEmpty else { return nil }
