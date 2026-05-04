@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ShoppingListDetailView: View {
     @EnvironmentObject private var env: AppEnvironment
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let summary: MealieShoppingListSummary
 
     @State private var detail: MealieShoppingListDetail?
@@ -9,8 +10,13 @@ struct ShoppingListDetailView: View {
     @State private var errorMessage: String?
     @State private var actionErrorMessage: String?
     @State private var savingItemIDs: Set<String> = []
+    @State private var fadingItemIDs: Set<String> = []
     @State private var isSavingNewItem = false
     @State private var addDraft: ShoppingItemAddDraft?
+
+    private var itemUpdateAnimation: Animation? {
+        reduceMotion ? nil : DesignSystem.Motion.standard
+    }
 
     var body: some View {
         List {
@@ -39,7 +45,8 @@ struct ShoppingListDetailView: View {
                         ForEach(detail.listItems.sorted(by: shoppingItemSort)) { item in
                             ShoppingItemToggleRow(
                                 item: item,
-                                isSaving: savingItemIDs.contains(item.id)
+                                isSaving: savingItemIDs.contains(item.id),
+                                isFading: fadingItemIDs.contains(item.id)
                             ) {
                                 Task { await toggle(item) }
                             }
@@ -165,16 +172,17 @@ struct ShoppingListDetailView: View {
                         recipeReferences: []
                     )
                 )
-                detail = detail?.applying(collection)
+                applyDetailUpdate(detail?.applying(collection))
             case .recipe:
                 guard let recipeID = value.recipeID else { return }
-                detail = try await env.apiClient.addRecipeToShoppingList(
+                let updatedDetail = try await env.apiClient.addRecipeToShoppingList(
                     serverURL: profile.serverURL,
                     token: token,
                     listID: summary.id,
                     recipeID: recipeID,
                     add: MealieShoppingRecipeAdd(recipeIncrementQuantity: value.recipeQuantity)
                 )
+                applyDetailUpdate(updatedDetail)
             }
             addDraft = nil
         } catch let error as AppError {
@@ -194,10 +202,19 @@ struct ShoppingListDetailView: View {
 
         let originalDetail = detail
         let optimisticItem = item.withChecked(!item.checked)
-        detail = detail?.replacingItem(optimisticItem)
+        if optimisticItem.checked && !reduceMotion {
+            withAnimation(DesignSystem.Motion.standard) {
+                _ = fadingItemIDs.insert(item.id)
+            }
+            try? await Task.sleep(nanoseconds: 180_000_000)
+        }
+        applyDetailUpdate(detail?.replacingItem(optimisticItem))
         savingItemIDs.insert(item.id)
         errorMessage = nil
-        defer { savingItemIDs.remove(item.id) }
+        defer {
+            savingItemIDs.remove(item.id)
+            fadingItemIDs.remove(item.id)
+        }
 
         do {
             let collection = try await env.apiClient.updateShoppingListItem(
@@ -207,14 +224,24 @@ struct ShoppingListDetailView: View {
                 item: MealieShoppingListItemUpdate(item: optimisticItem)
             )
             if let detail {
-                self.detail = detail.applying(collection)
+                applyDetailUpdate(detail.applying(collection))
             }
         } catch let error as AppError {
-            detail = originalDetail
+            applyDetailUpdate(originalDetail)
             errorMessage = error.errorDescription
         } catch {
-            detail = originalDetail
+            applyDetailUpdate(originalDetail)
             errorMessage = error.localizedDescription
+        }
+    }
+
+    private func applyDetailUpdate(_ updatedDetail: MealieShoppingListDetail?) {
+        if let itemUpdateAnimation {
+            withAnimation(itemUpdateAnimation) {
+                detail = updatedDetail
+            }
+        } else {
+            detail = updatedDetail
         }
     }
 }

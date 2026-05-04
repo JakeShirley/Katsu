@@ -112,6 +112,7 @@ struct ShoppingListStatusRow: View {
 struct ShoppingItemToggleRow: View {
     let item: MealieShoppingListItem
     let isSaving: Bool
+    let isFading: Bool
     let onToggle: () -> Void
 
     private var isRecipeIngredient: Bool {
@@ -146,6 +147,7 @@ struct ShoppingItemToggleRow: View {
         .buttonStyle(.plain)
         .disabled(isSaving)
         .padding(.vertical, DesignSystem.Spacing.xs)
+        .opacity(isFading ? 0.25 : 1)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
         .accessibilityHint(item.checked ? "Marks this item unchecked" : "Marks this item checked")
