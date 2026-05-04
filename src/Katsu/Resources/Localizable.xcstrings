@@ -952,6 +952,64 @@
         }
       }
     },
+    "Fresh recipes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Frische Rezepte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fresh recipes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Recetas frescas"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "フレッシュなレシピ"
+          }
+        }
+      }
+    },
+    "Morning ideas" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ideen für den Morgen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Morning ideas"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ideas para la mañana"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "朝のアイデア"
+          }
+        }
+      }
+    },
     "Bundle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1992,6 +2050,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "夕食"
+          }
+        }
+      }
+    },
+    "Japanese comfort food" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Japanisches Comfort Food"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Japanese comfort food"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Comida reconfortante japonesa"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "日本のコンフォートフード"
           }
         }
       }
@@ -5045,6 +5132,64 @@
     "Recipe URL" : {
 
     },
+    "Recent search: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Letzte Suche: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent search: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Búsqueda reciente: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "最近の検索: %@"
+          }
+        }
+      }
+    },
+    "Recents" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zuletzt verwendet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recents"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Recientes"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "最近"
+          }
+        }
+      }
+    },
     "Recipes" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5657,8 +5802,34 @@
         }
       }
     },
-    "Search recipes by name, then refine with focused Mealie filters." : {
-
+    "Salad" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Salat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salad"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ensalada"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "サラダ"
+          }
+        }
+      }
     },
     "Server" : {
       "extractionState" : "manual",
@@ -6536,6 +6707,35 @@
         }
       }
     },
+    "Suggestions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vorschläge"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggestions"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sugerencias"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "候補"
+          }
+        }
+      }
+    },
     "Start timer" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6970,9 +7170,6 @@
           }
         }
       }
-    },
-    "Tags" : {
-
     },
     "The Mealie server appears to be offline or unreachable." : {
       "extractionState" : "manual",
@@ -7579,6 +7776,93 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "もう一度試す"
+          }
+        }
+      }
+    },
+    "Weeknight recipes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rezepte für Wochentage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weeknight recipes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Recetas para entre semana"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "平日のレシピ"
+          }
+        }
+      }
+    },
+    "Try another recipe name." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Versuche einen anderen Rezeptnamen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try another recipe name."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Prueba con otro nombre de receta."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "別のレシピ名を試してください。"
+          }
+        }
+      }
+    },
+    "Type a recipe name to find matches on this server." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gib einen Rezeptnamen ein, um Treffer auf diesem Server zu finden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type a recipe name to find matches on this server."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Escribe un nombre de receta para encontrar coincidencias en este servidor."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "このサーバーで一致するレシピを探すには、レシピ名を入力してください。"
           }
         }
       }
