@@ -807,31 +807,30 @@
         }
       }
     },
-    "App" : {
-      "extractionState" : "manual",
+    "App version %@, opens changelog" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "App"
+            "state" : "needs_review",
+            "value" : "App-Version %@, öffnet Änderungsprotokoll"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App"
+            "value" : "App version %@, opens changelog"
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "App"
+            "state" : "needs_review",
+            "value" : "Versión de la app %@, abre el registro de cambios"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "App"
+            "state" : "needs_review",
+            "value" : "アプリバージョン %@、変更履歴を開く"
           }
         }
       }
@@ -948,35 +947,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "朝食"
-          }
-        }
-      }
-    },
-    "Bundle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bundle"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bundle"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Paquete"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "バンドル"
           }
         }
       }

@@ -118,37 +118,7 @@ struct SettingsView: View {
                     }
                 }
 
-                SettingsSection("About") {
-                    SettingsGroup {
-                        NavigationLink {
-                            ChangelogView()
-                        } label: {
-                            SettingsRowContent(
-                                title: Text("Changelog"),
-                                systemImage: "sparkles",
-                                accessory: .chevron
-                            )
-                        }
-                        .buttonStyle(.plain)
-
-                        SettingsDivider()
-
-                        SettingsRowContent(
-                            title: Text("App"),
-                            systemImage: "app.badge",
-                            accessory: .value("Katsu")
-                        )
-
-                        SettingsDivider()
-
-                        SettingsRowContent(
-                            title: Text("Bundle"),
-                            systemImage: "shippingbox",
-                            accessory: .value(Bundle.main.bundleIdentifier ?? "—")
-                        )
-                    }
-                }
-
+                AppVersionFooter()
             }
             .padding(.horizontal, DesignSystem.Spacing.lg)
             .padding(.top, DesignSystem.Spacing.lg)
@@ -595,6 +565,30 @@ private struct ReauthenticationView: View {
                 errorMessage = error.localizedDescription
             }
         }
+    }
+}
+
+private struct AppVersionFooter: View {
+    private var versionText: String {
+        let info = Bundle.main.infoDictionary
+        let shortVersion = info?["CFBundleShortVersionString"] as? String ?? "—"
+        let build = info?["CFBundleVersion"] as? String ?? "—"
+        return "Katsu \(shortVersion) (\(build))"
+    }
+
+    var body: some View {
+        NavigationLink {
+            ChangelogView()
+        } label: {
+            Text(verbatim: versionText)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, minHeight: DesignSystem.HitTarget.minimum)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("App version \(versionText), opens changelog"))
+        .accessibilityAddTraits(.isButton)
     }
 }
 
