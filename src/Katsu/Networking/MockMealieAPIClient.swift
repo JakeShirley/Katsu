@@ -440,6 +440,18 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return created
     }
 
+    func deleteShoppingList(serverURL: URL, token: MealieAuthToken, listID: String) async throws -> MealieShoppingListSummary {
+        try await Task.sleep(nanoseconds: 180_000_000)
+        guard token.accessToken == mintedToken.accessToken else {
+            throw AppError.unauthorized
+        }
+        guard let index = shoppingLists.firstIndex(where: { $0.id == listID }) else {
+            throw AppError.server(status: 404)
+        }
+        let removed = shoppingLists.remove(at: index)
+        return removed.summary
+    }
+
     func createShoppingListItem(serverURL: URL, token: MealieAuthToken, item: MealieShoppingListItemCreate) async throws -> MealieShoppingListItemsCollection {
         try await Task.sleep(nanoseconds: 180_000_000)
         guard token.accessToken == mintedToken.accessToken else {

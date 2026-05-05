@@ -218,6 +218,15 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return try await perform(request)
     }
 
+    func deleteShoppingList(serverURL: URL, token: MealieAuthToken, listID: String) async throws -> MealieShoppingListSummary {
+        let encodedID = listID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? listID
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/households/shopping/lists/\(encodedID)"))
+        request.httpMethod = "DELETE"
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        return try await perform(request)
+    }
+
     func createShoppingListItem(serverURL: URL, token: MealieAuthToken, item: MealieShoppingListItemCreate) async throws -> MealieShoppingListItemsCollection {
         var request = URLRequest(url: serverURL.appendingPathComponent("api/households/shopping/items"))
         request.httpMethod = "POST"

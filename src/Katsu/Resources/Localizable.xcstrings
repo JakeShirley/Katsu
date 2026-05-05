@@ -952,64 +952,6 @@
         }
       }
     },
-    "Fresh recipes" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Frische Rezepte"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fresh recipes"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Recetas frescas"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "フレッシュなレシピ"
-          }
-        }
-      }
-    },
-    "Morning ideas" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ideen für den Morgen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Morning ideas"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ideas para la mañana"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "朝のアイデア"
-          }
-        }
-      }
-    },
     "Bundle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1938,6 +1880,35 @@
         }
       }
     },
+    "Couldn't delete shopping list" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Einkaufsliste konnte nicht gelöscht werden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't delete shopping list"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No se pudo eliminar la lista de compras"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "買い物リストを削除できませんでした"
+          }
+        }
+      }
+    },
     "Day" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2050,35 +2021,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "夕食"
-          }
-        }
-      }
-    },
-    "Japanese comfort food" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Japanisches Comfort Food"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Japanese comfort food"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Comida reconfortante japonesa"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "日本のコンフォートフード"
           }
         }
       }
@@ -2608,6 +2550,35 @@
         }
       }
     },
+    "Fresh recipes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Frische Rezepte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fresh recipes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Recetas frescas"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "フレッシュなレシピ"
+          }
+        }
+      }
+    },
     "From %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3115,6 +3086,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "項目: %lld"
+          }
+        }
+      }
+    },
+    "Japanese comfort food" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Japanisches Comfort Food"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Japanese comfort food"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Comida reconfortante japonesa"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "日本のコンフォートフード"
           }
         }
       }
@@ -4021,6 +4021,35 @@
         }
       }
     },
+    "Morning ideas" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ideen für den Morgen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Morning ideas"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ideas para la mañana"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "朝のアイデア"
+          }
+        }
+      }
+    },
     "My Rating" : {
 
     },
@@ -4575,6 +4604,9 @@
         }
       }
     },
+    "OK" : {
+
+    },
     "Open" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5042,6 +5074,64 @@
         }
       }
     },
+    "Recent search: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Letzte Suche: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent search: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Búsqueda reciente: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "最近の検索: %@"
+          }
+        }
+      }
+    },
+    "Recents" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zuletzt verwendet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recents"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Recientes"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "最近"
+          }
+        }
+      }
+    },
     "Recipe" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5131,64 +5221,6 @@
     },
     "Recipe URL" : {
 
-    },
-    "Recent search: %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Letzte Suche: %@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recent search: %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Búsqueda reciente: %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "最近の検索: %@"
-          }
-        }
-      }
-    },
-    "Recents" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Zuletzt verwendet"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recents"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Recientes"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "最近"
-          }
-        }
-      }
     },
     "Recipes" : {
       "extractionState" : "manual",
@@ -5570,6 +5602,35 @@
         }
       }
     },
+    "Salad" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Salat"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salad"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ensalada"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "サラダ"
+          }
+        }
+      }
+    },
     "Saturated fat" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5798,35 +5859,6 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Search recipes"
-          }
-        }
-      }
-    },
-    "Salad" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Salat"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Salad"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ensalada"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "サラダ"
           }
         }
       }
@@ -6707,35 +6739,6 @@
         }
       }
     },
-    "Suggestions" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Vorschläge"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suggestions"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Sugerencias"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "候補"
-          }
-        }
-      }
-    },
     "Start timer" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6993,6 +6996,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "%@ のランダムな夕食を提案"
+          }
+        }
+      }
+    },
+    "Suggestions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vorschläge"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggestions"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sugerencias"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "候補"
           }
         }
       }
@@ -7780,35 +7812,6 @@
         }
       }
     },
-    "Weeknight recipes" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Rezepte für Wochentage"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weeknight recipes"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Recetas para entre semana"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "平日のレシピ"
-          }
-        }
-      }
-    },
     "Try another recipe name." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8124,6 +8127,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "リリース %@ を GitHub で表示"
+          }
+        }
+      }
+    },
+    "Weeknight recipes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rezepte für Wochentage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weeknight recipes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Recetas para entre semana"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "平日のレシピ"
           }
         }
       }

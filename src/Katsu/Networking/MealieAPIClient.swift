@@ -22,6 +22,7 @@ protocol MealieAPIClient: AnyObject, Sendable {
     func fetchShoppingLists(serverURL: URL, token: MealieAuthToken, page: Int, perPage: Int) async throws -> MealieShoppingListPage
     func fetchShoppingListDetail(serverURL: URL, token: MealieAuthToken, listID: String) async throws -> MealieShoppingListDetail
     func createShoppingList(serverURL: URL, token: MealieAuthToken, list: MealieShoppingListCreate) async throws -> MealieShoppingListDetail
+    func deleteShoppingList(serverURL: URL, token: MealieAuthToken, listID: String) async throws -> MealieShoppingListSummary
     func createShoppingListItem(serverURL: URL, token: MealieAuthToken, item: MealieShoppingListItemCreate) async throws -> MealieShoppingListItemsCollection
     func updateShoppingListItem(serverURL: URL, token: MealieAuthToken, itemID: String, item: MealieShoppingListItemUpdate) async throws -> MealieShoppingListItemsCollection
     func addRecipeToShoppingList(serverURL: URL, token: MealieAuthToken, listID: String, recipeID: String, add: MealieShoppingRecipeAdd) async throws -> MealieShoppingListDetail

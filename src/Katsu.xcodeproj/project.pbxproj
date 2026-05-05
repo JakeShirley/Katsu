@@ -45,6 +45,7 @@
 		AA00010133 /* ShoppingListDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010133 /* ShoppingListDetailView.swift */; };
 		AA00010134 /* ShoppingListAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010134 /* ShoppingListAddView.swift */; };
 		AA00010140 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010140 /* FlowLayout.swift */; };
+		AA00010141 /* SwipeToRemoveRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010141 /* SwipeToRemoveRow.swift */; };
 		AA00010042 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010042 /* SettingsView.swift */; };
 		AA00010043 /* ChangelogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010043 /* ChangelogView.swift */; };
 		AA00010050 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB00010050 /* Assets.xcassets */; };
@@ -91,6 +92,7 @@
 		BB00010133 /* ShoppingListDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListDetailView.swift; sourceTree = "<group>"; };
 		BB00010134 /* ShoppingListAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListAddView.swift; sourceTree = "<group>"; };
 		BB00010140 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
+		BB00010141 /* SwipeToRemoveRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeToRemoveRow.swift; sourceTree = "<group>"; };
 		BB00010042 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BB00010043 /* ChangelogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangelogView.swift; sourceTree = "<group>"; };
 		BB00010050 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 			isa = PBXGroup;
 			children = (
 				BB00010140 /* FlowLayout.swift */,
+				BB00010141 /* SwipeToRemoveRow.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -412,6 +415,7 @@
 				AA00010133 /* ShoppingListDetailView.swift in Sources */,
 				AA00010134 /* ShoppingListAddView.swift in Sources */,
 				AA00010140 /* FlowLayout.swift in Sources */,
+				AA00010141 /* SwipeToRemoveRow.swift in Sources */,
 				AA00010042 /* SettingsView.swift in Sources */,
 				AA00010043 /* ChangelogView.swift in Sources */,
 			);
