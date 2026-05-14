@@ -105,10 +105,6 @@ struct ShoppingListDetailView: View {
 
     private func loadDetail() async {
         guard let profile = env.activeProfile else { return }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            errorMessage = AppError.unauthorized.errorDescription
-            return
-        }
         guard !isLoading else { return }
 
         isLoading = true
@@ -116,11 +112,13 @@ struct ShoppingListDetailView: View {
         defer { isLoading = false }
 
         do {
-            detail = try await env.apiClient.fetchShoppingListDetail(
-                serverURL: profile.serverURL,
-                token: token,
-                listID: summary.id
-            )
+            detail = try await env.withToken(for: profile) { token in
+                try await env.apiClient.fetchShoppingListDetail(
+                    serverURL: profile.serverURL,
+                    token: token,
+                    listID: summary.id
+                )
+            }
             actionErrorMessage = nil
         } catch let error as AppError {
             errorMessage = error.errorDescription
@@ -131,25 +129,20 @@ struct ShoppingListDetailView: View {
 
     private func loadRecipes() async throws -> [MealieRecipeSummary] {
         guard let profile = env.activeProfile else { return [] }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            throw AppError.unauthorized
+        let page = try await env.withToken(for: profile) { token in
+            try await env.apiClient.fetchRecipes(
+                serverURL: profile.serverURL,
+                token: token,
+                page: 1,
+                perPage: 100,
+                filters: MealieRecipeFilters()
+            )
         }
-        let page = try await env.apiClient.fetchRecipes(
-            serverURL: profile.serverURL,
-            token: token,
-            page: 1,
-            perPage: 100,
-            filters: MealieRecipeFilters()
-        )
         return page.items
     }
 
     private func saveNewItem(_ value: ShoppingItemAddValue) async {
         guard let profile = env.activeProfile else { return }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            actionErrorMessage = AppError.unauthorized.errorDescription
-            return
-        }
         guard !isSavingNewItem else { return }
 
         isSavingNewItem = true
@@ -159,29 +152,33 @@ struct ShoppingListDetailView: View {
         do {
             switch value.mode {
             case .manual:
-                let collection = try await env.apiClient.createShoppingListItem(
-                    serverURL: profile.serverURL,
-                    token: token,
-                    item: MealieShoppingListItemCreate(
-                        shoppingListID: summary.id,
-                        checked: false,
-                        quantity: value.quantity,
-                        note: value.note,
-                        display: value.display,
-                        position: value.position,
-                        recipeReferences: []
+                let collection = try await env.withToken(for: profile) { token in
+                    try await env.apiClient.createShoppingListItem(
+                        serverURL: profile.serverURL,
+                        token: token,
+                        item: MealieShoppingListItemCreate(
+                            shoppingListID: summary.id,
+                            checked: false,
+                            quantity: value.quantity,
+                            note: value.note,
+                            display: value.display,
+                            position: value.position,
+                            recipeReferences: []
+                        )
                     )
-                )
+                }
                 applyDetailUpdate(detail?.applying(collection))
             case .recipe:
                 guard let recipeID = value.recipeID else { return }
-                let updatedDetail = try await env.apiClient.addRecipeToShoppingList(
-                    serverURL: profile.serverURL,
-                    token: token,
-                    listID: summary.id,
-                    recipeID: recipeID,
-                    add: MealieShoppingRecipeAdd(recipeIncrementQuantity: value.recipeQuantity)
-                )
+                let updatedDetail = try await env.withToken(for: profile) { token in
+                    try await env.apiClient.addRecipeToShoppingList(
+                        serverURL: profile.serverURL,
+                        token: token,
+                        listID: summary.id,
+                        recipeID: recipeID,
+                        add: MealieShoppingRecipeAdd(recipeIncrementQuantity: value.recipeQuantity)
+                    )
+                }
                 applyDetailUpdate(updatedDetail)
             }
             addDraft = nil
@@ -195,10 +192,6 @@ struct ShoppingListDetailView: View {
     private func toggle(_ item: MealieShoppingListItem) async {
         guard !savingItemIDs.contains(item.id) else { return }
         guard let profile = env.activeProfile else { return }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            errorMessage = AppError.unauthorized.errorDescription
-            return
-        }
 
         let originalDetail = detail
         let optimisticItem = item.withChecked(!item.checked)
@@ -217,12 +210,14 @@ struct ShoppingListDetailView: View {
         }
 
         do {
-            let collection = try await env.apiClient.updateShoppingListItem(
-                serverURL: profile.serverURL,
-                token: token,
-                itemID: item.id,
-                item: MealieShoppingListItemUpdate(item: optimisticItem)
-            )
+            let collection = try await env.withToken(for: profile) { token in
+                try await env.apiClient.updateShoppingListItem(
+                    serverURL: profile.serverURL,
+                    token: token,
+                    itemID: item.id,
+                    item: MealieShoppingListItemUpdate(item: optimisticItem)
+                )
+            }
             if let detail {
                 applyDetailUpdate(detail.applying(collection))
             }

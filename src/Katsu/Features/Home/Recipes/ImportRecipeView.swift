@@ -76,10 +76,6 @@ struct ImportRecipeView: View {
             return
         }
         guard let profile = env.activeProfile else { return }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            errorMessage = AppError.unauthorized.errorDescription
-            return
-        }
         guard !isImporting else { return }
 
         errorMessage = nil
@@ -87,13 +83,15 @@ struct ImportRecipeView: View {
         Task {
             defer { isImporting = false }
             do {
-                _ = try await env.apiClient.importRecipeFromURL(
-                    serverURL: profile.serverURL,
-                    token: token,
-                    url: url,
-                    includeTags: includeTags,
-                    includeCategories: includeCategories
-                )
+                _ = try await env.withToken(for: profile) { token in
+                    try await env.apiClient.importRecipeFromURL(
+                        serverURL: profile.serverURL,
+                        token: token,
+                        url: url,
+                        includeTags: includeTags,
+                        includeCategories: includeCategories
+                    )
+                }
                 await onImported()
                 dismiss()
             } catch let error as AppError {

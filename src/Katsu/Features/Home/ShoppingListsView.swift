@@ -182,10 +182,6 @@ struct ShoppingListsView: View {
 
     private func loadListsPage(_ page: Int, replacingExisting: Bool) async {
         guard let profile = env.activeProfile else { return }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            errorMessage = AppError.unauthorized.errorDescription
-            return
-        }
         if replacingExisting {
             guard !isLoading else { return }
             isLoading = true
@@ -199,12 +195,14 @@ struct ShoppingListsView: View {
         }
 
         do {
-            let page = try await env.apiClient.fetchShoppingLists(
-                serverURL: profile.serverURL,
-                token: token,
-                page: page,
-                perPage: listsPerPage
-            )
+            let page = try await env.withToken(for: profile) { token in
+                try await env.apiClient.fetchShoppingLists(
+                    serverURL: profile.serverURL,
+                    token: token,
+                    page: page,
+                    perPage: listsPerPage
+                )
+            }
             self.page = page.page
             totalPages = page.totalPages ?? page.total.map { total in
                 Int(ceil(Double(total) / Double(page.perPage)))
@@ -220,21 +218,19 @@ struct ShoppingListsView: View {
 
     private func saveNewList(_ value: ShoppingListAddValue) async {
         guard let profile = env.activeProfile else { return }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            addListErrorMessage = AppError.unauthorized.errorDescription
-            return
-        }
         guard !isSavingNewList else { return }
         isSavingNewList = true
         addListErrorMessage = nil
         defer { isSavingNewList = false }
 
         do {
-            let created = try await env.apiClient.createShoppingList(
-                serverURL: profile.serverURL,
-                token: token,
-                list: MealieShoppingListCreate(name: value.name)
-            )
+            let created = try await env.withToken(for: profile) { token in
+                try await env.apiClient.createShoppingList(
+                    serverURL: profile.serverURL,
+                    token: token,
+                    list: MealieShoppingListCreate(name: value.name)
+                )
+            }
             lists.removeAll { $0.id == created.id }
             lists.insert(created.summary, at: 0)
             errorMessage = nil
@@ -248,10 +244,6 @@ struct ShoppingListsView: View {
 
     private func removeShoppingList(_ list: MealieShoppingListSummary) {
         guard let profile = env.activeProfile else { return }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            deleteErrorMessage = AppError.unauthorized.errorDescription
-            return
-        }
 
         // Optimistic removal — reuses the server-row pattern of acting
         // immediately and rolling back on failure.
@@ -264,11 +256,13 @@ struct ShoppingListsView: View {
 
         Task {
             do {
-                _ = try await env.apiClient.deleteShoppingList(
-                    serverURL: profile.serverURL,
-                    token: token,
-                    listID: list.id
-                )
+                _ = try await env.withToken(for: profile) { token in
+                    try await env.apiClient.deleteShoppingList(
+                        serverURL: profile.serverURL,
+                        token: token,
+                        listID: list.id
+                    )
+                }
             } catch let error as AppError {
                 withAnimation(removalAnimation) {
                     lists = previousLists

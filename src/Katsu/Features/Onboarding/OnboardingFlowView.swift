@@ -219,7 +219,12 @@ private struct LoginView: View {
                 )
                 var saved = profile
                 saved.lastUsername = username
-                env.adoptAuthenticatedSession(profile: saved, token: token, user: user)
+                env.adoptAuthenticatedSession(
+                    profile: saved,
+                    token: token,
+                    user: user,
+                    credentials: LoginCredentials(username: username, password: password)
+                )
                 onConnected()
             } catch let error as AppError {
                 errorMessage = error.errorDescription

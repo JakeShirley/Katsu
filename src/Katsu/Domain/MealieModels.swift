@@ -20,6 +20,13 @@ struct MealieServerInfo: Codable, Equatable {
     }
 }
 
+/// Plaintext credentials stored in the keychain so the app can re-authenticate
+/// automatically when an access token expires.
+struct LoginCredentials: Codable {
+    let username: String
+    let password: String
+}
+
 /// `POST /api/auth/token` response. Mealie returns snake_case fields.
 struct MealieAuthToken: Codable, Equatable {
     let accessToken: String

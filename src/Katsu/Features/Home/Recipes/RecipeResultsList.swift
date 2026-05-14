@@ -304,11 +304,6 @@ struct RecipeResultsList<Header: View>: View {
     private func loadRecipes(page: Int, replacingExisting: Bool) async {
         guard let profile = env.activeProfile else { return }
         let filters = filters
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            env.markAuthenticationIssue(for: profile)
-            showCachedRecipesOrError(AppError.unauthorized, profile: profile, replacingExisting: replacingExisting)
-            return
-        }
         if replacingExisting {
             guard !state.isLoadingRecipes else { return }
             state.isLoadingRecipes = true
@@ -322,13 +317,17 @@ struct RecipeResultsList<Header: View>: View {
         }
 
         do {
-            let page = try await env.apiClient.fetchRecipes(
-                serverURL: profile.serverURL,
-                token: token,
-                page: page,
-                perPage: recipesPerPage,
-                filters: filters
-            )
+            var usedToken: MealieAuthToken?
+            let page = try await env.withToken(for: profile) { token in
+                usedToken = token
+                return try await env.apiClient.fetchRecipes(
+                    serverURL: profile.serverURL,
+                    token: token,
+                    page: page,
+                    perPage: recipesPerPage,
+                    filters: filters
+                )
+            }
             state.recipePage = page.page
             state.recipeTotalPages = page.totalPages ?? page.total.map { total in
                 Int(ceil(Double(total) / Double(page.perPage)))
@@ -337,8 +336,8 @@ struct RecipeResultsList<Header: View>: View {
             state.showingCachedRecipes = false
             state.recipeLoadError = nil
             env.clearAuthenticationIssue(for: profile)
-            if replacingExisting, filters.isEmpty {
-                await env.cacheRecipesOffline(page.items, profile: profile, token: token)
+            if replacingExisting, filters.isEmpty, let usedToken {
+                await env.cacheRecipesOffline(page.items, profile: profile, token: usedToken)
             }
         } catch let error as AppError {
             if error == .unauthorized {

@@ -127,10 +127,6 @@ struct MealPlansView: View {
 
     private func loadMealPlan() async {
         guard let profile = env.activeProfile else { return }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            errorMessage = AppError.unauthorized.errorDescription
-            return
-        }
         guard !isLoading else { return }
 
         isLoading = true
@@ -138,12 +134,14 @@ struct MealPlansView: View {
         defer { isLoading = false }
 
         do {
-            let page = try await env.apiClient.fetchMealPlanEntries(
-                serverURL: profile.serverURL,
-                token: token,
-                startDate: week.startDateString,
-                endDate: week.endDateString
-            )
+            let page = try await env.withToken(for: profile) { token in
+                try await env.apiClient.fetchMealPlanEntries(
+                    serverURL: profile.serverURL,
+                    token: token,
+                    startDate: week.startDateString,
+                    endDate: week.endDateString
+                )
+            }
             entries = page.items
         } catch let error as AppError {
             errorMessage = error.errorDescription
@@ -154,10 +152,6 @@ struct MealPlansView: View {
 
     private func saveMealPlanEntry(_ value: MealPlanEditorValue, originalEntry: MealieMealPlanEntry?) async {
         guard let profile = env.activeProfile else { return }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            actionErrorMessage = AppError.unauthorized.errorDescription
-            return
-        }
         guard !isSaving else { return }
 
         isSaving = true
@@ -170,34 +164,38 @@ struct MealPlansView: View {
                     actionErrorMessage = String(localized: "This planned meal cannot be edited because Mealie did not return ownership details.")
                     return
                 }
-                let updated = try await env.apiClient.updateMealPlanEntry(
-                    serverURL: profile.serverURL,
-                    token: token,
-                    entryID: originalEntry.id,
-                    entry: MealieMealPlanEntryUpdate(
-                        date: value.dateString,
-                        entryType: value.entryType,
-                        title: value.title,
-                        text: value.text,
-                        recipeID: originalEntry.recipeID,
-                        id: originalEntry.id,
-                        groupID: groupID,
-                        userID: userID
+                let updated = try await env.withToken(for: profile) { token in
+                    try await env.apiClient.updateMealPlanEntry(
+                        serverURL: profile.serverURL,
+                        token: token,
+                        entryID: originalEntry.id,
+                        entry: MealieMealPlanEntryUpdate(
+                            date: value.dateString,
+                            entryType: value.entryType,
+                            title: value.title,
+                            text: value.text,
+                            recipeID: originalEntry.recipeID,
+                            id: originalEntry.id,
+                            groupID: groupID,
+                            userID: userID
+                        )
                     )
-                )
+                }
                 replaceEntry(updated)
             } else {
-                let created = try await env.apiClient.createMealPlanEntry(
-                    serverURL: profile.serverURL,
-                    token: token,
-                    entry: MealieMealPlanEntryCreate(
-                        date: value.dateString,
-                        entryType: value.entryType,
-                        title: value.title,
-                        text: value.text,
-                        recipeID: nil
+                let created = try await env.withToken(for: profile) { token in
+                    try await env.apiClient.createMealPlanEntry(
+                        serverURL: profile.serverURL,
+                        token: token,
+                        entry: MealieMealPlanEntryCreate(
+                            date: value.dateString,
+                            entryType: value.entryType,
+                            title: value.title,
+                            text: value.text,
+                            recipeID: nil
+                        )
                     )
-                )
+                }
                 replaceEntry(created)
             }
             activeEditor = nil
@@ -210,10 +208,6 @@ struct MealPlansView: View {
 
     private func deleteMealPlanEntry(_ entry: MealieMealPlanEntry) async {
         guard let profile = env.activeProfile else { return }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            actionErrorMessage = AppError.unauthorized.errorDescription
-            return
-        }
         guard !isSaving else { return }
 
         isSaving = true
@@ -221,7 +215,9 @@ struct MealPlansView: View {
         defer { isSaving = false }
 
         do {
-            _ = try await env.apiClient.deleteMealPlanEntry(serverURL: profile.serverURL, token: token, entryID: entry.id)
+            _ = try await env.withToken(for: profile) { token in
+                try await env.apiClient.deleteMealPlanEntry(serverURL: profile.serverURL, token: token, entryID: entry.id)
+            }
             entries.removeAll { $0.id == entry.id }
             entryPendingDeletion = nil
         } catch let error as AppError {
@@ -233,10 +229,6 @@ struct MealPlansView: View {
 
     private func addRandomMealPlanEntry(on dateString: String) async {
         guard let profile = env.activeProfile else { return }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            actionErrorMessage = AppError.unauthorized.errorDescription
-            return
-        }
         guard randomMealDateString == nil else { return }
 
         randomMealDateString = dateString
@@ -244,11 +236,13 @@ struct MealPlansView: View {
         defer { randomMealDateString = nil }
 
         do {
-            let created = try await env.apiClient.createRandomMealPlanEntry(
-                serverURL: profile.serverURL,
-                token: token,
-                entry: MealieMealPlanRandomCreate(date: dateString, entryType: .dinner)
-            )
+            let created = try await env.withToken(for: profile) { token in
+                try await env.apiClient.createRandomMealPlanEntry(
+                    serverURL: profile.serverURL,
+                    token: token,
+                    entry: MealieMealPlanRandomCreate(date: dateString, entryType: .dinner)
+                )
+            }
             replaceEntry(created)
         } catch let error as AppError {
             actionErrorMessage = error.errorDescription

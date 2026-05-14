@@ -124,32 +124,33 @@ struct RecipeDetailView: View {
 
     private func loadDetail() async {
         guard let profile = env.activeProfile else { return }
-        guard let token = try? env.credentialStore.loadToken(for: profile.id) else {
-            env.markAuthenticationIssue(for: profile)
-            showCachedDetailOrError(AppError.unauthorized, profile: profile)
-            return
-        }
         guard !isLoading else { return }
         isLoading = true
         defer { isLoading = false }
 
         do {
-            let rawData = try await env.apiClient.fetchRecipeDetailData(
-                serverURL: profile.serverURL,
-                token: token,
-                slug: recipe.slug
-            )
+            var usedToken: MealieAuthToken?
+            let rawData = try await env.withToken(for: profile) { token in
+                usedToken = token
+                return try await env.apiClient.fetchRecipeDetailData(
+                    serverURL: profile.serverURL,
+                    token: token,
+                    slug: recipe.slug
+                )
+            }
             let loadedDetail = try JSONDecoder().decode(MealieRecipeDetail.self, from: rawData)
             detail = loadedDetail
             adjustedServings = loadedDetail.defaultServings
-            if let recipeID = loadedDetail.recipeID {
+            if let recipeID = loadedDetail.recipeID, let usedToken {
                 userRating = try await env.apiClient.fetchUserRating(
                     serverURL: profile.serverURL,
-                    token: token,
+                    token: usedToken,
                     recipeID: recipeID
                 )
             }
-            await env.cacheLoadedRecipeOffline(loadedDetail, rawData: rawData, profile: profile, token: token)
+            if let usedToken {
+                await env.cacheLoadedRecipeOffline(loadedDetail, rawData: rawData, profile: profile, token: usedToken)
+            }
             showingCachedDetail = false
             loadError = nil
             env.clearAuthenticationIssue(for: profile)
@@ -187,7 +188,6 @@ struct RecipeDetailView: View {
 
     private func updateUserRating(rating: Double?, isFavorite: Bool?) async {
         guard let profile = env.activeProfile,
-              let token = try? env.credentialStore.loadToken(for: profile.id),
               let detail,
               let recipeID = detail.recipeID else {
             ratingError = AppError.unauthorized.errorDescription
@@ -198,15 +198,17 @@ struct RecipeDetailView: View {
         defer { isUpdatingRating = false }
 
         do {
-            let currentUser = try await currentUser(profile: profile, token: token)
-            try await env.apiClient.updateUserRating(
-                serverURL: profile.serverURL,
-                token: token,
-                userID: currentUser.id,
-                slug: detail.slug,
-                rating: rating,
-                isFavorite: isFavorite
-            )
+            try await env.withToken(for: profile) { token in
+                let currentUser = try await self.currentUser(profile: profile, token: token)
+                try await env.apiClient.updateUserRating(
+                    serverURL: profile.serverURL,
+                    token: token,
+                    userID: currentUser.id,
+                    slug: detail.slug,
+                    rating: rating,
+                    isFavorite: isFavorite
+                )
+            }
             let current = userRating ?? MealieUserRatingSummary(recipeID: recipeID, rating: detail.rating, isFavorite: false)
             userRating = MealieUserRatingSummary(
                 recipeID: recipeID,

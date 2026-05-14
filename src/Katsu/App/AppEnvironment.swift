@@ -105,9 +105,13 @@ final class AppEnvironment: ObservableObject {
     func adoptAuthenticatedSession(
         profile: ServerProfile,
         token: MealieAuthToken,
-        user: MealieUser
+        user: MealieUser,
+        credentials: LoginCredentials? = nil
     ) {
         try? credentialStore.saveToken(token, for: profile.id)
+        if let credentials {
+            try? credentialStore.saveLoginCredentials(credentials, for: profile.id)
+        }
         profileStore.upsert(profile)
         profileStore.setActiveProfileID(profile.id)
         authenticationIssueProfileIDs.remove(profile.id)
@@ -130,6 +134,7 @@ final class AppEnvironment: ObservableObject {
 
     func removeServer(_ profile: ServerProfile) {
         try? credentialStore.deleteToken(for: profile.id)
+        try? credentialStore.deleteLoginCredentials(for: profile.id)
         profileStore.remove(id: profile.id)
         authenticationIssueProfileIDs.remove(profile.id)
         recipeOfflineCache.clear(profileID: profile.id)
@@ -178,6 +183,47 @@ final class AppEnvironment: ObservableObject {
         authenticationIssueProfileIDs.remove(profile.id)
     }
 
+    // MARK: - Transparent re-authentication
+
+    /// Re-logs in using stored credentials and saves the resulting token.
+    /// Throws `AppError.unauthorized` if no credentials are on file.
+    private func reauthenticate(for profile: ServerProfile) async throws -> MealieAuthToken {
+        guard let credentials = try? credentialStore.loadLoginCredentials(for: profile.id) else {
+            throw AppError.unauthorized
+        }
+        let token = try await apiClient.login(
+            serverURL: profile.serverURL,
+            username: credentials.username,
+            password: credentials.password
+        )
+        try? credentialStore.saveToken(token, for: profile.id)
+        clearAuthenticationIssue(for: profile)
+        return token
+    }
+
+    /// Loads the access token for `profile`, transparently re-authenticating
+    /// once if the token is missing or has expired (HTTP 401). On a second
+    /// consecutive 401 the error is re-thrown so callers can surface it.
+    func withToken<T>(
+        for profile: ServerProfile,
+        operation: (MealieAuthToken) async throws -> T
+    ) async throws -> T {
+        let token: MealieAuthToken
+        if let stored = try? credentialStore.loadToken(for: profile.id) {
+            token = stored
+        } else {
+            token = try await reauthenticate(for: profile)
+        }
+
+        do {
+            return try await operation(token)
+        } catch AppError.unauthorized {
+            // Token likely expired; get a fresh one and retry exactly once.
+            let freshToken = try await reauthenticate(for: profile)
+            return try await operation(freshToken)
+        }
+    }
+
     func syncOfflineRecipesIfNeeded() async {
         let lastUpdated = recipeCacheSnapshot.lastUpdated ?? .distantPast
         guard Date().timeIntervalSince(lastUpdated) > 6 * 60 * 60 else { return }
@@ -186,8 +232,7 @@ final class AppEnvironment: ObservableObject {
 
     func syncOfflineRecipes(force: Bool) async {
         guard !isSyncingOfflineRecipes,
-              let profile = activeProfile,
-              let token = try? credentialStore.loadToken(for: profile.id) else { return }
+              let profile = activeProfile else { return }
         isSyncingOfflineRecipes = true
         offlineRecipeSyncProgress = 0
         var downloadedRecipeCount = 0
@@ -201,16 +246,21 @@ final class AppEnvironment: ObservableObject {
         var totalPages = 1
         repeat {
             do {
-                let page = try await apiClient.fetchRecipes(
-                    serverURL: profile.serverURL,
-                    token: token,
-                    page: pageNumber,
-                    perPage: 50,
-                    filters: MealieRecipeFilters()
-                )
+                var usedToken: MealieAuthToken?
+                let page = try await withToken(for: profile) { token in
+                    usedToken = token
+                    return try await apiClient.fetchRecipes(
+                        serverURL: profile.serverURL,
+                        token: token,
+                        page: pageNumber,
+                        perPage: 50,
+                        filters: MealieRecipeFilters()
+                    )
+                }
                 totalPages = page.totalPages ?? page.total.map { Int(ceil(Double($0) / Double(page.perPage))) } ?? pageNumber
                 expectedRecipeCount = page.total ?? expectedRecipeCount ?? (totalPages * page.perPage)
-                await cacheRecipesOffline(page.items, profile: profile, token: token, force: force) {
+                guard let usedToken else { return }
+                await cacheRecipesOffline(page.items, profile: profile, token: usedToken, force: force) {
                     downloadedRecipeCount += 1
                     if let expectedRecipeCount, expectedRecipeCount > 0 {
                         self.offlineRecipeSyncProgress = min(Double(downloadedRecipeCount) / Double(expectedRecipeCount), 1)
