@@ -38,31 +38,48 @@ struct RecipeDetailView: View {
         if isTwoPage, let detail {
             // Two-page "cookbook spread": overview and ingredients on the left
             // page, steps on the right, split at the iPhone Duo hinge so each
-            // side scrolls independently while cooking.
-            HStack(spacing: 0) {
-                List {
-                    offlineNotice
-                    overviewSections(detail)
-                    ingredientsSection(detail)
-                }
-                .frame(maxWidth: .infinity)
+            // side scrolls independently while cooking. Pages are exact halves
+            // of the full screen width so the split lands on the hinge even
+            // when system chrome (the unfolded Duo's status/tab column) insets
+            // one edge. Each page adds that edge's safe-area inset to its outer
+            // margin, and both pages get matching inner margins so content
+            // keeps a clear gutter on both sides of the fold.
+            GeometryReader { proxy in
+                let insets = proxy.safeAreaInsets
+                let pageWidth = (proxy.size.width + insets.leading + insets.trailing) / 2
+                let margin = AdaptiveLayout.twoPageMargin
 
-                Divider()
-                    .ignoresSafeArea(edges: .bottom)
-
-                List {
-                    instructionsSection(detail)
-                    nutritionSection(detail)
-                    if !detail.hasInstructions && !detail.hasVisibleNutrition {
-                        ContentUnavailableView {
-                            Label("No instructions", systemImage: "list.number")
-                        } description: {
-                            Text("This recipe doesn't have any steps yet.")
-                        }
-                        .listRowBackground(Color.clear)
+                HStack(spacing: 0) {
+                    List {
+                        offlineNotice
+                        overviewSections(detail)
+                        ingredientsSection(detail)
                     }
+                    .contentMargins(.leading, margin + insets.leading, for: .scrollContent)
+                    .contentMargins(.trailing, margin, for: .scrollContent)
+                    .frame(width: pageWidth)
+
+                    List {
+                        instructionsSection(detail)
+                        nutritionSection(detail)
+                        if !detail.hasInstructions && !detail.hasVisibleNutrition {
+                            ContentUnavailableView {
+                                Label("No instructions", systemImage: "list.number")
+                            } description: {
+                                Text("This recipe doesn't have any steps yet.")
+                            }
+                            .listRowBackground(Color.clear)
+                        }
+                    }
+                    .contentMargins(.leading, margin, for: .scrollContent)
+                    .contentMargins(.trailing, margin + insets.trailing, for: .scrollContent)
+                    .frame(width: pageWidth)
                 }
-                .frame(maxWidth: .infinity)
+                .overlay {
+                    HStack { Divider() }
+                        .ignoresSafeArea(edges: .bottom)
+                }
+                .ignoresSafeArea(.container, edges: .horizontal)
             }
             .background(DesignSystem.Colors.background)
         } else {
