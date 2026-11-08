@@ -13,6 +13,7 @@ struct RecipeDetailView: View {
     @State private var showingCachedDetail = false
     @State private var isShowingMakingMode = false
     @State private var adjustedServings: Double?
+    @Environment(\.bookFoldX) private var bookFoldX
     @State private var isTwoPage = false
 
     var body: some View {
@@ -35,7 +36,7 @@ struct RecipeDetailView: View {
 
     @ViewBuilder
     private var content: some View {
-        if isTwoPage, let detail {
+        if isTwoPage || bookFoldX != nil, let detail {
             // Two-page "cookbook spread": overview and ingredients on the left
             // page, steps on the right, split at the iPhone Duo hinge so each
             // side scrolls independently while cooking. Pages are exact halves
