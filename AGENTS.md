@@ -112,10 +112,11 @@ exercised in the running app. After editing Swift sources you MUST:
 2. Install and launch the freshly built binary on that simulator. Use
    `-debugUseMockServer` for offline iteration; use `-serverURL` against a
    real Mealie instance for end-to-end checks.
-3. Drive the affected UI with the `agent-device` skill
-   (`.opencode/skills/agent-device/`). Use `agent-device snapshot -i` to
-   locate accessibility refs, then click/type/scroll to reach the screens
-   your change affects.
+3. Drive the affected UI with the `ios-simulator-skill` skill
+   (`.agents/skills/ios-simulator-skill/`). Use `screen_mapper.py` to list
+   the on-screen elements, then `navigator.py`, `gesture.py`, and
+   `keyboard.py` to tap, scroll, and type through the screens your change
+   affects.
 4. Visually confirm the new behavior — capture a snapshot or screenshot of
    the relevant state and verify it matches the intended outcome (layout,
    copy, accessibility labels, dynamic-type sizing, dark mode if relevant).
@@ -123,8 +124,8 @@ exercised in the running app. After editing Swift sources you MUST:
    task complete.
 
 Do not rely solely on "it compiles" or unit tests for Swift work. Skipping
-the simulator + `agent-device` verification loop is a regression risk and is
-not acceptable. If the simulator or `agent-device` is genuinely unavailable
+the simulator + `ios-simulator-skill` verification loop is a regression risk
+and is not acceptable. If the simulator or the skill is genuinely unavailable
 in the current environment, say so explicitly in your final response instead
 of silently omitting the verification.
 
@@ -132,15 +133,20 @@ of silently omitting the verification.
 
 For visual verification, exploratory checks, and any task that requires
 interacting with the running app, use the bundled
-[`agent-device`](https://github.com/callstackincubator/agent-device) skill at
-`.opencode/skills/agent-device/`. Load it via the `skill` tool when you need
-to drive the simulator. Local simulator testing MUST use this worktree's own
-iPhone 17 simulator; pass `--udid "$SIM_UDID"` to `agent-device`
-setup/open/install commands and use the `xcodebuild` destination
-`id=$SIM_UDID`. Do not target the shared `--device "iPhone 17"` or
-`name=iPhone 17` simulators. Do not fall back to synthetic taps via `osascript`/`CGEventPost`. Prefer
-accessibility-ref targeting (`agent-device snapshot -i` then
-`agent-device click @e6`) over screen coordinates.
+[`ios-simulator-skill`](https://github.com/conorluddy/ios-simulator-skill)
+skill at `.agents/skills/ios-simulator-skill/`. Load it via the `skill` tool
+when you need to drive the simulator. It needs Python 3.12+, `idb` and
+`idb-companion` 1.5.1+, and Pillow; check the setup with
+`bash .agents/skills/ios-simulator-skill/scripts/sim_health_check.sh`.
+
+Local simulator testing MUST use this worktree's own iPhone 17 simulator.
+Pass `--udid "$SIM_UDID"` to every skill script, because the scripts
+otherwise pick whichever simulator is booted, and use the `xcodebuild`
+destination `id=$SIM_UDID`. Do not target the shared `name=iPhone 17`
+simulators. Do not fall back to synthetic taps via `osascript`/`CGEventPost`.
+Prefer accessibility targeting (`screen_mapper.py`, then
+`navigator.py --find-text "Settings" --tap` or `--find-id`) over screen
+coordinates.
 
 `docs/DEVELOPMENT.md` carries the full simulator workflow (mock server vs.
 real server, build/install, and the standard inspect/act/verify loop).
@@ -166,5 +172,5 @@ so:
 - If you add a simulator by hand, name it `Katsu-<worktree directory name>`
   (see `scripts/worktree_simulator.sh --name`) so later runs find it.
 - Use the UDID, not the name, in every `xcodebuild`, `simctl`, and
-  `agent-device` command. Replace `booted` in `simctl` examples with
+  `ios-simulator-skill` script command. Replace `booted` in `simctl` examples with
   `"$SIM_UDID"`, since several simulators may be booted at once.
