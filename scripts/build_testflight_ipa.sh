@@ -22,7 +22,12 @@ ARCHIVE_PATH="$BUILD_DIR/Katsu.xcarchive"
 EXPORT_PATH="$BUILD_DIR/export"
 EXPORT_OPTIONS_PLIST="$BUILD_DIR/ExportOptions.plist"
 PROFILE_PLIST="$BUILD_DIR/profile.plist"
-PROFILES_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
+# Xcode 16+ (and apple-actions/download-provisioning-profiles@v7+) use the
+# UserData location; older toolchains use MobileDevice.
+PROFILES_DIRS=(
+  "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"
+  "$HOME/Library/MobileDevice/Provisioning Profiles"
+)
 BUNDLE_IDENTIFIER="${IOS_BUNDLE_IDENTIFIER:-org.odinseye.katsu}"
 IPA_PATH="$EXPORT_PATH/Katsu.ipa"
 
@@ -34,8 +39,16 @@ find_profile_for_bundle() {
   local app_identifier
   local profile_name
   local team_id
+  local dir
+  local search_dirs=()
 
-  if [[ ! -d "$PROFILES_DIR" ]]; then
+  for dir in "${PROFILES_DIRS[@]}"; do
+    if [[ -d "$dir" ]]; then
+      search_dirs+=("$dir")
+    fi
+  done
+
+  if [[ ${#search_dirs[@]} -eq 0 ]]; then
     return 1
   fi
 
@@ -52,7 +65,7 @@ find_profile_for_bundle() {
       echo "$profile_name|$team_id"
       return 0
     fi
-  done < <(find "$PROFILES_DIR" -name '*.mobileprovision' -print)
+  done < <(find "${search_dirs[@]}" -name '*.mobileprovision' -print)
 
   return 1
 }
