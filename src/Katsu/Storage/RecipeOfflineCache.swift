@@ -15,6 +15,8 @@ protocol RecipeOfflineCache: AnyObject, Sendable {
     func localImageURL(profileID: UUID, recipeID: String, slug: String, fileName: String) -> URL?
     func cacheMedia(_ data: Data, profileID: UUID, recipeID: String, slug: String, fileName: String, kind: RecipeOfflineMediaKind)
     func snapshot(profileID: UUID) -> RecipeOfflineCacheSnapshot
+    func cachedFavoriteRecipeIDs(profileID: UUID) -> Set<String>
+    func cacheFavoriteRecipeIDs(_ recipeIDs: Set<String>, profileID: UUID)
     func clear(profileID: UUID)
 }
 
@@ -98,6 +100,22 @@ final class FileRecipeOfflineCache: RecipeOfflineCache, @unchecked Sendable {
         )
     }
 
+    func cachedFavoriteRecipeIDs(profileID: UUID) -> Set<String> {
+        guard let data = try? Data(contentsOf: favoritesURL(profileID: profileID)),
+              let recipeIDs = try? decoder.decode([String].self, from: data) else { return [] }
+        return Set(recipeIDs)
+    }
+
+    func cacheFavoriteRecipeIDs(_ recipeIDs: Set<String>, profileID: UUID) {
+        let url = favoritesURL(profileID: profileID)
+        do {
+            try fileManager.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try encoder.encode(recipeIDs.sorted()).write(to: url, options: .atomic)
+        } catch {
+            return
+        }
+    }
+
     func clear(profileID: UUID) {
         try? fileManager.removeItem(at: profileDirectory(profileID: profileID))
     }
@@ -143,6 +161,12 @@ final class FileRecipeOfflineCache: RecipeOfflineCache, @unchecked Sendable {
 
     private func profileDirectory(profileID: UUID) -> URL {
         rootURL.appendingPathComponent(profileID.uuidString, isDirectory: true)
+    }
+
+    // Stored beside the per-recipe directories; `cachedRecipeRecords` only
+    // reads directories, so this file never looks like a recipe.
+    private func favoritesURL(profileID: UUID) -> URL {
+        profileDirectory(profileID: profileID).appendingPathComponent("favorites.json")
     }
 
     private func recipeDirectory(profileID: UUID, slug: String) -> URL {

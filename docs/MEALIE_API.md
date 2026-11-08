@@ -93,7 +93,7 @@ Notes:
 | Capability | Endpoints |
 | --- | --- |
 | Current user | `GET /api/users/self` (includes `groupSlug`, `householdSlug`, permission flags, `authMethod`). |
-| Ratings / favorites | `GET /api/users/self/ratings[/{recipeId}]`, `GET /api/users/self/favorites`, `POST /api/users/{id}/ratings/{slug}`, `POST\|DELETE /api/users/{id}/favorites/{slug}`. |
+| Ratings / favorites | `GET /api/users/self/ratings[/{recipeId}]`, `GET /api/users/self/favorites`, `POST /api/users/{id}/ratings/{slug}`, `POST\|DELETE /api/users/{id}/favorites/{slug}`. List only a user's favorites with `GET /api/recipes?queryFilter=favoritedBy.id = "<userId>"` (what Mealie's web favorites page uses). |
 | Profile | `PUT /api/users/{id}`, `PUT /api/users/password`, `POST /api/users/{id}/image`, password reset routes. |
 | Household | `GET /api/households/self`, `/members`, `/preferences`, `/statistics`, `GET /api/households/self/recipes/{slug}` (household `lastMade`). |
 | Group | `GET /api/groups/self`, `/members`, `/preferences`, `/storage`, `GET /api/groups/households`. |

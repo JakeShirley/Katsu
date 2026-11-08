@@ -320,7 +320,9 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
             let matchesCategories = filters.categories.isEmpty || !categorySlugs.isDisjoint(with: filters.categories)
             let matchesTags = filters.tags.isEmpty || !tagSlugs.isDisjoint(with: filters.tags)
             let matchesHouseholds = filters.households.isEmpty || filters.households.contains(user.householdId ?? "")
-            return matchesSearch && matchesCategories && matchesTags && matchesHouseholds
+            let matchesFavorites = !filters.favoritesOnly ||
+                recipe.recipeID.flatMap { userRatings[$0]?.isFavorite } == true
+            return matchesSearch && matchesCategories && matchesTags && matchesHouseholds && matchesFavorites
         }
     }
 
@@ -383,6 +385,14 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
             throw AppError.unauthorized
         }
         return userRatings[recipeID] ?? MealieUserRatingSummary(recipeID: recipeID, rating: nil, isFavorite: false)
+    }
+
+    func fetchFavorites(serverURL: URL, token: MealieAuthToken) async throws -> [MealieUserRatingSummary] {
+        try await Task.sleep(nanoseconds: 120_000_000)
+        guard isValid(token) else {
+            throw AppError.unauthorized
+        }
+        return userRatings.values.filter(\.isFavorite).sorted { $0.recipeID < $1.recipeID }
     }
 
     func updateUserRating(serverURL: URL, token: MealieAuthToken, userID: String, slug: String, rating: Double?, isFavorite: Bool?) async throws {

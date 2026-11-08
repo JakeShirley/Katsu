@@ -2462,6 +2462,35 @@
         }
       }
     },
+    "Favorites" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Favoriten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorites"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Favoritos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "お気に入り"
+          }
+        }
+      }
+    },
     "Fiber" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4429,6 +4458,35 @@
         }
       }
     },
+    "No favorite recipes yet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Noch keine Lieblingsrezepte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No favorite recipes yet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Todavía no hay recetas favoritas"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "お気に入りのレシピはまだありません"
+          }
+        }
+      }
+    },
     "No ingredients listed" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4483,6 +4541,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "手順がありません"
+          }
+        }
+      }
+    },
+    "No matching favorites" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keine passenden Favoriten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No matching favorites"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No hay favoritos que coincidan"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "一致するお気に入りはありません"
           }
         }
       }
@@ -6561,6 +6648,64 @@
         }
       }
     },
+    "Show All Recipes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Alle Rezepte anzeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show All Recipes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mostrar todas las recetas"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "すべてのレシピを表示"
+          }
+        }
+      }
+    },
+    "Show Favorites Only" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nur Favoriten anzeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Favorites Only"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mostrar solo favoritos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "お気に入りのみ表示"
+          }
+        }
+      }
+    },
     "Showing offline copy" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7575,6 +7720,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Tag slugs"
+          }
+        }
+      }
+    },
+    "Tap Add Favorite on a recipe to see it here." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tippe bei einem Rezept auf „Zu Favoriten hinzufügen“, um es hier zu sehen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap Add Favorite on a recipe to see it here."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Toca Añadir a favoritos en una receta para verla aquí."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "レシピで「お気に入りに追加」をタップすると、ここに表示されます。"
           }
         }
       }

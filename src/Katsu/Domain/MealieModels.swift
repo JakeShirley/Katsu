@@ -138,15 +138,23 @@ struct MealieRecipeFilters: Equatable, Sendable {
     var categories: [String] = []
     var tags: [String] = []
     var households: [String] = []
+    /// Restrict results to the signed-in user's favorites (REC-005).
+    var favoritesOnly = false
+    /// User whose favorites to return. Resolved at request time when
+    /// `favoritesOnly` is set, since the view layer may not know it yet.
+    var favoritedByUserID: String?
 
     var isEmpty: Bool {
         search.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-            categories.isEmpty && tags.isEmpty && households.isEmpty
+            categories.isEmpty && tags.isEmpty && households.isEmpty && !favoritesOnly
     }
 }
 
 extension MealieRecipeSummary {
-    func matches(_ filters: MealieRecipeFilters) -> Bool {
+    func matches(_ filters: MealieRecipeFilters, favoriteRecipeIDs: Set<String>) -> Bool {
+        if filters.favoritesOnly {
+            guard let recipeID, favoriteRecipeIDs.contains(recipeID) else { return false }
+        }
         let search = filters.search.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         let searchableText = [displayName, description, slug]
             .compactMap { $0?.lowercased() }
@@ -294,6 +302,11 @@ struct MealieUserRatingSummary: Codable, Equatable {
         case rating
         case isFavorite
     }
+}
+
+/// `/api/users/self/favorites` and `/api/users/self/ratings` response.
+struct MealieUserRatings: Codable, Equatable {
+    let ratings: [MealieUserRatingSummary]
 }
 
 /// Lightweight recipe summary returned by `/api/recipes`.

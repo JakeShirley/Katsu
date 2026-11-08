@@ -16,7 +16,13 @@ final class AppEnvironment: ObservableObject {
     private let networkMonitor = NWPathMonitor()
     private let networkMonitorQueue = DispatchQueue(label: "org.odinseye.katsu.network-monitor")
 
-    @Published var activeProfile: ServerProfile?
+    @Published var activeProfile: ServerProfile? {
+        didSet {
+            if oldValue?.id != activeProfile?.id {
+                reloadFavoriteRecipeIDs()
+            }
+        }
+    }
     @Published var currentUser: MealieUser?
     @Published var hasServerProfiles: Bool
     @Published var recipeCacheSnapshot: RecipeOfflineCacheSnapshot = .empty
@@ -26,6 +32,11 @@ final class AppEnvironment: ObservableObject {
     @Published var networkReachabilityTrigger = 0
     @Published var tabLayout: [HomeTabLayoutItem]
     @Published private(set) var authenticationIssueProfileIDs: Set<UUID> = []
+    /// Recipe IDs the signed-in user has favorited on the active profile,
+    /// persisted with the offline cache so favorites filter offline.
+    @Published private(set) var favoriteRecipeIDs: Set<String> = []
+    /// Bumped when the user toggles a favorite so favorites-only lists refetch.
+    @Published private(set) var favoritesRevision = 0
     private var isNetworkReachable = false
 
     var activeProfileNeedsSignIn: Bool {
@@ -84,6 +95,7 @@ final class AppEnvironment: ObservableObject {
             refreshAllRecipeCacheSnapshot()
         }
 
+        reloadFavoriteRecipeIDs()
         startNetworkMonitor()
     }
 
@@ -174,6 +186,19 @@ final class AppEnvironment: ObservableObject {
         }
     }
 
+    /// Returns the cached signed-in user, fetching `/api/users/self` once
+    /// when it isn't known yet (e.g. after switching profiles).
+    func resolveCurrentUser(profile: ServerProfile, token: MealieAuthToken) async throws -> MealieUser {
+        if let currentUser, activeProfile?.id == profile.id {
+            return currentUser
+        }
+        let user = try await apiClient.fetchCurrentUser(serverURL: profile.serverURL, token: token)
+        if activeProfile?.id == profile.id {
+            currentUser = user
+        }
+        return user
+    }
+
     func switchToProfile(_ profile: ServerProfile) {
         profileStore.setActiveProfileID(profile.id)
         activeProfile = profile
@@ -238,6 +263,46 @@ final class AppEnvironment: ObservableObject {
             recipeOfflineCache.clear(profileID: profile.id)
         }
         refreshRecipeCacheSnapshot()
+    }
+
+    // MARK: - Favorites
+
+    private func reloadFavoriteRecipeIDs() {
+        favoriteRecipeIDs = activeProfile.map { recipeOfflineCache.cachedFavoriteRecipeIDs(profileID: $0.id) } ?? []
+    }
+
+    /// Replaces the known favorites with the server's list.
+    func refreshFavoriteRecipeIDs(profile: ServerProfile, token: MealieAuthToken) async throws {
+        let favorites = try await apiClient.fetchFavorites(serverURL: profile.serverURL, token: token)
+        let recipeIDs = Set(favorites.filter(\.isFavorite).map(\.recipeID))
+        recipeOfflineCache.cacheFavoriteRecipeIDs(recipeIDs, profileID: profile.id)
+        if activeProfile?.id == profile.id, favoriteRecipeIDs != recipeIDs {
+            favoriteRecipeIDs = recipeIDs
+        }
+    }
+
+    /// Adds recipes the server just returned for a favorites-only query.
+    func mergeFavoriteRecipeIDs(_ recipeIDs: [String], profile: ServerProfile) {
+        guard activeProfile?.id == profile.id else { return }
+        let updated = favoriteRecipeIDs.union(recipeIDs)
+        guard updated != favoriteRecipeIDs else { return }
+        favoriteRecipeIDs = updated
+        recipeOfflineCache.cacheFavoriteRecipeIDs(updated, profileID: profile.id)
+    }
+
+    /// Records a favorite change made or observed on a single recipe.
+    func recordFavorite(_ isFavorite: Bool, recipeID: String, profile: ServerProfile) {
+        guard activeProfile?.id == profile.id else { return }
+        var updated = favoriteRecipeIDs
+        if isFavorite {
+            updated.insert(recipeID)
+        } else {
+            updated.remove(recipeID)
+        }
+        guard updated != favoriteRecipeIDs else { return }
+        favoriteRecipeIDs = updated
+        recipeOfflineCache.cacheFavoriteRecipeIDs(updated, profileID: profile.id)
+        favoritesRevision += 1
     }
 
     func updateTabLayout(_ layout: [HomeTabLayoutItem]) {
@@ -343,6 +408,9 @@ final class AppEnvironment: ObservableObject {
             }
         } while pageNumber <= totalPages
 
+        _ = try? await withToken(for: profile) { token in
+            try await refreshFavoriteRecipeIDs(profile: profile, token: token)
+        }
         refreshRecipeCacheSnapshot()
     }
 
