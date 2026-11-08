@@ -13,6 +13,9 @@ Expected release model:
 - Commits use Conventional Commits.
 - semantic-release analyzes commits to decide the next version.
 - CI publishes release notes and tags when changes land on the release branch.
+- Release automation uses Node.js 24 and semantic-release 25. Checkout and
+  Node setup actions use their Node.js 24-based v7 releases, and the provisioning
+  profile action uses v7 with explicit ES module metadata.
 - iOS marketing versions are derived from the semantic-release version during
   release automation.
 - iOS build numbers can remain CI-generated monotonic build identifiers.
