@@ -2,8 +2,9 @@
 
 This repository is a native iOS companion app for [Mealie](https://docs.mealie.io/),
 the self-hosted recipe manager. The app is named **Katsu**. Follow the project
-plan in [docs/MEALIE_IOS_PROJECT_PLAN.md](docs/MEALIE_IOS_PROJECT_PLAN.md) and
-the developer guide in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+plan in [docs/MEALIE_IOS_PROJECT_PLAN.md](docs/MEALIE_IOS_PROJECT_PLAN.md),
+the developer guide in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md), and the
+Mealie feature and API reference in [docs/MEALIE_API.md](docs/MEALIE_API.md).
 
 ## Release And Commit Discipline
 
