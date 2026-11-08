@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MealPlanEntryEditorView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var env: AppEnvironment
     let draft: MealPlanEditorDraft
     let week: MealPlanWeek
     let isSaving: Bool
@@ -21,6 +22,14 @@ struct MealPlanEntryEditorView: View {
         _entryType = State(initialValue: draft.entryType)
         _title = State(initialValue: draft.title)
         _text = State(initialValue: draft.text)
+    }
+
+    /// Hides entry types the server can't store, but keeps the current
+    /// selection so editing an existing entry never drops its type.
+    private var availableEntryTypes: [MealieMealPlanEntryType] {
+        MealieMealPlanEntryType.allCases.filter { type in
+            type == entryType || type.requiredFeature.map(env.supports) ?? true
+        }
     }
 
     private var isValid: Bool {
@@ -48,7 +57,7 @@ struct MealPlanEntryEditorView: View {
                 }
 
                 Picker("Meal Type", selection: $entryType) {
-                    ForEach(MealieMealPlanEntryType.allCases) { type in
+                    ForEach(availableEntryTypes) { type in
                         Text(type.displayName).tag(type)
                     }
                 }

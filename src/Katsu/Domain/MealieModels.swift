@@ -7,16 +7,46 @@ struct MealieServerInfo: Codable, Equatable {
     let version: String?
     let demoStatus: Bool?
     let allowSignup: Bool?
+    let allowPasswordLogin: Bool?
+    let enableReverseProxyAuth: Bool?
     let defaultGroupSlug: String?
     let defaultHouseholdSlug: String?
+
+    init(
+        production: Bool? = nil,
+        version: String? = nil,
+        demoStatus: Bool? = nil,
+        allowSignup: Bool? = nil,
+        allowPasswordLogin: Bool? = nil,
+        enableReverseProxyAuth: Bool? = nil,
+        defaultGroupSlug: String? = nil,
+        defaultHouseholdSlug: String? = nil
+    ) {
+        self.production = production
+        self.version = version
+        self.demoStatus = demoStatus
+        self.allowSignup = allowSignup
+        self.allowPasswordLogin = allowPasswordLogin
+        self.enableReverseProxyAuth = enableReverseProxyAuth
+        self.defaultGroupSlug = defaultGroupSlug
+        self.defaultHouseholdSlug = defaultHouseholdSlug
+    }
 
     enum CodingKeys: String, CodingKey {
         case production
         case version
         case demoStatus
         case allowSignup
+        case allowPasswordLogin
+        case enableReverseProxyAuth
         case defaultGroupSlug
         case defaultHouseholdSlug
+    }
+
+    /// Password login is unavailable when the admin disabled it or the server
+    /// relies on reverse-proxy authentication. Older servers omit both fields.
+    var prefersAPITokenSignIn: Bool {
+        allowPasswordLogin == false || enableReverseProxyAuth == true
     }
 }
 
@@ -36,6 +66,33 @@ struct MealieAuthToken: Codable, Equatable {
         case accessToken = "access_token"
         case tokenType = "token_type"
     }
+}
+
+extension MealieAuthToken {
+    /// Wraps a long-lived API token created in Mealie under
+    /// Profile → API Tokens (CON-013). Tolerates a pasted `Bearer ` prefix and
+    /// surrounding whitespace. Returns `nil` for empty input.
+    init?(apiToken rawValue: String) {
+        var value = rawValue.trimmingCharacters(in: .whitespacesAndNewlines)
+        if value.lowercased().hasPrefix("bearer ") {
+            value = String(value.dropFirst("bearer ".count))
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        guard !value.isEmpty else { return nil }
+        self.init(accessToken: value, tokenType: "bearer")
+    }
+}
+
+/// How Katsu authenticates with a server profile.
+enum ServerAuthMethod: String, Codable, CaseIterable, Identifiable {
+    /// Username/password via `POST /api/auth/token`; credentials are kept in
+    /// the Keychain so expired sessions can be renewed transparently.
+    case password
+    /// Long-lived API token pasted by the user. It cannot be refreshed, so an
+    /// HTTP 401 means the token was revoked and the user must paste a new one.
+    case apiToken
+
+    var id: String { rawValue }
 }
 
 /// Subset of `/api/users/self` that v0 displays.
@@ -134,6 +191,13 @@ enum MealieMealPlanEntryType: String, Codable, CaseIterable, Equatable, Identifi
         case .snack: String(localized: "Snack")
         case .drink: String(localized: "Drink")
         case .dessert: String(localized: "Dessert")
+        }
+    }
+
+    var requiredFeature: MealieFeature? {
+        switch self {
+        case .breakfast, .lunch, .dinner, .side: nil
+        case .snack, .drink, .dessert: .extendedMealPlanEntryTypes
         }
     }
 }
@@ -998,18 +1062,26 @@ struct ServerProfile: Codable, Equatable, Hashable, Identifiable {
     var serverURL: URL
     var version: String?
     var lastUsername: String?
+    /// `nil` for profiles saved before CON-013; those used password sign-in.
+    var authMethod: ServerAuthMethod?
 
     init(
         id: UUID = UUID(),
         displayName: String,
         serverURL: URL,
         version: String? = nil,
-        lastUsername: String? = nil
+        lastUsername: String? = nil,
+        authMethod: ServerAuthMethod? = nil
     ) {
         self.id = id
         self.displayName = displayName
         self.serverURL = serverURL
         self.version = version
         self.lastUsername = lastUsername
+        self.authMethod = authMethod
+    }
+
+    var resolvedAuthMethod: ServerAuthMethod {
+        authMethod ?? .password
     }
 }

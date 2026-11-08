@@ -807,6 +807,93 @@
         }
       }
     },
+    "an unknown version" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "eine unbekannte Version"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "an unknown version"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "una versión desconocida"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "不明なバージョン"
+          }
+        }
+      }
+    },
+    "API Token" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "API-Token"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Token"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Token de API"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "API トークン"
+          }
+        }
+      }
+    },
+    "API token is required." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "API-Token ist erforderlich."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API token is required."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "El token de API es obligatorio."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "API トークンが必要です。"
+          }
+        }
+      }
+    },
     "App version %@, opens changelog" : {
       "localizations" : {
         "de" : {
@@ -889,6 +976,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "適量"
+          }
+        }
+      }
+    },
+    "Ask your Mealie admin to update the server." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bitte deine Mealie-Administration, den Server zu aktualisieren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ask your Mealie admin to update the server."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pide a la persona que administra Mealie que actualice el servidor."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mealie の管理者にサーバーのアップデートを依頼してください。"
           }
         }
       }
@@ -1879,6 +1995,35 @@
         }
       }
     },
+    "Create a long-lived token in Mealie under your profile's API Tokens page. Use this when your server signs in through a reverse proxy or doesn't allow password login." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Erstelle in Mealie auf der Seite „API-Tokens“ deines Profils ein langlebiges Token. Verwende es, wenn dein Server die Anmeldung über einen Reverse Proxy abwickelt oder keine Passwortanmeldung erlaubt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create a long-lived token in Mealie under your profile's API Tokens page. Use this when your server signs in through a reverse proxy or doesn't allow password login."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Crea un token de larga duración en Mealie, en la página de tokens de API de tu perfil. Úsalo cuando tu servidor inicie sesión mediante un proxy inverso o no permita iniciar sesión con contraseña."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mealie のプロフィールにある「API トークン」ページで長期間有効なトークンを作成してください。サーバーがリバースプロキシ経由でサインインする場合や、パスワードでのサインインが許可されていない場合に使用します。"
+          }
+        }
+      }
+    },
     "Day" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2757,6 +2902,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "インポートまたは保存したレシピがここに表示されます。"
+          }
+        }
+      }
+    },
+    "Importing recipe categories" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rezeptkategorien importieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importing recipe categories"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Importar categorías de recetas"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "レシピカテゴリのインポート"
           }
         }
       }
@@ -3904,6 +4078,35 @@
         }
       }
     },
+    "Meal plans and shopping lists" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Speisepläne und Einkaufslisten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meal plans and shopping lists"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Planes de comidas y listas de compras"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "献立と買い物リスト"
+          }
+        }
+      }
+    },
     "Meal plans and shopping lists are coming soon." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3958,6 +4161,64 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "食事の種類"
+          }
+        }
+      }
+    },
+    "Mealie API token" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mealie-API-Token"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealie API token"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Token de API de Mealie"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mealie API トークン"
+          }
+        }
+      }
+    },
+    "Mealie didn't accept this API token. Check that the whole token was copied and that it hasn't been deleted." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mealie hat dieses API-Token nicht akzeptiert. Prüfe, ob das gesamte Token kopiert wurde und ob es nicht gelöscht wurde."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealie didn't accept this API token. Check that the whole token was copied and that it hasn't been deleted."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mealie no aceptó este token de API. Comprueba que se copió el token completo y que no se ha eliminado."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mealie はこの API トークンを受け付けませんでした。トークン全体がコピーされているか、削除されていないかを確認してください。"
           }
         }
       }
@@ -4783,6 +5044,35 @@
     "Paste a recipe URL and Katsu will ask Mealie to import it." : {
 
     },
+    "Paste API token" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "API-Token einfügen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paste API token"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Pega el token de API"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "API トークンを貼り付け"
+          }
+        }
+      }
+    },
     "Planned Meal" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5481,6 +5771,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "予定した食事を削除"
+          }
+        }
+      }
+    },
+    "Requires Mealie %@ or newer. This server runs %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Erfordert Mealie %1$@ oder neuer. Dieser Server verwendet %2$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requires Mealie %1$@ or newer. This server runs %2$@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Requiere Mealie %1$@ o posterior. Este servidor usa %2$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mealie %1$@ 以降が必要です。このサーバーは %2$@ です。"
           }
         }
       }
@@ -6532,6 +6851,35 @@
         }
       }
     },
+    "Sign-in method" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Anmeldemethode"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign-in method"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Método de inicio de sesión"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "サインイン方法"
+          }
+        }
+      }
+    },
     "Signed in as" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6615,6 +6963,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "軽食"
+          }
+        }
+      }
+    },
+    "Snack, drink, and dessert meal types" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mahlzeittypen Snack, Getränk und Dessert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snack, drink, and dessert meal types"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tipos de comida merienda, bebida y postre"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "軽食・ドリンク・デザートの食事タイプ"
           }
         }
       }
@@ -7405,6 +7782,35 @@
         }
       }
     },
+    "This server runs Mealie %@. Katsu works best with Mealie %@ or newer. Unavailable until you update: %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieser Server verwendet Mealie %1$@. Katsu funktioniert am besten mit Mealie %2$@ oder neuer. Bis zur Aktualisierung nicht verfügbar: %3$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This server runs Mealie %1$@. Katsu works best with Mealie %2$@ or newer. Unavailable until you update: %3$@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Este servidor usa Mealie %1$@. Katsu funciona mejor con Mealie %2$@ o posterior. No disponible hasta que actualices: %3$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "このサーバーは Mealie %1$@ です。Katsu は Mealie %2$@ 以降で最適に動作します。アップデートするまで利用できない機能: %3$@。"
+          }
+        }
+      }
+    },
     "This Week" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7985,6 +8391,35 @@
         }
       }
     },
+    "Update your Mealie server" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aktualisiere deinen Mealie-Server"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update your Mealie server"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Actualiza tu servidor de Mealie"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mealie サーバーをアップデートしてください"
+          }
+        }
+      }
+    },
     "Updating item" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8242,6 +8677,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "このアカウントにはこの操作を行う権限がありません。"
+          }
+        }
+      }
+    },
+    "Your API token was rejected. Paste a new token to restore syncing with this Mealie server. Offline recipes stay available on this device." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dein API-Token wurde abgelehnt. Füge ein neues Token ein, um die Synchronisierung mit diesem Mealie-Server wiederherzustellen. Offline-Rezepte bleiben auf diesem Gerät verfügbar."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your API token was rejected. Paste a new token to restore syncing with this Mealie server. Offline recipes stay available on this device."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Se rechazó tu token de API. Pega un token nuevo para restaurar la sincronización con este servidor de Mealie. Las recetas sin conexión seguirán disponibles en este dispositivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "API トークンが拒否されました。この Mealie サーバーとの同期を復元するには、新しいトークンを貼り付けてください。オフラインレシピはこのデバイスで引き続き利用できます。"
           }
         }
       }

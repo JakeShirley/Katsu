@@ -53,7 +53,15 @@ back each capability. It is the source of truth for API assumptions in
 | `GET /api/admin/about[/statistics\|/check]` | admin | Server config health and statistics. |
 
 Use `version` to gate features: `nightly`/`develop` builds report a non-semver
-string, so treat unparseable versions as "latest".
+string, so treat unparseable versions as "latest". Katsu parses it into
+`MealieServerVersion` and declares minimums on `MealieFeature`
+(`src/Katsu/Domain/MealieServerVersion.swift`); views check
+`AppEnvironment.supports(_:)` and show an "update your server" message when the
+active server is too old (CON-014). The version is re-read from
+`/api/app/about` whenever the active profile loads so gates follow server
+upgrades. Current gates: households routes (meal plans, shopping lists)
+v2.0.0, `snack`/`drink`/`dessert` meal types v3.7.0, and `includeCategories`
+on URL import v3.10.0.
 
 ## Authentication
 
@@ -65,7 +73,7 @@ string, so treat unparseable versions as "latest".
 | Native OIDC (PKCE) | `GET /api/auth/oauth/native/config` → `{ authorization_endpoint, client_id, scope }`; `POST /api/auth/oauth/native/token` with `{ code, code_verifier, redirect_uri, nonce? }` | v3.23.0; public clients v3.29.0 | Planned (CON-010). |
 | Web OIDC | `GET /api/auth/oauth`, `GET /api/auth/oauth/callback` | — | Cookie-based; not for native apps. |
 | Reverse-proxy auth | `GET /api/auth/reverse-proxy` | v3.29.0 | Browser-oriented; native clients should use API tokens. |
-| Long-lived API tokens | `POST /api/users/api-tokens`, `DELETE /api/users/api-tokens/{id}` | — | Planned (CON-013). Cannot be exchanged via `/api/auth/refresh`. |
+| Long-lived API tokens | `POST /api/users/api-tokens`, `DELETE /api/users/api-tokens/{id}` | — | CON-013: users paste a token created in Mealie; Katsu validates it with `GET /api/users/self` and stores it in the Keychain. Cannot be exchanged via `/api/auth/refresh`, so a 401 asks for a new token. Katsu defaults to this method when `allowPasswordLogin` is `false` or `enableReverseProxyAuth` is `true`. |
 | LDAP | Transparent through `POST /api/auth/token` | — | Works with CON-002. |
 
 Notes:

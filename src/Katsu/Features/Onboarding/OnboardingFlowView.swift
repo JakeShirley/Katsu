@@ -141,10 +141,25 @@ private struct LoginView: View {
     let onBack: () -> Void
     let onConnected: () -> Void
 
+    @State private var authMethod: ServerAuthMethod
     @State private var username: String = ""
     @State private var password: String = ""
+    @State private var apiToken: String = ""
     @State private var isSubmitting = false
     @State private var errorMessage: String?
+
+    init(
+        profile: ServerProfile,
+        serverInfo: MealieServerInfo?,
+        onBack: @escaping () -> Void,
+        onConnected: @escaping () -> Void
+    ) {
+        self.profile = profile
+        self.serverInfo = serverInfo
+        self.onBack = onBack
+        self.onConnected = onConnected
+        _authMethod = State(initialValue: serverInfo?.prefersAPITokenSignIn == true ? .apiToken : .password)
+    }
 
     var body: some View {
         Form {
@@ -155,20 +170,20 @@ private struct LoginView: View {
                 }
             }
 
-            Section("Sign in") {
-                TextField("Username or email", text: $username)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .submitLabel(.next)
-                SecureField("Password", text: $password)
-                    .submitLabel(.go)
-                    .onSubmit(submit)
-            }
+            ServerVersionWarningSection(serverVersion: serverInfo?.version)
+
+            SignInCredentialFields(
+                authMethod: $authMethod,
+                username: $username,
+                password: $password,
+                apiToken: $apiToken,
+                onSubmit: submit
+            )
 
             if let errorMessage {
                 Section {
                     Text(errorMessage)
-                        .foregroundStyle(.red)
+                        .foregroundStyle(DesignSystem.Colors.destructive)
                         .font(.subheadline)
                 }
             }
@@ -178,7 +193,7 @@ private struct LoginView: View {
                     submit()
                 } label: {
                     if isSubmitting {
-                        HStack(spacing: 8) {
+                        HStack(spacing: DesignSystem.Spacing.sm) {
                             ProgressView()
                             Text("Signing in…")
                         }
@@ -186,7 +201,12 @@ private struct LoginView: View {
                         Text("Sign In")
                     }
                 }
-                .disabled(isSubmitting || username.isEmpty || password.isEmpty)
+                .disabled(isSubmitting || !SignInCredentialFields.canSubmit(
+                    authMethod: authMethod,
+                    username: username,
+                    password: password,
+                    apiToken: apiToken
+                ))
             }
         }
         .navigationTitle("Sign in")
@@ -195,35 +215,25 @@ private struct LoginView: View {
                 Button("Change Server", action: onBack)
             }
         }
+        .onChange(of: authMethod) {
+            errorMessage = nil
+        }
     }
 
     private func submit() {
-        guard !password.isEmpty else {
-            errorMessage = AppError.missingPassword.errorDescription
-            return
-        }
+        guard !isSubmitting else { return }
         errorMessage = nil
         isSubmitting = true
 
         Task {
             defer { isSubmitting = false }
             do {
-                let token = try await env.apiClient.login(
-                    serverURL: profile.serverURL,
+                try await env.signIn(
+                    profile: profile,
+                    method: authMethod,
                     username: username,
-                    password: password
-                )
-                let user = try await env.apiClient.fetchCurrentUser(
-                    serverURL: profile.serverURL,
-                    token: token
-                )
-                var saved = profile
-                saved.lastUsername = username
-                env.adoptAuthenticatedSession(
-                    profile: saved,
-                    token: token,
-                    user: user,
-                    credentials: LoginCredentials(username: username, password: password)
+                    password: password,
+                    apiToken: apiToken
                 )
                 onConnected()
             } catch let error as AppError {
@@ -232,5 +242,104 @@ private struct LoginView: View {
                 errorMessage = error.localizedDescription
             }
         }
+    }
+}
+
+// MARK: - Shared sign-in fields
+
+/// Password vs. long-lived API token (CON-013) sign-in fields, shared by
+/// onboarding and the Settings re-authentication screen.
+struct SignInCredentialFields: View {
+    @Binding var authMethod: ServerAuthMethod
+    @Binding var username: String
+    @Binding var password: String
+    @Binding var apiToken: String
+    let onSubmit: () -> Void
+
+    static func canSubmit(authMethod: ServerAuthMethod, username: String, password: String, apiToken: String) -> Bool {
+        switch authMethod {
+        case .password:
+            !username.isEmpty && !password.isEmpty
+        case .apiToken:
+            MealieAuthToken(apiToken: apiToken) != nil
+        }
+    }
+
+    var body: some View {
+        Section {
+            Picker("Sign-in method", selection: $authMethod) {
+                Text("Password").tag(ServerAuthMethod.password)
+                Text("API Token").tag(ServerAuthMethod.apiToken)
+            }
+            .pickerStyle(.segmented)
+            .frame(minHeight: DesignSystem.HitTarget.minimum)
+        }
+
+        switch authMethod {
+        case .password:
+            Section("Sign in") {
+                TextField("Username or email", text: $username)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .submitLabel(.next)
+                SecureField("Password", text: $password)
+                    .submitLabel(.go)
+                    .onSubmit(onSubmit)
+            }
+        case .apiToken:
+            Section {
+                SecureField("Paste API token", text: $apiToken)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .submitLabel(.go)
+                    .onSubmit(onSubmit)
+                    .accessibilityLabel("Mealie API token")
+            } header: {
+                Text("API Token")
+            } footer: {
+                Text("Create a long-lived token in Mealie under your profile's API Tokens page. Use this when your server signs in through a reverse proxy or doesn't allow password login.")
+            }
+        }
+    }
+}
+
+// MARK: - Server version warning
+
+/// Warns at sign-in when the server is older than the release Katsu needs
+/// for every feature (CON-014). Renders nothing for current or unknown
+/// versions.
+struct ServerVersionWarningSection: View {
+    let serverVersion: String?
+
+    private var unsupportedFeatures: [MealieFeature] {
+        MealieFeature.allCases.filter { !$0.isSupported(byServerVersion: serverVersion) }
+    }
+
+    var body: some View {
+        if !unsupportedFeatures.isEmpty {
+            Section {
+                Label {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                        Text("Update your Mealie server")
+                            .font(.headline)
+                        Text(versionMessage)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                } icon: {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(DesignSystem.Colors.warning)
+                        .accessibilityHidden(true)
+                }
+                .accessibilityElement(children: .combine)
+            }
+        }
+    }
+
+    private var versionMessage: String {
+        let current = ServerUpdateCopy.displayVersion(serverVersion)
+        let recommended = MealieFeature.recommendedMinimumVersion.description
+        let features = unsupportedFeatures.map(\.localizedName).formatted(.list(type: .and))
+        return String(localized: "This server runs Mealie \(current). Katsu works best with Mealie \(recommended) or newer. Unavailable until you update: \(features).")
     }
 }

@@ -13,7 +13,12 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
     private let validUsername: String
     private let validPassword: String
     private let mintedToken: MealieAuthToken
+    private let validAPIToken: String
     private let encoder = JSONEncoder()
+
+    /// Mock long-lived API token accepted by the API token sign-in flow.
+    static let apiToken = "mock-api-token"
+    static let defaultServerVersion = "v3.30.0"
 
     init(
         serverInfo: MealieServerInfo,
@@ -24,7 +29,8 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         shoppingLists: [MealieShoppingListDetail] = [],
         validUsername: String,
         validPassword: String,
-        mintedToken: MealieAuthToken
+        mintedToken: MealieAuthToken,
+        validAPIToken: String = MockMealieAPIClient.apiToken
     ) {
         self.serverInfo = serverInfo
         self.user = user
@@ -35,15 +41,22 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         self.validUsername = validUsername
         self.validPassword = validPassword
         self.mintedToken = mintedToken
+        self.validAPIToken = validAPIToken
     }
 
-    static func preloaded() -> MockMealieAPIClient {
+    private func isValid(_ token: MealieAuthToken) -> Bool {
+        token.accessToken == mintedToken.accessToken || token.accessToken == validAPIToken
+    }
+
+    static func preloaded(serverVersion: String? = nil) -> MockMealieAPIClient {
         MockMealieAPIClient(
             serverInfo: MealieServerInfo(
                 production: false,
-                version: "v2.5.0-mock",
+                version: serverVersion ?? defaultServerVersion,
                 demoStatus: false,
                 allowSignup: false,
+                allowPasswordLogin: true,
+                enableReverseProxyAuth: false,
                 defaultGroupSlug: "home",
                 defaultHouseholdSlug: "family"
             ),
@@ -160,7 +173,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func fetchCurrentUser(serverURL: URL, token: MealieAuthToken) async throws -> MealieUser {
         try await Task.sleep(nanoseconds: 150_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
         return user
@@ -168,7 +181,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func fetchRecipes(serverURL: URL, token: MealieAuthToken, page: Int, perPage: Int, filters: MealieRecipeFilters) async throws -> MealieRecipePage {
         try await Task.sleep(nanoseconds: 200_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
 
@@ -190,7 +203,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func fetchMealPlanEntries(serverURL: URL, token: MealieAuthToken, startDate: String, endDate: String) async throws -> MealieMealPlanPage {
         try await Task.sleep(nanoseconds: 180_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
 
@@ -213,7 +226,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func createMealPlanEntry(serverURL: URL, token: MealieAuthToken, entry: MealieMealPlanEntryCreate) async throws -> MealieMealPlanEntry {
         try await Task.sleep(nanoseconds: 160_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
 
@@ -235,7 +248,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func createRandomMealPlanEntry(serverURL: URL, token: MealieAuthToken, entry: MealieMealPlanRandomCreate) async throws -> MealieMealPlanEntry {
         try await Task.sleep(nanoseconds: 160_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
         guard let recipe = recipes.randomElement(), let recipeID = recipe.recipeID else {
@@ -260,7 +273,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func updateMealPlanEntry(serverURL: URL, token: MealieAuthToken, entryID: Int, entry: MealieMealPlanEntryUpdate) async throws -> MealieMealPlanEntry {
         try await Task.sleep(nanoseconds: 160_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
         guard let index = mealPlanEntries.firstIndex(where: { $0.id == entryID }) else {
@@ -285,7 +298,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func deleteMealPlanEntry(serverURL: URL, token: MealieAuthToken, entryID: Int) async throws -> MealieMealPlanEntry {
         try await Task.sleep(nanoseconds: 160_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
         guard let index = mealPlanEntries.firstIndex(where: { $0.id == entryID }) else {
@@ -313,7 +326,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func fetchRecipeDetail(serverURL: URL, token: MealieAuthToken, slug: String) async throws -> MealieRecipeDetail {
         try await Task.sleep(nanoseconds: 180_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
         guard let summary = recipes.first(where: { $0.slug == slug || $0.id == slug }) else {
@@ -329,7 +342,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func fetchRecipeImageData(serverURL: URL, token: MealieAuthToken, recipeID: String, fileName: String) async throws -> Data {
         try await Task.sleep(nanoseconds: 80_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
         throw AppError.server(status: 404)
@@ -337,7 +350,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func fetchRecipeAssetData(serverURL: URL, token: MealieAuthToken, recipeID: String, fileName: String) async throws -> Data {
         try await Task.sleep(nanoseconds: 80_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
         throw AppError.server(status: 404)
@@ -345,7 +358,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func importRecipeFromURL(serverURL: URL, token: MealieAuthToken, url: URL, includeTags: Bool, includeCategories: Bool) async throws -> String {
         try await Task.sleep(nanoseconds: 300_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
 
@@ -366,7 +379,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func fetchUserRating(serverURL: URL, token: MealieAuthToken, recipeID: String) async throws -> MealieUserRatingSummary {
         try await Task.sleep(nanoseconds: 120_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
         return userRatings[recipeID] ?? MealieUserRatingSummary(recipeID: recipeID, rating: nil, isFavorite: false)
@@ -374,7 +387,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func updateUserRating(serverURL: URL, token: MealieAuthToken, userID: String, slug: String, rating: Double?, isFavorite: Bool?) async throws {
         try await Task.sleep(nanoseconds: 160_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
         guard userID == user.id,
@@ -392,7 +405,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func fetchShoppingLists(serverURL: URL, token: MealieAuthToken, page: Int, perPage: Int) async throws -> MealieShoppingListPage {
         try await Task.sleep(nanoseconds: 180_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
 
@@ -413,7 +426,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func fetchShoppingListDetail(serverURL: URL, token: MealieAuthToken, listID: String) async throws -> MealieShoppingListDetail {
         try await Task.sleep(nanoseconds: 160_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
         guard let list = shoppingLists.first(where: { $0.id == listID }) else {
@@ -424,7 +437,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func createShoppingList(serverURL: URL, token: MealieAuthToken, list: MealieShoppingListCreate) async throws -> MealieShoppingListDetail {
         try await Task.sleep(nanoseconds: 180_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
 
@@ -442,7 +455,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func deleteShoppingList(serverURL: URL, token: MealieAuthToken, listID: String) async throws -> MealieShoppingListSummary {
         try await Task.sleep(nanoseconds: 180_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
         guard let index = shoppingLists.firstIndex(where: { $0.id == listID }) else {
@@ -454,7 +467,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func createShoppingListItem(serverURL: URL, token: MealieAuthToken, item: MealieShoppingListItemCreate) async throws -> MealieShoppingListItemsCollection {
         try await Task.sleep(nanoseconds: 180_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
         guard let listIndex = shoppingLists.firstIndex(where: { $0.id == item.shoppingListID }) else {
@@ -491,7 +504,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func updateShoppingListItem(serverURL: URL, token: MealieAuthToken, itemID: String, item: MealieShoppingListItemUpdate) async throws -> MealieShoppingListItemsCollection {
         try await Task.sleep(nanoseconds: 180_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
         guard let listIndex = shoppingLists.firstIndex(where: { list in
@@ -512,7 +525,7 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
 
     func addRecipeToShoppingList(serverURL: URL, token: MealieAuthToken, listID: String, recipeID: String, add: MealieShoppingRecipeAdd) async throws -> MealieShoppingListDetail {
         try await Task.sleep(nanoseconds: 220_000_000)
-        guard token.accessToken == mintedToken.accessToken else {
+        guard isValid(token) else {
             throw AppError.unauthorized
         }
         guard let listIndex = shoppingLists.firstIndex(where: { $0.id == listID }),

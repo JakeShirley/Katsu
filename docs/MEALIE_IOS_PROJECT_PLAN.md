@@ -59,9 +59,9 @@ later work; do not block v0 on it.
   `brandingName`, `brandingLogoUrl`).
 - **CON-012** Prefer `POST /api/auth/refresh` for sliding sessions and only
   fall back to stored-credential re-login when refresh fails.
-- **CON-013** Sign in with a long-lived API token for reverse-proxy-auth and
+- [x] **CON-013** Sign in with a long-lived API token for reverse-proxy-auth and
   other setups without password login.
-- **CON-014** Detect the server `version` and gate features that need newer
+- [x] **CON-014** Detect the server `version` and gate features that need newer
   Mealie releases, with a clear "update your server" message.
 
 ## Recipes (REC) — post-v0

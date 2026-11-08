@@ -106,7 +106,8 @@ Katsu can be pointed at either a real Mealie server or a built-in mock backend.
   `KATSU_USE_MOCK_SERVER=1`). The app uses `MockMealieAPIClient`, an
   in-memory implementation backed by JSON fixtures bundled in
   `src/Katsu/Resources/Fixtures/`. No network is touched. Use this for
-  previews, snapshot tests, and offline iteration.
+  previews, snapshot tests, and offline iteration. Sign in with `chef` /
+  `katsu`, or choose **API Token** and paste `mock-api-token`.
 
 ## Debug App Configuration
 
@@ -128,6 +129,9 @@ Supported debug inputs:
   through `MockMealieAPIClient`.
 - `-debugAuthToken <token>` / `KATSU_DEBUG_AUTH_TOKEN=<token>`: skip the login
   screen by injecting a token into the keychain at launch.
+- `-debugMockServerVersion <version>` / `KATSU_MOCK_SERVER_VERSION=<version>`:
+  version the mock backend reports from `/api/app/about` (default `v3.30.0`).
+  Use an older value such as `v1.12.0` to check server-version gates.
 - `-debugShowSettings`: open settings on launch for visual checks.
 - `-debugShowChangelog`: open the changelog screen on launch for visual
   checks.

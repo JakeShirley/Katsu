@@ -33,6 +33,12 @@ final class AppEnvironment: ObservableObject {
         return authenticationIssueProfileIDs.contains(activeProfile.id)
     }
 
+    /// Whether the active server is new enough for `feature` (CON-014).
+    /// Unknown or development versions are treated as supported.
+    func supports(_ feature: MealieFeature) -> Bool {
+        feature.isSupported(byServerVersion: activeProfile?.version)
+    }
+
     init(
         configuration: AppConfiguration,
         apiClient: MealieAPIClient,
@@ -66,7 +72,7 @@ final class AppEnvironment: ObservableObject {
             let profile = ServerProfile(
                 displayName: configuration.initialServerURL?.host ?? "Mock Mealie",
                 serverURL: configuration.initialServerURL ?? URL(string: "https://mock.mealie.local")!,
-                version: "v2.5.0-mock",
+                version: configuration.debugMockServerVersion ?? MockMealieAPIClient.defaultServerVersion,
                 lastUsername: "chef"
             )
             try? credentialStore.saveToken(MealieAuthToken(accessToken: token, tokenType: "bearer"), for: profile.id)
@@ -87,7 +93,7 @@ final class AppEnvironment: ObservableObject {
 
     static func live(configuration: AppConfiguration) -> AppEnvironment {
         let apiClient: MealieAPIClient = configuration.useMockServer
-            ? MockMealieAPIClient.preloaded()
+            ? MockMealieAPIClient.preloaded(serverVersion: configuration.debugMockServerVersion)
             : URLSessionMealieAPIClient()
 
         return AppEnvironment(
@@ -111,6 +117,11 @@ final class AppEnvironment: ObservableObject {
         try? credentialStore.saveToken(token, for: profile.id)
         if let credentials {
             try? credentialStore.saveLoginCredentials(credentials, for: profile.id)
+        } else if profile.resolvedAuthMethod == .apiToken {
+            // API tokens can't be renewed by re-login; drop stale passwords so
+            // a revoked token surfaces "sign in needed" instead of silently
+            // switching back to password auth.
+            try? credentialStore.deleteLoginCredentials(for: profile.id)
         }
         profileStore.upsert(profile)
         profileStore.setActiveProfileID(profile.id)
@@ -119,6 +130,48 @@ final class AppEnvironment: ObservableObject {
         currentUser = user
         hasServerProfiles = true
         refreshRecipeCacheSnapshot()
+    }
+
+    /// Validates the chosen sign-in method against `profile`'s server and
+    /// adopts the resulting session. Password sign-in keeps credentials for
+    /// transparent re-login; API token sign-in (CON-013) stores only the
+    /// token because Mealie can't refresh it.
+    func signIn(
+        profile: ServerProfile,
+        method: ServerAuthMethod,
+        username: String,
+        password: String,
+        apiToken: String
+    ) async throws {
+        var saved = profile
+        saved.authMethod = method
+        switch method {
+        case .password:
+            guard !password.isEmpty else { throw AppError.missingPassword }
+            let token = try await apiClient.login(
+                serverURL: profile.serverURL,
+                username: username,
+                password: password
+            )
+            let user = try await apiClient.fetchCurrentUser(serverURL: profile.serverURL, token: token)
+            saved.lastUsername = username
+            adoptAuthenticatedSession(
+                profile: saved,
+                token: token,
+                user: user,
+                credentials: LoginCredentials(username: username, password: password)
+            )
+        case .apiToken:
+            guard let token = MealieAuthToken(apiToken: apiToken) else { throw AppError.missingAPIToken }
+            let user: MealieUser
+            do {
+                user = try await apiClient.fetchCurrentUser(serverURL: profile.serverURL, token: token)
+            } catch AppError.unauthorized {
+                throw AppError.invalidAPIToken
+            }
+            saved.lastUsername = user.username
+            adoptAuthenticatedSession(profile: saved, token: token, user: user)
+        }
     }
 
     func switchToProfile(_ profile: ServerProfile) {
@@ -130,6 +183,23 @@ final class AppEnvironment: ObservableObject {
         }
         hasServerProfiles = !profileStore.allProfiles().isEmpty
         refreshRecipeCacheSnapshot()
+    }
+
+    /// Re-reads `/api/app/about` for the active profile and persists the
+    /// reported version so feature gates follow server upgrades (CON-014).
+    /// Failures are ignored; the last known version stays in effect.
+    func refreshActiveServerInfo() async {
+        guard let profile = activeProfile,
+              let info = try? await apiClient.fetchServerInfo(serverURL: profile.serverURL),
+              let version = info.version,
+              version != profile.version,
+              activeProfile?.id == profile.id else {
+            return
+        }
+        var updated = activeProfile ?? profile
+        updated.version = version
+        profileStore.upsert(updated)
+        activeProfile = updated
     }
 
     func removeServer(_ profile: ServerProfile) {
@@ -186,7 +256,8 @@ final class AppEnvironment: ObservableObject {
     // MARK: - Transparent re-authentication
 
     /// Re-logs in using stored credentials and saves the resulting token.
-    /// Throws `AppError.unauthorized` if no credentials are on file.
+    /// Throws `AppError.unauthorized` if no credentials are on file, which is
+    /// always the case for API token profiles (CON-013).
     private func reauthenticate(for profile: ServerProfile) async throws -> MealieAuthToken {
         guard let credentials = try? credentialStore.loadLoginCredentials(for: profile.id) else {
             throw AppError.unauthorized
