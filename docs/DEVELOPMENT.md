@@ -213,8 +213,23 @@ geometry, not size classes or the iOS 27.1 hinge API:
 - Tabletop (landscape, height ≥ 500pt): Making Mode puts the step card above
   the horizontal hinge and the timer and Back/Next controls below it.
 
-The Duo simulator cannot be unfolded headlessly, so use an iPad mini
-simulator as a wide stand-in, and still regression-check iPhone 17.
+`simctl` cannot unfold the Duo simulator (`screenConfig power` leaves the
+inner display black). Unfold it through Xcode's DeviceHub instead, driven by
+`agent-device` as a macOS app:
+
+```sh
+open -a /Applications/Xcode.app/Contents/Applications/DeviceHub.app
+npx agent-device --session hub open DeviceHub --platform macos
+npx agent-device --session hub snapshot -i   # select the iPhone Duo row
+npx agent-device --session hub click @eN     # then the "Open" posture button
+```
+
+Use a separate `--session` (for example `duo`) for the iOS app, and capture
+the inner display with `xcrun simctl io <udid> screenshot --display=3`. The
+unfolded Duo runs landscape with the status bar and tab bar in a column on
+the trailing edge, so wide layouts must account for that safe-area inset.
+An iPad mini simulator remains a quick wide stand-in; still regression-check
+iPhone 17.
 
 ## App Structure
 

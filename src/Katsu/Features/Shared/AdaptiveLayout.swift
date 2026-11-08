@@ -7,6 +7,10 @@ enum AdaptiveLayout {
     /// one on each side of the iPhone Duo hinge.
     static let twoPageMinimumWidth: CGFloat = 600
 
+    /// Horizontal content margin applied to both edges of each page in a
+    /// two-page layout, so the gutter at the hinge is twice this value.
+    static let twoPageMargin: CGFloat = DesignSystem.Spacing.lg
+
     /// Shortest landscape height that can split into upper and lower halves.
     /// Ordinary phones in landscape (≈440pt or less) stay below this.
     static let tabletopMinimumHeight: CGFloat = 500
