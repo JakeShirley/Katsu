@@ -21,6 +21,15 @@ struct RecipeResultsList<Header: View>: View {
     @State private var isTwoPage = false
 
     private let recipesPerPage = 5
+    /// Hides recipes unfavorited since the page loaded so the favorites
+    /// list updates immediately, before the refetch lands.
+    private var visibleRecipes: [MealieRecipeSummary] {
+        guard filters.favoritesOnly else { return state.recipes }
+        return state.recipes.filter { recipe in
+            recipe.recipeID.map(env.favoriteRecipeIDs.contains) ?? true
+        }
+    }
+
     private var taskID: RecipeResultsTaskID {
         RecipeResultsTaskID(profileID: env.activeProfile?.id, filters: filters, refreshTrigger: refreshTrigger)
     }
@@ -76,6 +85,10 @@ struct RecipeResultsList<Header: View>: View {
         .task(id: env.networkReachabilityTrigger) {
             guard state.showingCachedRecipes else { return }
             await refreshRecipesForCurrentFilters(force: true)
+        }
+        .onChange(of: env.favoritesRevision) {
+            guard filters.favoritesOnly else { return }
+            Task { await refreshRecipesForCurrentFilters(force: true) }
         }
     }
 
@@ -149,13 +162,13 @@ struct RecipeResultsList<Header: View>: View {
                 Text(idleStateDescription)
             }
             .listRowBackground(Color.clear)
-        } else if state.isLoadingRecipes && state.recipes.isEmpty {
+        } else if state.isLoadingRecipes && visibleRecipes.isEmpty {
             LoadingRecipeRow(title: "Loading recipes…")
-        } else if let recipeLoadError = state.recipeLoadError, state.recipes.isEmpty {
+        } else if let recipeLoadError = state.recipeLoadError, visibleRecipes.isEmpty {
             RecipeErrorRow(errorMessage: recipeLoadError) {
                 Task { await refreshRecipes() }
             }
-        } else if state.recipes.isEmpty {
+        } else if visibleRecipes.isEmpty {
             ContentUnavailableView {
                 Label {
                     Text(emptyStateTitle)
@@ -176,7 +189,7 @@ struct RecipeResultsList<Header: View>: View {
                     .listRowBackground(Color.clear)
             }
 
-            ForEach(state.recipes) { recipe in
+            ForEach(visibleRecipes) { recipe in
                 NavigationLink {
                     RecipeDetailView(recipe: recipe)
                 } label: {
@@ -186,7 +199,7 @@ struct RecipeResultsList<Header: View>: View {
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
                 .onAppear {
-                    if recipe.id == state.recipes.last?.id {
+                    if recipe.id == visibleRecipes.last?.id {
                         Task { await loadMoreRecipesIfNeeded() }
                     }
                 }
@@ -219,17 +232,17 @@ struct RecipeResultsList<Header: View>: View {
     private var feedResultsContent: some View {
         if filters.isEmpty && !loadsWhenFiltersEmpty {
             RecipeUnavailableCard(title: idleStateTitle, description: idleStateDescription, systemImage: idleStateImage)
-        } else if state.isLoadingRecipes && state.recipes.isEmpty {
+        } else if state.isLoadingRecipes && visibleRecipes.isEmpty {
             RecipeStatusCard {
                 LoadingRecipeRow(title: "Loading recipes…")
             }
-        } else if let recipeLoadError = state.recipeLoadError, state.recipes.isEmpty {
+        } else if let recipeLoadError = state.recipeLoadError, visibleRecipes.isEmpty {
             RecipeStatusCard {
                 RecipeErrorRow(errorMessage: recipeLoadError) {
                     Task { await refreshRecipes() }
                 }
             }
-        } else if state.recipes.isEmpty {
+        } else if visibleRecipes.isEmpty {
             RecipeUnavailableCard(title: emptyStateTitle, description: emptyStateDescription, systemImage: emptyStateImage)
         } else {
             if state.showingCachedRecipes {
@@ -242,10 +255,10 @@ struct RecipeResultsList<Header: View>: View {
             }
 
             LazyVGrid(columns: feedColumns, alignment: .leading, spacing: DesignSystem.Spacing.md) {
-                ForEach(state.recipes) { recipe in
+                ForEach(visibleRecipes) { recipe in
                     feedCard(for: recipe)
                         .onAppear {
-                            if recipe.id == state.recipes.last?.id {
+                            if recipe.id == visibleRecipes.last?.id {
                                 Task { await loadMoreRecipesIfNeeded() }
                             }
                         }
@@ -337,13 +350,24 @@ struct RecipeResultsList<Header: View>: View {
             var usedToken: MealieAuthToken?
             let page = try await env.withToken(for: profile) { token in
                 usedToken = token
+                var requestFilters = filters
+                if filters.favoritesOnly, requestFilters.favoritedByUserID == nil {
+                    requestFilters.favoritedByUserID = try await env.resolveCurrentUser(profile: profile, token: token).id
+                }
+                if replacingExisting, filters.isEmpty || filters.favoritesOnly {
+                    // Keeps offline favorites filtering current.
+                    try? await env.refreshFavoriteRecipeIDs(profile: profile, token: token)
+                }
                 return try await env.apiClient.fetchRecipes(
                     serverURL: profile.serverURL,
                     token: token,
                     page: page,
                     perPage: recipesPerPage,
-                    filters: filters
+                    filters: requestFilters
                 )
+            }
+            if filters.favoritesOnly {
+                env.mergeFavoriteRecipeIDs(page.items.compactMap(\.recipeID), profile: profile)
             }
             state.recipePage = page.page
             state.recipeTotalPages = page.totalPages ?? page.total.map { total in
@@ -371,7 +395,7 @@ struct RecipeResultsList<Header: View>: View {
     private func showCachedRecipesOrError(_ error: AppError, profile: ServerProfile, replacingExisting: Bool) {
         if (error == .offline || error == .unauthorized), replacingExisting, allowsOfflineCache {
             let cachedRecipes = env.recipeOfflineCache.cachedRecipeSummaries(profileID: profile.id).filter { recipe in
-                recipe.matches(filters)
+                recipe.matches(filters, favoriteRecipeIDs: env.favoriteRecipeIDs)
             }
             if !cachedRecipes.isEmpty {
                 state.recipes = cachedRecipes

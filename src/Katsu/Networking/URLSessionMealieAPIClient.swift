@@ -56,6 +56,10 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         queryItems.append(contentsOf: filters.categories.map { URLQueryItem(name: "categories", value: $0) })
         queryItems.append(contentsOf: filters.tags.map { URLQueryItem(name: "tags", value: $0) })
         queryItems.append(contentsOf: filters.households.map { URLQueryItem(name: "households", value: $0) })
+        if filters.favoritesOnly, let userID = filters.favoritedByUserID {
+            // Same filter Mealie's web favorites page uses.
+            queryItems.append(URLQueryItem(name: "queryFilter", value: "favoritedBy.id = \"\(userID)\""))
+        }
         components?.queryItems = queryItems
         guard let url = components?.url else {
             throw AppError.invalidURL
@@ -173,6 +177,13 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         var request = URLRequest(url: serverURL.appendingPathComponent("api/users/self/ratings/\(encodedID)"))
         request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
         return try await perform(request)
+    }
+
+    func fetchFavorites(serverURL: URL, token: MealieAuthToken) async throws -> [MealieUserRatingSummary] {
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/users/self/favorites"))
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        let response: MealieUserRatings = try await perform(request)
+        return response.ratings
     }
 
     func updateUserRating(serverURL: URL, token: MealieAuthToken, userID: String, slug: String, rating: Double?, isFavorite: Bool?) async throws {

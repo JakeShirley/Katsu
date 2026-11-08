@@ -217,11 +217,13 @@ struct RecipeDetailView: View {
             detail = loadedDetail
             adjustedServings = loadedDetail.defaultServings
             if let recipeID = loadedDetail.recipeID, let usedToken {
-                userRating = try await env.apiClient.fetchUserRating(
+                let loadedRating = try await env.apiClient.fetchUserRating(
                     serverURL: profile.serverURL,
                     token: usedToken,
                     recipeID: recipeID
                 )
+                userRating = loadedRating
+                env.recordFavorite(loadedRating.isFavorite, recipeID: recipeID, profile: profile)
             }
             if let usedToken {
                 await env.cacheLoadedRecipeOffline(loadedDetail, rawData: rawData, profile: profile, token: usedToken)
@@ -274,7 +276,7 @@ struct RecipeDetailView: View {
 
         do {
             try await env.withToken(for: profile) { token in
-                let currentUser = try await self.currentUser(profile: profile, token: token)
+                let currentUser = try await env.resolveCurrentUser(profile: profile, token: token)
                 try await env.apiClient.updateUserRating(
                     serverURL: profile.serverURL,
                     token: token,
@@ -290,21 +292,15 @@ struct RecipeDetailView: View {
                 rating: rating ?? current.rating,
                 isFavorite: isFavorite ?? current.isFavorite
             )
+            if let isFavorite {
+                env.recordFavorite(isFavorite, recipeID: recipeID, profile: profile)
+            }
             ratingError = nil
         } catch let error as AppError {
             ratingError = error.errorDescription
         } catch {
             ratingError = error.localizedDescription
         }
-    }
-
-    private func currentUser(profile: ServerProfile, token: MealieAuthToken) async throws -> MealieUser {
-        if let currentUser = env.currentUser {
-            return currentUser
-        }
-        let currentUser = try await env.apiClient.fetchCurrentUser(serverURL: profile.serverURL, token: token)
-        env.currentUser = currentUser
-        return currentUser
     }
 
     private func ingredientScaleFactor(for detail: MealieRecipeDetail) -> Double {

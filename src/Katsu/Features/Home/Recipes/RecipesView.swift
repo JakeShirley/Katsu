@@ -7,6 +7,7 @@ struct RecipesView: View {
     @State private var refreshTrigger = 0
     @State private var searchText = ""
     @State private var appliedFilters = MealieRecipeFilters()
+    @State private var favoritesOnly = false
 
     private let suggestions = [
         "Dinner",
@@ -16,11 +17,35 @@ struct RecipesView: View {
     ]
 
     private var draftFilters: MealieRecipeFilters {
-        MealieRecipeFilters(search: searchText.trimmingCharacters(in: .whitespacesAndNewlines))
+        MealieRecipeFilters(
+            search: searchText.trimmingCharacters(in: .whitespacesAndNewlines),
+            favoritesOnly: favoritesOnly
+        )
     }
 
     private var isSearching: Bool {
-        !appliedFilters.isEmpty
+        !appliedFilters.search.isEmpty
+    }
+
+    private var emptyStateTitle: LocalizedStringKey {
+        if appliedFilters.favoritesOnly {
+            return isSearching ? "No matching favorites" : "No favorite recipes yet"
+        }
+        return isSearching ? "No matching recipes" : "No recipes yet"
+    }
+
+    private var emptyStateDescription: LocalizedStringKey {
+        if appliedFilters.favoritesOnly {
+            return isSearching ? "Try another recipe name." : "Tap Add Favorite on a recipe to see it here."
+        }
+        return isSearching ? "Try another recipe name." : "Imported and saved recipes will appear here."
+    }
+
+    private var emptyStateImage: String {
+        if appliedFilters.favoritesOnly, !isSearching {
+            return "heart"
+        }
+        return isSearching ? "magnifyingglass" : "book.closed"
     }
 
     private var recentSearches: [String] {
@@ -36,25 +61,25 @@ struct RecipesView: View {
                 loadsWhenFiltersEmpty: true,
                 allowsOfflineCache: true,
                 resultsTitle: nil,
-                emptyStateTitle: isSearching ? "No matching recipes" : "No recipes yet",
-                emptyStateDescription: isSearching ? "Try another recipe name." : "Imported and saved recipes will appear here.",
-                emptyStateImage: isSearching ? "magnifyingglass" : "book.closed",
+                emptyStateTitle: emptyStateTitle,
+                emptyStateDescription: emptyStateDescription,
+                emptyStateImage: emptyStateImage,
                 idleStateTitle: "No recipes yet",
                 idleStateDescription: "Imported and saved recipes will appear here.",
                 idleStateImage: "book.closed",
-                footer: isSearching ? nil : "Meal plans and shopping lists are coming soon.",
+                footer: !appliedFilters.isEmpty ? nil : "Meal plans and shopping lists are coming soon.",
                 presentation: .cardFeed
             ) {
                 EmptyView()
             }
-            .navigationTitle("Recipes")
+            .navigationTitle(favoritesOnly ? "Favorites" : "Recipes")
             .navigationBarTitleDisplayMode(.inline)
             .searchable(
                 text: $searchText,
                 placement: .navigationBarDrawer(displayMode: .always),
                 prompt: "Search recipes"
             ) {
-                if draftFilters.isEmpty {
+                if draftFilters.search.isEmpty {
                     if !recentSearches.isEmpty {
                         Section("Recents") {
                             ForEach(recentSearches, id: \.self) { recentSearch in
@@ -84,6 +109,20 @@ struct RecipesView: View {
                 }
             }
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        favoritesOnly.toggle()
+                        appliedFilters = draftFilters
+                    } label: {
+                        Label(
+                            favoritesOnly ? "Show All Recipes" : "Show Favorites Only",
+                            systemImage: favoritesOnly ? "heart.fill" : "heart"
+                        )
+                    }
+                    .accessibilityLabel(favoritesOnly ? "Show All Recipes" : "Show Favorites Only")
+                    .accessibilityAddTraits(favoritesOnly ? .isSelected : [])
+                }
+
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showImportRecipe = true

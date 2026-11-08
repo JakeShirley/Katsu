@@ -70,7 +70,9 @@ later work; do not block v0 on it.
 - [x] **REC-002** Recipe detail (ingredients, instructions, nutrition, image).
 - [x] **REC-003** Recipe search by name, tag, category, household.
 - [x] **REC-004** Import recipe from URL (`POST /api/recipes/create/url`).
-- [x] **REC-005** Favorite / rating updates.
+- [x] **REC-005** Favorite / rating updates, plus a favorites-only recipe
+  list filter that updates immediately and works offline from cached
+  favorites.
 - [x] **REC-006** Offline cache for recently viewed recipes.
 - **REC-007** Structured recipe times (`totalTimeSeconds`, `prepTimeSeconds`,
   `performTimeSeconds`; v3.29.0+) for display, filtering, and sort by total
