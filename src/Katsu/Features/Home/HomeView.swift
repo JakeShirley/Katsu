@@ -26,6 +26,9 @@ struct HomeView: View {
                     selectedTab = tabs.first ?? .settings
                 }
             }
+            .task(id: env.activeProfile?.id) {
+                await env.refreshActiveServerInfo()
+            }
             .onAppear {
                 if env.configuration.openSettingsOnLaunch {
                     selectedTab = .settings

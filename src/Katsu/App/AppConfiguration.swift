@@ -6,6 +6,7 @@ struct AppConfiguration: Equatable {
     var initialServerURL: URL?
     var useMockServer: Bool
     var debugAuthToken: String?
+    var debugMockServerVersion: String?
     var openSettingsOnLaunch: Bool
     var openChangelogOnLaunch: Bool
 
@@ -13,6 +14,7 @@ struct AppConfiguration: Equatable {
         initialServerURL: nil,
         useMockServer: false,
         debugAuthToken: nil,
+        debugMockServerVersion: nil,
         openSettingsOnLaunch: false,
         openChangelogOnLaunch: false
     )
@@ -42,6 +44,11 @@ struct AppConfiguration: Equatable {
         if let token = argValue("-debugAuthToken") ?? environment["KATSU_DEBUG_AUTH_TOKEN"],
            !token.isEmpty {
             config.debugAuthToken = token
+        }
+
+        if let version = argValue("-debugMockServerVersion") ?? environment["KATSU_MOCK_SERVER_VERSION"],
+           !version.isEmpty {
+            config.debugMockServerVersion = version
         }
 
         if arguments.contains("-debugShowSettings") {

@@ -19,6 +19,18 @@ struct ShoppingListsView: View {
     private let listsPerPage = 20
 
     var body: some View {
+        if env.supports(.households) {
+            shoppingListsStack
+        } else {
+            NavigationStack {
+                ServerUpdateRequiredView(feature: .households, serverVersion: env.activeProfile?.version)
+                    .navigationTitle("Shopping Lists")
+                    .navigationBarTitleDisplayMode(.inline)
+            }
+        }
+    }
+
+    private var shoppingListsStack: some View {
         NavigationStack {
             List {
                 Section {

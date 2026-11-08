@@ -11,6 +11,10 @@ struct ImportRecipeView: View {
 
     let onImported: () async -> Void
 
+    private var supportsCategories: Bool {
+        env.supports(.importRecipeCategories)
+    }
+
     var body: some View {
         Form {
             Section {
@@ -29,9 +33,17 @@ struct ImportRecipeView: View {
                     .accessibilityLabel("Recipe URL")
             }
 
-            Section("Import Options") {
+            Section {
                 Toggle("Include tags", isOn: $includeTags)
-                Toggle("Include categories", isOn: $includeCategories)
+                if supportsCategories {
+                    Toggle("Include categories", isOn: $includeCategories)
+                }
+            } header: {
+                Text("Import Options")
+            } footer: {
+                if !supportsCategories {
+                    ServerUpdateNotice(feature: .importRecipeCategories, serverVersion: env.activeProfile?.version)
+                }
             }
 
             if let errorMessage {
@@ -89,7 +101,7 @@ struct ImportRecipeView: View {
                         token: token,
                         url: url,
                         includeTags: includeTags,
-                        includeCategories: includeCategories
+                        includeCategories: supportsCategories && includeCategories
                     )
                 }
                 await onImported()

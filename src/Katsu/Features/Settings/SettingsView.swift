@@ -481,29 +481,35 @@ private struct ReauthenticationView: View {
     let profile: ServerProfile
     let onConnected: () -> Void
 
+    @State private var authMethod: ServerAuthMethod
     @State private var username: String = ""
     @State private var password: String = ""
+    @State private var apiToken: String = ""
     @State private var isSubmitting = false
     @State private var errorMessage: String?
+
+    init(profile: ServerProfile, onConnected: @escaping () -> Void) {
+        self.profile = profile
+        self.onConnected = onConnected
+        _authMethod = State(initialValue: profile.resolvedAuthMethod)
+    }
 
     var body: some View {
         Form {
             Section {
                 LabeledContent("Server", value: profile.displayName)
-                Text("Sign in again to restore syncing with this Mealie server. Offline recipes stay available on this device.")
+                Text(introText)
                     .font(.body)
                     .foregroundStyle(.secondary)
             }
 
-            Section("Sign in") {
-                TextField("Username or email", text: $username)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .submitLabel(.next)
-                SecureField("Password", text: $password)
-                    .submitLabel(.go)
-                    .onSubmit(submit)
-            }
+            SignInCredentialFields(
+                authMethod: $authMethod,
+                username: $username,
+                password: $password,
+                apiToken: $apiToken,
+                onSubmit: submit
+            )
 
             if let errorMessage {
                 Section {
@@ -526,38 +532,47 @@ private struct ReauthenticationView: View {
                         Text("Sign In")
                     }
                 }
-                .disabled(isSubmitting || username.isEmpty || password.isEmpty)
+                .disabled(isSubmitting || !SignInCredentialFields.canSubmit(
+                    authMethod: authMethod,
+                    username: username,
+                    password: password,
+                    apiToken: apiToken
+                ))
             }
         }
         .navigationTitle("Sign in")
         .onAppear {
             username = profile.lastUsername ?? username
         }
+        .onChange(of: authMethod) {
+            errorMessage = nil
+        }
+    }
+
+    private var introText: LocalizedStringKey {
+        switch profile.resolvedAuthMethod {
+        case .password:
+            "Sign in again to restore syncing with this Mealie server. Offline recipes stay available on this device."
+        case .apiToken:
+            "Your API token was rejected. Paste a new token to restore syncing with this Mealie server. Offline recipes stay available on this device."
+        }
     }
 
     private func submit() {
-        guard !password.isEmpty else {
-            errorMessage = AppError.missingPassword.errorDescription
-            return
-        }
+        guard !isSubmitting else { return }
         errorMessage = nil
         isSubmitting = true
 
         Task {
             defer { isSubmitting = false }
             do {
-                let token = try await env.apiClient.login(
-                    serverURL: profile.serverURL,
+                try await env.signIn(
+                    profile: profile,
+                    method: authMethod,
                     username: username,
-                    password: password
+                    password: password,
+                    apiToken: apiToken
                 )
-                let user = try await env.apiClient.fetchCurrentUser(
-                    serverURL: profile.serverURL,
-                    token: token
-                )
-                var saved = profile
-                saved.lastUsername = username
-                env.adoptAuthenticatedSession(profile: saved, token: token, user: user)
                 onConnected()
             } catch let error as AppError {
                 errorMessage = error.errorDescription

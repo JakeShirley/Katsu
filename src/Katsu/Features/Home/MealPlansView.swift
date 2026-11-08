@@ -16,6 +16,18 @@ struct MealPlansView: View {
     }
 
     var body: some View {
+        if env.supports(.households) {
+            mealPlansStack
+        } else {
+            NavigationStack {
+                ServerUpdateRequiredView(feature: .households, serverVersion: env.activeProfile?.version)
+                    .navigationTitle("Meal Plans")
+                    .navigationBarTitleDisplayMode(.inline)
+            }
+        }
+    }
+
+    private var mealPlansStack: some View {
         NavigationStack {
             mealPlanList
             .listStyle(.insetGrouped)

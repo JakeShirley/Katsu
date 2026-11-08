@@ -12,6 +12,8 @@ enum AppError: LocalizedError, Equatable {
     case invalidServerResponse
     case invalidURL
     case missingPassword
+    case missingAPIToken
+    case invalidAPIToken
     case unknown(String)
 
     var errorDescription: String? {
@@ -34,6 +36,10 @@ enum AppError: LocalizedError, Equatable {
             return String(localized: "Enter a valid Mealie server URL.")
         case .missingPassword:
             return String(localized: "Password is required.")
+        case .missingAPIToken:
+            return String(localized: "API token is required.")
+        case .invalidAPIToken:
+            return String(localized: "Mealie didn't accept this API token. Check that the whole token was copied and that it hasn't been deleted.")
         case .unknown(let message):
             return message
         }
