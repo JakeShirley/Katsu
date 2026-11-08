@@ -114,9 +114,12 @@ The app supports debug configuration through launch arguments and environment
 variables:
 
 ```sh
-xcrun simctl launch --terminate-running-process booted org.odinseye.katsu \
+xcrun simctl launch --terminate-running-process "$SIM_UDID" org.odinseye.katsu \
   --args -serverURL https://food.tespia.org
 ```
+
+`$SIM_UDID` is this worktree's simulator; see
+[Per-Worktree Simulators](#per-worktree-simulators).
 
 Supported debug inputs:
 
@@ -137,9 +140,9 @@ Access tokens live in the Keychain.
 Any change that touches a `.swift` file is not "done" until it has been
 exercised in the running app. After editing Swift sources you MUST:
 
-1. Build the app for the iPhone 17 iOS Simulator and resolve every compiler
-   error and warning you introduce.
-2. Install and launch the freshly built binary on an iPhone 17 simulator. Use
+1. Build the app for this worktree's iPhone 17 simulator and resolve every
+   compiler error and warning you introduce.
+2. Install and launch the freshly built binary on that simulator. Use
    `-debugUseMockServer` for offline iteration; use `-serverURL` against your
    real Mealie instance for end-to-end checks.
 3. Drive the affected UI with the `agent-device` skill
@@ -150,8 +153,52 @@ exercised in the running app. After editing Swift sources you MUST:
    verify it matches the intended outcome.
 
 Do not rely solely on "it compiles" for Swift work. Local simulator testing
-must always use an iPhone 17 simulator, including `agent-device` setup/open
-commands and any `xcodebuild` simulator destination.
+must always use this worktree's own iPhone 17 simulator, including
+`agent-device` setup/open commands and any `xcodebuild` simulator destination.
+
+## Per-Worktree Simulators
+
+Agents and contributors often run several work streams at once, each in its
+own git worktree. Sharing one "iPhone 17" simulator between them causes
+installs, launch arguments, and Keychain state to clobber each other, so every
+worktree gets a dedicated iPhone 17 simulator. The simulator's name records
+which worktree owns it: `Katsu-<worktree directory name>`.
+
+Resolve (and boot) this worktree's simulator with:
+
+```sh
+SIM_UDID="$(scripts/worktree_simulator.sh)"
+```
+
+The script:
+
+1. Reuses the available simulator named `Katsu-<worktree directory name>`.
+2. Otherwise reclaims a `Katsu-*` iPhone 17 simulator whose worktree no longer
+   appears in `git worktree list`: it erases the device and renames it to this
+   worktree with `xcrun simctl rename`.
+3. Otherwise creates a new iPhone 17 simulator with that name.
+
+Use the UDID everywhere so commands never land on another stream's device:
+
+```sh
+xcodebuild -project src/Katsu.xcodeproj -scheme Katsu \
+  -destination "id=$SIM_UDID" -derivedDataPath build/DerivedData build
+xcrun simctl install "$SIM_UDID" \
+  build/DerivedData/Build/Products/Debug-iphonesimulator/Katsu.app
+xcrun simctl launch --terminate-running-process "$SIM_UDID" org.odinseye.katsu \
+  --args -debugUseMockServer
+./node_modules/.bin/agent-device open Katsu --platform ios --udid "$SIM_UDID"
+```
+
+Rules:
+
+- Never boot, install to, or erase a `Katsu-*` simulator named after another
+  worktree. Only simulators whose worktree is gone may be reclaimed.
+- Avoid `booted` in `simctl` commands; several simulators may be booted.
+- If you create or rename a simulator by hand, use the name printed by
+  `scripts/worktree_simulator.sh --name`.
+- To clean up after removing worktrees, delete leftover devices with
+  `xcrun simctl delete <udid>`, or leave them for the script to reclaim.
 
 ## Wide And Foldable Layouts
 
