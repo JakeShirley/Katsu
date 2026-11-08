@@ -149,16 +149,28 @@ exercised in the running app. After editing Swift sources you MUST:
 2. Install and launch the freshly built binary on that simulator. Use
    `-debugUseMockServer` for offline iteration; use `-serverURL` against your
    real Mealie instance for end-to-end checks.
-3. Drive the affected UI with the `agent-device` skill
-   (`.opencode/skills/agent-device/`). Use `agent-device snapshot -i` to find
-   accessibility refs, then click/type/scroll to reach the screens your
-   change affects.
+3. Drive the affected UI with the `ios-simulator-skill` skill
+   (`.agents/skills/ios-simulator-skill/`). Use `screen_mapper.py` to list
+   the on-screen elements, then `navigator.py`, `gesture.py`, and
+   `keyboard.py` to tap, scroll, and type through the screens your change
+   affects.
 4. Visually confirm the new behavior — capture a snapshot or screenshot and
    verify it matches the intended outcome.
 
 Do not rely solely on "it compiles" for Swift work. Local simulator testing
-must always use this worktree's own iPhone 17 simulator, including
-`agent-device` setup/open commands and any `xcodebuild` simulator destination.
+must always use this worktree's own iPhone 17 simulator, including every
+`ios-simulator-skill` script (`--udid "$SIM_UDID"`) and any `xcodebuild`
+simulator destination.
+
+The skill needs Python 3.12+, `idb` and `idb-companion` 1.5.1+, and Pillow
+(for visual diffs). On a new machine:
+
+```sh
+brew trust --formula facebook/fb/idb-cli
+brew trust --formula facebook/fb/idb-companion
+brew install facebook/fb/idb pillow
+bash .agents/skills/ios-simulator-skill/scripts/sim_health_check.sh
+```
 
 ## Per-Worktree Simulators
 
@@ -191,7 +203,9 @@ xcrun simctl install "$SIM_UDID" \
   build/DerivedData/Build/Products/Debug-iphonesimulator/Katsu.app
 xcrun simctl launch --terminate-running-process "$SIM_UDID" org.odinseye.katsu \
   --args -debugUseMockServer
-./node_modules/.bin/agent-device open Katsu --platform ios --udid "$SIM_UDID"
+SIM_SKILL=.agents/skills/ios-simulator-skill/scripts
+python3 "$SIM_SKILL/screen_mapper.py" --udid "$SIM_UDID"
+python3 "$SIM_SKILL/navigator.py" --udid "$SIM_UDID" --find-text "Settings" --tap
 ```
 
 Rules:
@@ -218,18 +232,20 @@ geometry, not size classes or the iOS 27.1 hinge API:
   the horizontal hinge and the timer and Back/Next controls below it.
 
 `simctl` cannot unfold the Duo simulator (`screenConfig power` leaves the
-inner display black). Unfold it through Xcode's DeviceHub instead, driven by
-`agent-device` as a macOS app:
+inner display black). Unfold it with the skill's experimental `duo.py`, which
+requires an explicit Duo UDID:
 
 ```sh
-open -a /Applications/Xcode.app/Contents/Applications/DeviceHub.app
-npx agent-device --session hub open DeviceHub --platform macos
-npx agent-device --session hub snapshot -i   # select the iPhone Duo row
-npx agent-device --session hub click @eN     # then the "Open" posture button
+SIM_SKILL=.agents/skills/ios-simulator-skill/scripts
+python3 "$SIM_SKILL/duo.py" --udid "$DUO_UDID" --pose open
+python3 "$SIM_SKILL/duo.py" --udid "$DUO_UDID" --state --json  # note display_id
+python3 "$SIM_SKILL/app_state_capture.py" --udid "$DUO_UDID" --display 3 \
+  --output duo-state
 ```
 
-Use a separate `--session` (for example `duo`) for the iOS app, and capture
-the inner display with `xcrun simctl io <udid> screenshot --display=3`. The
+Use the `display_id` that `--state` reports rather than assuming 3; you can
+also capture the inner display with
+`xcrun simctl io "$DUO_UDID" screenshot --display=3`. The
 unfolded Duo runs landscape with the status bar and tab bar in a column on
 the trailing edge, so wide layouts must account for that safe-area inset.
 An iPad mini simulator remains a quick wide stand-in; still regression-check
