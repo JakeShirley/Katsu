@@ -105,10 +105,11 @@ When adding or changing user-facing copy:
 Any change that touches a `.swift` file is not "done" until it has been
 exercised in the running app. After editing Swift sources you MUST:
 
-1. Build the app for the iPhone 17 iOS Simulator and resolve every compiler
-   error and warning you introduce. Treat new warnings as failures unless the
-   user explicitly says otherwise.
-2. Install and launch the freshly built binary on an iPhone 17 simulator. Use
+1. Build the app for this worktree's iPhone 17 simulator (see
+   [Per-Worktree Simulators](#per-worktree-simulators)) and resolve every
+   compiler error and warning you introduce. Treat new warnings as failures
+   unless the user explicitly says otherwise.
+2. Install and launch the freshly built binary on that simulator. Use
    `-debugUseMockServer` for offline iteration; use `-serverURL` against a
    real Mealie instance for end-to-end checks.
 3. Drive the affected UI with the `agent-device` skill
@@ -133,12 +134,37 @@ For visual verification, exploratory checks, and any task that requires
 interacting with the running app, use the bundled
 [`agent-device`](https://github.com/callstackincubator/agent-device) skill at
 `.opencode/skills/agent-device/`. Load it via the `skill` tool when you need
-to drive the simulator. Local simulator testing MUST use an iPhone 17 target;
-pass `--device "iPhone 17"` to `agent-device` setup/open/install commands and
-use an `xcodebuild` destination such as `platform=iOS Simulator,name=iPhone 17`.
-Do not fall back to synthetic taps via `osascript`/`CGEventPost`. Prefer
+to drive the simulator. Local simulator testing MUST use this worktree's own
+iPhone 17 simulator; pass `--udid "$SIM_UDID"` to `agent-device`
+setup/open/install commands and use the `xcodebuild` destination
+`id=$SIM_UDID`. Do not target the shared `--device "iPhone 17"` or
+`name=iPhone 17` simulators. Do not fall back to synthetic taps via `osascript`/`CGEventPost`. Prefer
 accessibility-ref targeting (`agent-device snapshot -i` then
 `agent-device click @e6`) over screen coordinates.
 
 `docs/DEVELOPMENT.md` carries the full simulator workflow (mock server vs.
 real server, build/install, and the standard inspect/act/verify loop).
+
+### Per-Worktree Simulators
+
+Parallel work streams run in separate git worktrees and MUST NOT share a
+simulator, or they will overwrite each other's installs, launch state, and
+Keychain. Each worktree owns a dedicated iPhone 17 simulator whose name tracks
+the worktree: `Katsu-<worktree directory name>`. Resolve it with:
+
+```sh
+SIM_UDID="$(scripts/worktree_simulator.sh)"
+```
+
+The script reuses the simulator already named for this worktree. If there is
+none, it reclaims a `Katsu-*` simulator whose worktree no longer exists by
+erasing it and renaming it with `xcrun simctl rename`, or creates a new one.
+It boots the device and prints its UDID. The name is the record of ownership,
+so:
+
+- Never boot, install to, or erase another worktree's `Katsu-*` simulator.
+- If you add a simulator by hand, name it `Katsu-<worktree directory name>`
+  (see `scripts/worktree_simulator.sh --name`) so later runs find it.
+- Use the UDID, not the name, in every `xcodebuild`, `simctl`, and
+  `agent-device` command. Replace `booted` in `simctl` examples with
+  `"$SIM_UDID"`, since several simulators may be booted at once.
