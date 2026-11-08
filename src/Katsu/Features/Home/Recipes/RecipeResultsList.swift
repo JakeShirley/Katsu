@@ -18,6 +18,8 @@ struct RecipeResultsList<Header: View>: View {
     let presentation: RecipeResultsPresentation
     let header: Header
 
+    @State private var isTwoPage = false
+
     private let recipesPerPage = 5
     private var taskID: RecipeResultsTaskID {
         RecipeResultsTaskID(profileID: env.activeProfile?.id, filters: filters, refreshTrigger: refreshTrigger)
@@ -124,6 +126,14 @@ struct RecipeResultsList<Header: View>: View {
             .padding(.bottom, DesignSystem.Spacing.xxl)
         }
         .background(DesignSystem.Colors.background)
+        .onTwoPageWidthChange { isTwoPage = $0 }
+    }
+
+    private var feedColumns: [GridItem] {
+        Array(
+            repeating: GridItem(.flexible(), spacing: DesignSystem.Spacing.md, alignment: .top),
+            count: isTwoPage ? 2 : 1
+        )
     }
 
     @ViewBuilder
@@ -231,25 +241,17 @@ struct RecipeResultsList<Header: View>: View {
                 }
             }
 
-            ForEach(state.recipes) { recipe in
-                NavigationLink {
-                    RecipeDetailView(recipe: recipe)
-                } label: {
-                    RecipeRow(
-                        recipe: recipe,
-                        profileID: env.activeProfile?.id,
-                        serverURL: env.activeProfile?.serverURL,
-                        showsDisclosureIndicator: true
-                    )
-                }
-                .buttonStyle(.plain)
-                .padding(.horizontal, DesignSystem.Spacing.lg)
-                .onAppear {
-                    if recipe.id == state.recipes.last?.id {
-                        Task { await loadMoreRecipesIfNeeded() }
-                    }
+            LazyVGrid(columns: feedColumns, alignment: .leading, spacing: DesignSystem.Spacing.md) {
+                ForEach(state.recipes) { recipe in
+                    feedCard(for: recipe)
+                        .onAppear {
+                            if recipe.id == state.recipes.last?.id {
+                                Task { await loadMoreRecipesIfNeeded() }
+                            }
+                        }
                 }
             }
+            .padding(.horizontal, DesignSystem.Spacing.lg)
 
             if state.isLoadingMoreRecipes {
                 RecipeStatusCard {
@@ -272,6 +274,21 @@ struct RecipeResultsList<Header: View>: View {
                 .padding(.horizontal, DesignSystem.Spacing.lg)
                 .padding(.top, DesignSystem.Spacing.xs)
         }
+    }
+
+    private func feedCard(for recipe: MealieRecipeSummary) -> some View {
+        NavigationLink {
+            RecipeDetailView(recipe: recipe)
+        } label: {
+            RecipeRow(
+                recipe: recipe,
+                profileID: env.activeProfile?.id,
+                serverURL: env.activeProfile?.serverURL,
+                showsDisclosureIndicator: true,
+                fillsAvailableHeight: isTwoPage
+            )
+        }
+        .buttonStyle(.plain)
     }
 
     private func refreshRecipesForCurrentFilters(force: Bool = false) async {

@@ -5,6 +5,8 @@ struct RecipeRow: View {
     let profileID: UUID?
     let serverURL: URL?
     var showsDisclosureIndicator = false
+    /// Stretches the card to the tallest card in its grid row.
+    var fillsAvailableHeight = false
 
     private var imageURL: URL? {
         guard let serverURL else { return nil }
@@ -89,6 +91,7 @@ struct RecipeRow: View {
             }
         }
         .padding(DesignSystem.Spacing.md)
+        .frame(maxHeight: fillsAvailableHeight ? .infinity : nil, alignment: .leading)
         .background(DesignSystem.Colors.surface, in: RoundedRectangle(cornerRadius: DesignSystem.Radius.lg))
         .overlay {
             RoundedRectangle(cornerRadius: DesignSystem.Radius.lg)

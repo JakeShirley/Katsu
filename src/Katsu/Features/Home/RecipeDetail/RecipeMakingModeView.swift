@@ -10,6 +10,7 @@ struct RecipeMakingModeView: View {
     @State private var timerMinutes = 5
     @State private var timerRemainingSeconds: Int?
     @State private var didPlayTimerCompletionAlert = false
+    @State private var isTabletop = false
 
     private var pages: [RecipeMakingPage] {
         var pages = [RecipeMakingPage.ingredients(detail.recipeIngredient)]
@@ -24,38 +25,77 @@ struct RecipeMakingModeView: View {
             DesignSystem.Colors.background
                 .ignoresSafeArea()
 
-            VStack(spacing: DesignSystem.Spacing.lg) {
-                header
-                RecipeMakingTimerPanel(
-                    timerMinutes: $timerMinutes,
-                    remainingSeconds: $timerRemainingSeconds,
-                    onStart: { didPlayTimerCompletionAlert = false },
-                    onCancel: { didPlayTimerCompletionAlert = false }
-                )
-                progressStrip
-
-                TabView(selection: $selectedPage) {
-                    ForEach(Array(pages.enumerated()), id: \.offset) { index, page in
-                        RecipeMakingCard(page: page, totalSteps: max(pages.count - 1, 0))
-                            .environment(\.recipeIngredientScaleFactor, ingredientScaleFactor)
-                            .tag(index)
-                            .padding(.horizontal, DesignSystem.Spacing.lg)
-                            .accessibilityElement(children: .contain)
-                    }
+            if isTabletop {
+                tabletopLayout
+            } else {
+                VStack(spacing: DesignSystem.Spacing.lg) {
+                    header
+                    timerPanel
+                    progressStrip
+                    pager
+                    navigationControls
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(reduceMotion ? nil : DesignSystem.Motion.standard, value: selectedPage)
-
-                navigationControls
+                .padding(.vertical, DesignSystem.Spacing.lg)
             }
-            .padding(.vertical, DesignSystem.Spacing.lg)
         }
+        .onGeometryChange(for: Bool.self) { proxy in
+            AdaptiveLayout.isTabletop(size: proxy.size)
+        } action: { isTabletop = $0 }
         .accessibilityAction(.escape) {
             dismiss()
         }
         .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
             tickTimer()
         }
+    }
+
+    /// Wide landscape (e.g. iPhone Duo held like a laptop): the card sits on
+    /// the upper half facing the cook, and the timer and paging controls sit
+    /// on the lower half, below the horizontal hinge.
+    private var tabletopLayout: some View {
+        VStack(spacing: 0) {
+            VStack(spacing: DesignSystem.Spacing.md) {
+                header
+                progressStrip
+                pager
+            }
+            .padding(.vertical, DesignSystem.Spacing.md)
+            .frame(maxHeight: .infinity)
+
+            Divider()
+
+            HStack(alignment: .center, spacing: 0) {
+                timerPanel
+                    .frame(maxWidth: .infinity)
+                navigationControls
+                    .controlSize(.large)
+                    .frame(maxWidth: .infinity)
+            }
+            .frame(maxHeight: .infinity)
+        }
+    }
+
+    private var timerPanel: some View {
+        RecipeMakingTimerPanel(
+            timerMinutes: $timerMinutes,
+            remainingSeconds: $timerRemainingSeconds,
+            onStart: { didPlayTimerCompletionAlert = false },
+            onCancel: { didPlayTimerCompletionAlert = false }
+        )
+    }
+
+    private var pager: some View {
+        TabView(selection: $selectedPage) {
+            ForEach(Array(pages.enumerated()), id: \.offset) { index, page in
+                RecipeMakingCard(page: page, totalSteps: max(pages.count - 1, 0))
+                    .environment(\.recipeIngredientScaleFactor, ingredientScaleFactor)
+                    .tag(index)
+                    .padding(.horizontal, DesignSystem.Spacing.lg)
+                    .accessibilityElement(children: .contain)
+            }
+        }
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .animation(reduceMotion ? nil : DesignSystem.Motion.standard, value: selectedPage)
     }
 
     private var header: some View {
