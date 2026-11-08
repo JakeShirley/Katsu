@@ -16,8 +16,10 @@ Expected release model:
 - iOS marketing versions are derived from the semantic-release version during
   release automation.
 - iOS build numbers can remain CI-generated monotonic build identifiers.
-- GitHub Actions iOS jobs run on the `macos-26` image and verify the selected
-  iOS SDK is 26.x before building.
+- GitHub Actions iOS jobs run on the `xcode-27` image, select Xcode 27.2 via
+  `DEVELOPER_DIR`, and fail if the iOS SDK is older than 27.1 (the first SDK
+  with iPhone Duo support).
+- The app's minimum deployment target is iOS 26.0.
 - Checked-in Xcode and package versions stay at `0.0.0-development`; release
   builds pass the semantic-release version to `xcodebuild` without committing
   that bump back to the repository.

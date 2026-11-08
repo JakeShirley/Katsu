@@ -27,8 +27,13 @@ later work; do not block v0 on it.
   translator passes.
 - [x] **FND-009** Diagnostics bundle generator that redacts server host, username,
   token, and password.
-- [x] **FND-010** CI build matrix on `macos-26` with iOS SDK verification.
+- [x] **FND-010** CI build matrix on the `xcode-27` runner image (Xcode 27.2)
+  with iOS 27.1+ SDK verification.
 - [x] **FND-011** TestFlight upload via semantic-release release workflow.
+- [x] **FND-012** Build with the iOS 27 SDK (Xcode 27.2) and raise the minimum
+  deployment target to iOS 26.0 in preparation for iPhone Duo.
+- **FND-013** iPhone Duo support: adapt layouts to fold states and verify on
+  the iPhone Duo simulator (iOS 27.1+).
 
 ## Connection & Auth (CON) — v0 scope
 

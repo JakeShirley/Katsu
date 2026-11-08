@@ -24,8 +24,10 @@ The full backlog and roadmap (recipes, search, meal plans, shopping lists, cookb
 
 Requirements:
 
-- macOS with Xcode 26.1.1 or newer compatible tooling.
-- iOS Simulator runtime compatible with the project deployment target.
+- macOS with Xcode 27.2 or newer (iOS 27.2 SDK). Xcode 27.1 is the minimum for
+  iPhone Duo support.
+- iOS 27 Simulator runtime (`xcodebuild -downloadPlatform iOS`). The app's
+  minimum deployment target is iOS 26.0.
 - Node.js 22 for release tooling.
 
 Build locally:
@@ -35,7 +37,7 @@ xcodebuild \
   -project src/Katsu.xcodeproj \
   -scheme Katsu \
   -configuration Debug \
-  -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.1' \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
   -derivedDataPath build/DerivedData \
   CODE_SIGNING_ALLOWED=NO \
   build
