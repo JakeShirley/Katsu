@@ -153,6 +153,22 @@ Do not rely solely on "it compiles" for Swift work. Local simulator testing
 must always use an iPhone 17 simulator, including `agent-device` setup/open
 commands and any `xcodebuild` simulator destination.
 
+## Wide And Foldable Layouts
+
+Wide layouts target the unfolded iPhone Duo (inner display ≈ 669×951pt) and
+also apply on iPad and landscape iPhones. Breakpoints live in
+`src/Katsu/Features/Shared/AdaptiveLayout.swift` and are based on measured
+geometry, not size classes or the iOS 27.1 hinge API:
+
+- Two-page (width ≥ 600pt): the recipe feed becomes a 2-column card grid and
+  recipe detail becomes a cookbook spread (overview and ingredients on the
+  left, instructions and nutrition on the right).
+- Tabletop (landscape, height ≥ 500pt): Making Mode puts the step card above
+  the horizontal hinge and the timer and Back/Next controls below it.
+
+The Duo simulator cannot be unfolded headlessly, so use an iPad mini
+simulator as a wide stand-in, and still regression-check iPhone 17.
+
 ## App Structure
 
 The iOS app keeps foundation code in separate source areas so feature work can

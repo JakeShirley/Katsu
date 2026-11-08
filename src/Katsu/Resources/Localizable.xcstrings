@@ -4197,6 +4197,35 @@
         }
       }
     },
+    "No instructions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Keine Anleitung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No instructions"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sin instrucciones"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "手順がありません"
+          }
+        }
+      }
+    },
     "No matching recipes" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7343,6 +7372,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Mealie が所有者の詳細を返さなかったため、この予定した食事は編集できません。"
+          }
+        }
+      }
+    },
+    "This recipe doesn't have any steps yet." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieses Rezept hat noch keine Schritte."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This recipe doesn't have any steps yet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Esta receta todavía no tiene pasos."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "このレシピにはまだ手順がありません。"
           }
         }
       }

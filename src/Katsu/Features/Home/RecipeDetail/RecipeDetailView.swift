@@ -13,105 +13,163 @@ struct RecipeDetailView: View {
     @State private var showingCachedDetail = false
     @State private var isShowingMakingMode = false
     @State private var adjustedServings: Double?
+    @State private var isTwoPage = false
 
     var body: some View {
-        List {
-            if isLoading && detail == nil {
-                HStack(spacing: DesignSystem.Spacing.sm) {
-                    ProgressView()
-                    Text("Loading recipe…")
+        content
+            .onTwoPageWidthChange { isTwoPage = $0 }
+            .navigationTitle(detail?.displayName ?? recipe.displayName)
+            .navigationBarTitleDisplayMode(.inline)
+            .task(id: recipe.slug) {
+                await loadDetailIfNeeded()
+            }
+            .refreshable {
+                await loadDetail()
+            }
+            .fullScreenCover(isPresented: $isShowingMakingMode) {
+                if let detail {
+                    RecipeMakingModeView(detail: detail, ingredientScaleFactor: ingredientScaleFactor(for: detail))
                 }
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel("Loading recipe")
-            } else if let loadError, detail == nil {
-                Section {
-                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
-                        Text(loadError)
-                            .foregroundStyle(DesignSystem.Colors.destructive)
-                        Button("Try Again") {
-                            Task { await loadDetail() }
+            }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if isTwoPage, let detail {
+            // Two-page "cookbook spread": overview and ingredients on the left
+            // page, steps on the right, split at the iPhone Duo hinge so each
+            // side scrolls independently while cooking.
+            HStack(spacing: 0) {
+                List {
+                    offlineNotice
+                    overviewSections(detail)
+                    ingredientsSection(detail)
+                }
+                .frame(maxWidth: .infinity)
+
+                Divider()
+                    .ignoresSafeArea(edges: .bottom)
+
+                List {
+                    instructionsSection(detail)
+                    nutritionSection(detail)
+                    if !detail.hasInstructions && !detail.hasVisibleNutrition {
+                        ContentUnavailableView {
+                            Label("No instructions", systemImage: "list.number")
+                        } description: {
+                            Text("This recipe doesn't have any steps yet.")
                         }
-                        .frame(minHeight: DesignSystem.HitTarget.minimum)
+                        .listRowBackground(Color.clear)
                     }
                 }
-            } else if let detail {
-                if showingCachedDetail {
+                .frame(maxWidth: .infinity)
+            }
+            .background(DesignSystem.Colors.background)
+        } else {
+            List {
+                if isLoading && detail == nil {
+                    HStack(spacing: DesignSystem.Spacing.sm) {
+                        ProgressView()
+                        Text("Loading recipe…")
+                    }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel("Loading recipe")
+                } else if let loadError, detail == nil {
                     Section {
-                        Label("Showing offline copy", systemImage: "wifi.slash")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .accessibilityLabel("Showing offline copy")
-                    }
-                }
-
-                RecipeHeroSection(
-                    detail: detail,
-                    adjustedServings: $adjustedServings,
-                    profileID: env.activeProfile?.id,
-                    serverURL: env.activeProfile?.serverURL,
-                    onStartMaking: { isShowingMakingMode = true }
-                )
-
-                if let recipeID = detail.recipeID {
-                    RecipeRatingSection(
-                        rating: userRating ?? MealieUserRatingSummary(recipeID: recipeID, rating: detail.rating, isFavorite: false),
-                        isUpdating: isUpdatingRating,
-                        errorMessage: ratingError,
-                        onToggleFavorite: { await updateFavorite(!$0.isFavorite) },
-                        onSetRating: { await updateRating($0) }
-                    )
-                }
-
-                if !detail.recipeIngredient.isEmpty {
-                    Section("Ingredients") {
-                        if detail.defaultServings != nil || detail.recipeYield?.nilIfBlank != nil {
-                            RecipeServingsMetric(detail: detail, adjustedServings: $adjustedServings)
-                        }
-
-                        ForEach(detail.recipeIngredient) { ingredient in
-                            RecipeIngredientRow(ingredient: ingredient, scaleFactor: ingredientScaleFactor(for: detail))
-                        }
-                    }
-                }
-
-                if let instructions = detail.recipeInstructions, !instructions.isEmpty {
-                    Section("Instructions") {
-                        ForEach(Array(instructions.enumerated()), id: \.element.id) { index, instruction in
-                            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
-                                Text(String(localized: "Step \(index + 1)"))
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(instruction.displayText)
-                                    .font(.body)
+                        VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                            Text(loadError)
+                                .foregroundStyle(DesignSystem.Colors.destructive)
+                            Button("Try Again") {
+                                Task { await loadDetail() }
                             }
-                            .accessibilityElement(children: .combine)
-                            .accessibilityLabel(String(localized: "Step \(index + 1), \(instruction.displayText)"))
+                            .frame(minHeight: DesignSystem.HitTarget.minimum)
                         }
                     }
-                }
-
-                if let nutrition = detail.nutrition,
-                   detail.settings?.showNutrition != false,
-                   !nutrition.entries.isEmpty {
-                    Section("Nutrition") {
-                        ForEach(nutrition.entries) { entry in
-                            LabeledContent(entry.label, value: entry.value)
-                        }
-                    }
+                } else if let detail {
+                    offlineNotice
+                    overviewSections(detail)
+                    ingredientsSection(detail)
+                    instructionsSection(detail)
+                    nutritionSection(detail)
                 }
             }
         }
-        .navigationTitle(detail?.displayName ?? recipe.displayName)
-        .navigationBarTitleDisplayMode(.inline)
-        .task(id: recipe.slug) {
-            await loadDetailIfNeeded()
+    }
+
+    @ViewBuilder
+    private var offlineNotice: some View {
+        if showingCachedDetail {
+            Section {
+                Label("Showing offline copy", systemImage: "wifi.slash")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .accessibilityLabel("Showing offline copy")
+            }
         }
-        .refreshable {
-            await loadDetail()
+    }
+
+    @ViewBuilder
+    private func overviewSections(_ detail: MealieRecipeDetail) -> some View {
+        RecipeHeroSection(
+            detail: detail,
+            adjustedServings: $adjustedServings,
+            profileID: env.activeProfile?.id,
+            serverURL: env.activeProfile?.serverURL,
+            onStartMaking: { isShowingMakingMode = true }
+        )
+
+        if let recipeID = detail.recipeID {
+            RecipeRatingSection(
+                rating: userRating ?? MealieUserRatingSummary(recipeID: recipeID, rating: detail.rating, isFavorite: false),
+                isUpdating: isUpdatingRating,
+                errorMessage: ratingError,
+                onToggleFavorite: { await updateFavorite(!$0.isFavorite) },
+                onSetRating: { await updateRating($0) }
+            )
         }
-        .fullScreenCover(isPresented: $isShowingMakingMode) {
-            if let detail {
-                RecipeMakingModeView(detail: detail, ingredientScaleFactor: ingredientScaleFactor(for: detail))
+    }
+
+    @ViewBuilder
+    private func ingredientsSection(_ detail: MealieRecipeDetail) -> some View {
+        if !detail.recipeIngredient.isEmpty {
+            Section("Ingredients") {
+                if detail.defaultServings != nil || detail.recipeYield?.nilIfBlank != nil {
+                    RecipeServingsMetric(detail: detail, adjustedServings: $adjustedServings)
+                }
+
+                ForEach(detail.recipeIngredient) { ingredient in
+                    RecipeIngredientRow(ingredient: ingredient, scaleFactor: ingredientScaleFactor(for: detail))
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func instructionsSection(_ detail: MealieRecipeDetail) -> some View {
+        if let instructions = detail.recipeInstructions, !instructions.isEmpty {
+            Section("Instructions") {
+                ForEach(Array(instructions.enumerated()), id: \.element.id) { index, instruction in
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                        Text(String(localized: "Step \(index + 1)"))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text(instruction.displayText)
+                            .font(.body)
+                    }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(String(localized: "Step \(index + 1), \(instruction.displayText)"))
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func nutritionSection(_ detail: MealieRecipeDetail) -> some View {
+        if detail.hasVisibleNutrition, let nutrition = detail.nutrition {
+            Section("Nutrition") {
+                ForEach(nutrition.entries) { entry in
+                    LabeledContent(entry.label, value: entry.value)
+                }
             }
         }
     }
@@ -241,5 +299,16 @@ struct RecipeDetailView: View {
             return 1
         }
         return adjustedServings / defaultServings
+    }
+}
+
+private extension MealieRecipeDetail {
+    var hasInstructions: Bool {
+        !(recipeInstructions?.isEmpty ?? true)
+    }
+
+    var hasVisibleNutrition: Bool {
+        guard let nutrition, settings?.showNutrition != false else { return false }
+        return !nutrition.entries.isEmpty
     }
 }
