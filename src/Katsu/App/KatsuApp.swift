@@ -14,6 +14,7 @@ struct KatsuApp: App {
             RootView()
                 .environmentObject(environment)
                 .tint(DesignSystem.accent)
+                .tracksDeviceHinge()
         }
     }
 }

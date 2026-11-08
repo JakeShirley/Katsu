@@ -18,7 +18,10 @@ struct RecipeResultsList<Header: View>: View {
     let presentation: RecipeResultsPresentation
     let header: Header
 
+    @Environment(\.bookFoldX) private var bookFoldX
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isTwoPage = false
+    @State private var feedGridSpan: ClosedRange<CGFloat> = 0...0
 
     private let recipesPerPage = 5
     /// Hides recipes unfavorited since the page loaded so the favorites
@@ -142,11 +145,33 @@ struct RecipeResultsList<Header: View>: View {
         .onTwoPageWidthChange { isTwoPage = $0 }
     }
 
+    private var showsTwoColumns: Bool {
+        isTwoPage || bookFoldX != nil
+    }
+
     private var feedColumns: [GridItem] {
-        Array(
+        if let bookColumnWidths {
+            // Book posture: the gutter straddles the fold so each column sits
+            // entirely on one half of the screen.
+            return [
+                GridItem(.fixed(bookColumnWidths.leading), spacing: AdaptiveLayout.twoPageMargin * 2, alignment: .top),
+                GridItem(.fixed(bookColumnWidths.trailing), spacing: 0, alignment: .top),
+            ]
+        }
+        return Array(
             repeating: GridItem(.flexible(), spacing: DesignSystem.Spacing.md, alignment: .top),
-            count: isTwoPage ? 2 : 1
+            count: showsTwoColumns ? 2 : 1
         )
+    }
+
+    /// Column widths that center the grid's gutter on the book fold, each
+    /// column keeping `twoPageMargin` of clearance from the fold.
+    private var bookColumnWidths: (leading: CGFloat, trailing: CGFloat)? {
+        guard let bookFoldX else { return nil }
+        let leading = bookFoldX - feedGridSpan.lowerBound - AdaptiveLayout.twoPageMargin
+        let trailing = feedGridSpan.upperBound - bookFoldX - AdaptiveLayout.twoPageMargin
+        guard leading > 0, trailing > 0 else { return nil }
+        return (leading, trailing)
     }
 
     @ViewBuilder
@@ -264,6 +289,14 @@ struct RecipeResultsList<Header: View>: View {
                         }
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .onGeometryChange(for: ClosedRange<CGFloat>.self) { proxy in
+                let frame = proxy.frame(in: .global)
+                return frame.minX...frame.maxX
+            } action: { span in
+                feedGridSpan = span
+            }
+            .animation(reduceMotion ? nil : DesignSystem.Motion.emphasized, value: bookFoldX)
             .padding(.horizontal, DesignSystem.Spacing.lg)
 
             if state.isLoadingMoreRecipes {
@@ -298,7 +331,7 @@ struct RecipeResultsList<Header: View>: View {
                 profileID: env.activeProfile?.id,
                 serverURL: env.activeProfile?.serverURL,
                 showsDisclosureIndicator: true,
-                fillsAvailableHeight: isTwoPage
+                fillsAvailableHeight: showsTwoColumns
             )
         }
         .buttonStyle(.plain)

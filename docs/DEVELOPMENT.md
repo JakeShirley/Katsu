@@ -223,13 +223,32 @@ Rules:
 Wide layouts target the unfolded iPhone Duo (inner display ≈ 669×951pt) and
 also apply on iPad and landscape iPhones. Breakpoints live in
 `src/Katsu/Features/Shared/AdaptiveLayout.swift` and are based on measured
-geometry, not size classes or the iOS 27.1 hinge API:
+geometry, not size classes:
 
 - Two-page (width ≥ 600pt): the recipe feed becomes a 2-column card grid and
   recipe detail becomes a cookbook spread (overview and ingredients on the
   left, instructions and nutrition on the right).
 - Tabletop (landscape, height ≥ 500pt): Making Mode puts the step card above
   the horizontal hinge and the timer and Back/Next controls below it.
+- Book posture (hinge partially open, landscape): the app root's
+  `.tracksDeviceHinge()` observes the hinge with UIKit's iOS 27.1
+  `UIHingeInteraction` (which, unlike SwiftUI's `onHingeChange`, reports the
+  angle) and publishes the fold's global x-coordinate as the `\.bookFoldX`
+  environment value (`nil` otherwise). Book posture engages only after the
+  hinge has rested partially open for 400ms (moving less than 2°), so
+  folding the device shut never flashes the split. Leaving the partially
+  open range exits book posture immediately. Changes animate with
+  `DesignSystem.Motion.emphasized` unless Reduce Motion is on; views that
+  restructure for the fold should also attach
+  `.animation(_:value: bookFoldX)`, because the root transaction doesn't
+  reach presented content such as full-screen covers. Two-pane views split
+  exactly at that line so each half of the display shows one pane: the feed
+  grid centers its gutter on the fold, recipe detail always shows the
+  spread, and Making Mode puts the step card on the left page and the timer
+  and Back/Next controls on the right. Book posture takes precedence over
+  tabletop. New two-pane views should read `\.bookFoldX` and align their
+  split to it. The fold is measured on the full screen, including the
+  trailing status/tab column that `ignoresSafeArea` cannot expand into.
 
 `simctl` cannot unfold the Duo simulator (`screenConfig power` leaves the
 inner display black). Unfold it with the skill's experimental `duo.py`, which
@@ -242,6 +261,10 @@ python3 "$SIM_SKILL/duo.py" --udid "$DUO_UDID" --state --json  # note display_id
 python3 "$SIM_SKILL/app_state_capture.py" --udid "$DUO_UDID" --display 3 \
   --output duo-state
 ```
+
+For book posture, run `--pose open` first and then `--pose partial`.
+Going straight from closed to `partial` keeps the app on the cover display.
+Alternate between `open` and `partial` to check that layouts switch live.
 
 Use the `display_id` that `--state` reports rather than assuming 3; you can
 also capture the inner display with

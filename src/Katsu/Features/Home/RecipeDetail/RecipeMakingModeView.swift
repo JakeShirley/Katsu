@@ -6,6 +6,7 @@ struct RecipeMakingModeView: View {
     let ingredientScaleFactor: Double
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.bookFoldX) private var bookFoldX
     @State private var selectedPage = 0
     @State private var timerMinutes = 5
     @State private var timerRemainingSeconds: Int?
@@ -25,8 +26,8 @@ struct RecipeMakingModeView: View {
             DesignSystem.Colors.background
                 .ignoresSafeArea()
 
-            if isTabletop {
-                tabletopLayout
+            if bookFoldX != nil || isTabletop {
+                foldLayout(isBook: bookFoldX != nil)
             } else {
                 VStack(spacing: DesignSystem.Spacing.lg) {
                     header
@@ -38,6 +39,7 @@ struct RecipeMakingModeView: View {
                 .padding(.vertical, DesignSystem.Spacing.lg)
             }
         }
+        .animation(reduceMotion ? nil : DesignSystem.Motion.emphasized, value: bookFoldX)
         .onGeometryChange(for: Bool.self) { proxy in
             AdaptiveLayout.isTabletop(size: proxy.size)
         } action: { isTabletop = $0 }
@@ -49,29 +51,62 @@ struct RecipeMakingModeView: View {
         }
     }
 
-    /// Wide landscape (e.g. iPhone Duo held like a laptop): the card sits on
-    /// the upper half facing the cook, and the timer and paging controls sit
-    /// on the lower half, below the horizontal hinge.
-    private var tabletopLayout: some View {
-        VStack(spacing: 0) {
-            VStack(spacing: DesignSystem.Spacing.md) {
-                header
-                progressStrip
-                pager
-            }
-            .padding(.vertical, DesignSystem.Spacing.md)
-            .frame(maxHeight: .infinity)
+    /// Layouts for a device with a hinge. The step card and its controls sit
+    /// on opposite sides of the fold, and both postures share one view tree so
+    /// the panes glide between them as the posture changes.
+    ///
+    /// - Tabletop (wide landscape, e.g. iPhone Duo held like a laptop): the
+    ///   card sits on the upper half facing the cook, and the timer and paging
+    ///   controls sit on the lower half, below the horizontal hinge.
+    /// - Book (iPhone Duo half closed like a book): the card fills the left page
+    ///   and the timer and paging controls sit on the right page. Pages are
+    ///   exact halves of the full screen width so the split lands on the fold
+    ///   even when the trailing status column insets the safe area.
+    private func foldLayout(isBook: Bool) -> some View {
+        GeometryReader { proxy in
+            let insets = proxy.safeAreaInsets
+            let pageWidth = (proxy.size.width + insets.leading + insets.trailing) / 2
+            let pagesLayout = isBook ? AnyLayout(HStackLayout(spacing: 0)) : AnyLayout(VStackLayout(spacing: 0))
+            let controlsLayout = isBook
+                ? AnyLayout(VStackLayout(spacing: DesignSystem.Spacing.xl))
+                : AnyLayout(HStackLayout(alignment: .center, spacing: 0))
 
-            Divider()
+            pagesLayout {
+                VStack(spacing: DesignSystem.Spacing.md) {
+                    header
+                    progressStrip
+                    pager
+                }
+                .padding(.leading, isBook ? insets.leading : 0)
+                .padding(.vertical, DesignSystem.Spacing.md)
+                .frame(width: isBook ? pageWidth : nil)
+                .frame(maxHeight: .infinity)
 
-            HStack(alignment: .center, spacing: 0) {
-                timerPanel
-                    .frame(maxWidth: .infinity)
-                navigationControls
-                    .controlSize(.large)
-                    .frame(maxWidth: .infinity)
+                // Each posture gets its own divider so they cross-fade instead
+                // of one line stretching between orientations.
+                if !isBook {
+                    Divider()
+                        .transition(.opacity)
+                }
+
+                controlsLayout {
+                    timerPanel
+                        .frame(maxWidth: isBook ? nil : .infinity)
+                    navigationControls
+                        .controlSize(.large)
+                        .frame(maxWidth: isBook ? nil : .infinity)
+                }
+                .padding(.trailing, isBook ? insets.trailing : 0)
+                .frame(width: isBook ? pageWidth : nil)
+                .frame(maxHeight: .infinity)
             }
-            .frame(maxHeight: .infinity)
+            .overlay {
+                if isBook {
+                    HStack { Divider() }
+                        .transition(.opacity)
+                }
+            }
+            .ignoresSafeArea(.container, edges: isBook ? .horizontal : [])
         }
     }
 
