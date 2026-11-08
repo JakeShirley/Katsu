@@ -13,6 +13,12 @@
       "skillPath": "skills/dogfood/SKILL.md",
       "computedHash": "38114e3270f12c0fcc2334cc54155f0b3717904928d32a8005ec4ff095b99e20"
     },
+    "ios-simulator-skill": {
+      "source": "conorluddy/ios-simulator-skill",
+      "sourceType": "github",
+      "skillPath": "ios-simulator-skill/skills/ios-simulator-skill/SKILL.md",
+      "computedHash": "361dda1a2a6672257f85323cca532db4ffa973b1c30d20593984ae5605cf5080"
+    },
     "react-devtools": {
       "source": "callstackincubator/agent-device",
       "sourceType": "github",
