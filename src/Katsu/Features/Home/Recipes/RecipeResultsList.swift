@@ -33,6 +33,19 @@ struct RecipeResultsList<Header: View>: View {
         }
     }
 
+    /// Animates cards in and out when the visible set changes, such as
+    /// toggling the favorites filter or unfavoriting a recipe.
+    private var resultsAnimation: Animation? {
+        reduceMotion ? nil : DesignSystem.Motion.emphasized
+    }
+
+    /// Keys feed cards by slot as well as recipe, so a card that stays put
+    /// is untouched while one that changes slot fades out and back in
+    /// instead of sliding across the feed.
+    private var feedSlots: [FeedSlot] {
+        visibleRecipes.enumerated().map { FeedSlot(index: $0.offset, recipe: $0.element) }
+    }
+
     private var taskID: RecipeResultsTaskID {
         RecipeResultsTaskID(profileID: env.activeProfile?.id, filters: filters, refreshTrigger: refreshTrigger)
     }
@@ -121,6 +134,7 @@ struct RecipeResultsList<Header: View>: View {
         }
         .listStyle(.insetGrouped)
         .contentMargins(.top, DesignSystem.Spacing.sm, for: .scrollContent)
+        .animation(resultsAnimation, value: visibleRecipes.map(\.id))
     }
 
     private var cardFeedContent: some View {
@@ -138,6 +152,7 @@ struct RecipeResultsList<Header: View>: View {
 
                 feedResultsContent
             }
+            .animation(resultsAnimation, value: visibleRecipes.map(\.id))
             .padding(.top, DesignSystem.Spacing.sm)
             .padding(.bottom, DesignSystem.Spacing.xxl)
         }
@@ -283,10 +298,11 @@ struct RecipeResultsList<Header: View>: View {
             }
 
             LazyVGrid(columns: feedColumns, alignment: .leading, spacing: DesignSystem.Spacing.md) {
-                ForEach(visibleRecipes) { recipe in
-                    feedCard(for: recipe)
+                ForEach(feedSlots) { slot in
+                    feedCard(for: slot.recipe)
+                        .transition(.opacity)
                         .onAppear {
-                            if recipe.id == visibleRecipes.last?.id {
+                            if slot.recipe.id == visibleRecipes.last?.id {
                                 Task { await loadMoreRecipesIfNeeded() }
                             }
                         }
@@ -479,6 +495,13 @@ final class RecipeResultsState: ObservableObject {
 enum RecipeResultsPresentation {
     case groupedList
     case cardFeed
+}
+
+private struct FeedSlot: Identifiable {
+    let index: Int
+    let recipe: MealieRecipeSummary
+
+    var id: String { "\(index)-\(recipe.id)" }
 }
 
 private struct RecipeStatusCard<Content: View>: View {
