@@ -10,7 +10,6 @@ This project is intentionally a companion app, not a recipe authoring backend: a
 - Log in with Mealie's OAuth2 password grant and persist credentials in the Keychain.
 - Show the signed-in user, server name, and version on a baseline home screen.
 - Sign out and switch servers from settings.
-- View the "Made with Copilot" badge at the very bottom of Settings.
 - Run fully offline against a built-in mock server backend for development and previews.
 
 The full backlog and roadmap (recipes, search, meal plans, shopping lists, cookbooks, widgets) lives in [docs/MEALIE_IOS_PROJECT_PLAN.md](docs/MEALIE_IOS_PROJECT_PLAN.md). Katsu's understanding of Mealie's features and REST API is summarized in [docs/MEALIE_API.md](docs/MEALIE_API.md).
