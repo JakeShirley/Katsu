@@ -55,6 +55,14 @@
 		AA00010050 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB00010050 /* Assets.xcassets */; };
 		AA00010051 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BB00010051 /* Localizable.xcstrings */; };
 		AA00010052 /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = BB00010052 /* CHANGELOG.md */; };
+		AA00010200 /* RecipeDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010200 /* RecipeDraft.swift */; };
+		AA00010201 /* RecipeTextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010201 /* RecipeTextRecognizer.swift */; };
+		AA00010202 /* RecipeDraftGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010202 /* RecipeDraftGenerator.swift */; };
+		AA00010203 /* DocumentScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010203 /* DocumentScannerView.swift */; };
+		AA00010204 /* PhotoRecipeImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010204 /* PhotoRecipeImportView.swift */; };
+		AA00010205 /* RecipeDraftReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010205 /* RecipeDraftReviewView.swift */; };
+		AA00010206 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BB00010206 /* InfoPlist.xcstrings */; };
+		AA00010207 /* MeasurementNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010207 /* MeasurementNormalizer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -109,6 +117,14 @@
 		CC00000001 /* Katsu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Katsu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC00000002 /* Katsu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Katsu.entitlements; sourceTree = "<group>"; };
 		CC00000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BB00010200 /* RecipeDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeDraft.swift; sourceTree = "<group>"; };
+		BB00010201 /* RecipeTextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeTextRecognizer.swift; sourceTree = "<group>"; };
+		BB00010202 /* RecipeDraftGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeDraftGenerator.swift; sourceTree = "<group>"; };
+		BB00010203 /* DocumentScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentScannerView.swift; sourceTree = "<group>"; };
+		BB00010204 /* PhotoRecipeImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoRecipeImportView.swift; sourceTree = "<group>"; };
+		BB00010205 /* RecipeDraftReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeDraftReviewView.swift; sourceTree = "<group>"; };
+		BB00010206 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
+		BB00010207 /* MeasurementNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementNormalizer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -228,6 +244,7 @@
 				BB00010102 /* RecipeResultsList.swift */,
 				BB00010103 /* RecipeRow.swift */,
 				BB00010104 /* ImportRecipeView.swift */,
+				EE00000140 /* PhotoImport */,
 			);
 			path = Recipes;
 			sourceTree = "<group>";
@@ -302,6 +319,7 @@
 				CC00000003 /* Info.plist */,
 				BB00010050 /* Assets.xcassets */,
 				BB00010051 /* Localizable.xcstrings */,
+				BB00010206 /* InfoPlist.xcstrings */,
 				BB00010052 /* CHANGELOG.md */,
 			);
 			path = Resources;
@@ -313,6 +331,20 @@
 				CC00000001 /* Katsu.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		EE00000140 /* PhotoImport */ = {
+			isa = PBXGroup;
+			children = (
+				BB00010200 /* RecipeDraft.swift */,
+				BB00010201 /* RecipeTextRecognizer.swift */,
+				BB00010202 /* RecipeDraftGenerator.swift */,
+				BB00010203 /* DocumentScannerView.swift */,
+				BB00010204 /* PhotoRecipeImportView.swift */,
+				BB00010205 /* RecipeDraftReviewView.swift */,
+				BB00010207 /* MeasurementNormalizer.swift */,
+			);
+			path = PhotoImport;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -378,6 +410,7 @@
 			files = (
 				AA00010050 /* Assets.xcassets in Resources */,
 				AA00010051 /* Localizable.xcstrings in Resources */,
+				AA00010206 /* InfoPlist.xcstrings in Resources */,
 				AA00010052 /* CHANGELOG.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -409,6 +442,13 @@
 				AA00010102 /* RecipeResultsList.swift in Sources */,
 				AA00010103 /* RecipeRow.swift in Sources */,
 				AA00010104 /* ImportRecipeView.swift in Sources */,
+				AA00010200 /* RecipeDraft.swift in Sources */,
+				AA00010201 /* RecipeTextRecognizer.swift in Sources */,
+				AA00010202 /* RecipeDraftGenerator.swift in Sources */,
+				AA00010203 /* DocumentScannerView.swift in Sources */,
+				AA00010204 /* PhotoRecipeImportView.swift in Sources */,
+				AA00010205 /* RecipeDraftReviewView.swift in Sources */,
+				AA00010207 /* MeasurementNormalizer.swift in Sources */,
 				AA00010110 /* RecipeDetailView.swift in Sources */,
 				AA00010111 /* RecipeHeroSection.swift in Sources */,
 				AA00010112 /* RecipeImageViewer.swift in Sources */,

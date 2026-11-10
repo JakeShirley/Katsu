@@ -95,6 +95,15 @@ later work; do not block v0 on it.
 - **REC-014** Share links with QR code (`/api/shared/recipes`).
 - **REC-015** "What can I make" suggestions from foods and tools on hand
   (`GET /api/recipes/suggestions`).
+- **REC-016** On-device photo import: scan or pick recipe photos, read
+  them with Vision OCR, structure them with Apple's on-device Foundation
+  Models (photo input on iOS 27 where supported, heuristic parser fallback
+  without Apple Intelligence), standardize English measurement shorthand
+  (`T.`→tbsp, `t.`→tsp, `c.`→cup) and split two-column ingredient lines,
+  review and edit the draft, then import it as
+  schema.org JSON (`POST /api/recipes/create/html-or-json`), attaching the
+  source photos as recipe assets and optionally as the recipe image. No
+  server AI provider needed.
 
 ## Meal Plans (MP) — post-v0
 

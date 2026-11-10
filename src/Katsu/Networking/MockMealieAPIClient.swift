@@ -379,6 +379,53 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return slug
     }
 
+    func importRecipeFromJSON(serverURL: URL, token: MealieAuthToken, json: String) async throws -> String {
+        try await Task.sleep(nanoseconds: 300_000_000)
+        guard isValid(token) else {
+            throw AppError.unauthorized
+        }
+
+        guard let data = json.data(using: .utf8),
+              let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let name = (object["name"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !name.isEmpty else {
+            throw AppError.server(status: 400)
+        }
+
+        let baseSlug = slugify(name)
+        let slug = uniqueSlug(baseSlug.isEmpty ? "imported-recipe" : baseSlug)
+        let recipe = MealieRecipeSummary(
+            recipeID: UUID().uuidString.lowercased(),
+            slug: slug,
+            name: name,
+            description: object["description"] as? String ?? "Imported from photos.",
+            recipeYield: object["recipeYield"] as? String ?? "Imported recipe",
+            image: nil
+        )
+        recipes.insert(recipe, at: 0)
+        return slug
+    }
+
+    func uploadRecipeAsset(serverURL: URL, token: MealieAuthToken, slug: String, name: String, icon: String, fileExtension: String, data: Data) async throws {
+        try await Task.sleep(nanoseconds: 150_000_000)
+        guard isValid(token) else {
+            throw AppError.unauthorized
+        }
+        guard recipes.contains(where: { $0.slug == slug }) else {
+            throw AppError.server(status: 404)
+        }
+    }
+
+    func updateRecipeImage(serverURL: URL, token: MealieAuthToken, slug: String, fileExtension: String, data: Data) async throws {
+        try await Task.sleep(nanoseconds: 150_000_000)
+        guard isValid(token) else {
+            throw AppError.unauthorized
+        }
+        guard recipes.contains(where: { $0.slug == slug }) else {
+            throw AppError.server(status: 404)
+        }
+    }
+
     func fetchUserRating(serverURL: URL, token: MealieAuthToken, recipeID: String) async throws -> MealieUserRatingSummary {
         try await Task.sleep(nanoseconds: 120_000_000)
         guard isValid(token) else {

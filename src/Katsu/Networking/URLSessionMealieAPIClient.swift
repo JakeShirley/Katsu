@@ -172,6 +172,52 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         return try await perform(request)
     }
 
+    func importRecipeFromJSON(serverURL: URL, token: MealieAuthToken, json: String) async throws -> String {
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/recipes/create/html-or-json"))
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = try encoder.encode(ImportRecipeDataRequest(
+            data: json,
+            includeTags: false,
+            includeCategories: false
+        ))
+        return try await perform(request)
+    }
+
+    func uploadRecipeAsset(serverURL: URL, token: MealieAuthToken, slug: String, name: String, icon: String, fileExtension: String, data: Data) async throws {
+        let encodedSlug = slug.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? slug
+        var form = MultipartFormData()
+        form.addField(name: "name", value: name)
+        form.addField(name: "icon", value: icon)
+        form.addField(name: "extension", value: fileExtension)
+        form.addFile(name: "file", fileName: "\(name).\(fileExtension)", mimeType: Self.mimeType(forExtension: fileExtension), data: data)
+
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/recipes/\(encodedSlug)/assets"))
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue(form.contentType, forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = form.finalized()
+        let _: EmptyResponse = try await perform(request)
+    }
+
+    func updateRecipeImage(serverURL: URL, token: MealieAuthToken, slug: String, fileExtension: String, data: Data) async throws {
+        let encodedSlug = slug.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? slug
+        var form = MultipartFormData()
+        form.addField(name: "extension", value: fileExtension)
+        form.addFile(name: "image", fileName: "image.\(fileExtension)", mimeType: Self.mimeType(forExtension: fileExtension), data: data)
+
+        var request = URLRequest(url: serverURL.appendingPathComponent("api/recipes/\(encodedSlug)/image"))
+        request.httpMethod = "PUT"
+        request.setValue("Bearer \(token.accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue(form.contentType, forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = form.finalized()
+        let _: EmptyResponse = try await perform(request)
+    }
+
     func fetchUserRating(serverURL: URL, token: MealieAuthToken, recipeID: String) async throws -> MealieUserRatingSummary {
         let encodedID = recipeID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? recipeID
         var request = URLRequest(url: serverURL.appendingPathComponent("api/users/self/ratings/\(encodedID)"))
@@ -349,10 +395,59 @@ final class URLSessionMealieAPIClient: MealieAPIClient, @unchecked Sendable {
         let includeCategories: Bool
     }
 
+    private struct ImportRecipeDataRequest: Encodable {
+        let data: String
+        let includeTags: Bool
+        let includeCategories: Bool
+    }
+
     private struct UserRatingUpdate: Encodable {
         let rating: Double?
         let isFavorite: Bool?
     }
 
     private struct EmptyResponse: Decodable {}
+
+    private static func mimeType(forExtension fileExtension: String) -> String {
+        switch fileExtension.lowercased() {
+        case "jpg", "jpeg": "image/jpeg"
+        case "png": "image/png"
+        case "heic": "image/heic"
+        case "webp": "image/webp"
+        default: "application/octet-stream"
+        }
+    }
+
+    private struct MultipartFormData {
+        private let boundary = "Katsu-\(UUID().uuidString)"
+        private var body = Data()
+
+        var contentType: String {
+            "multipart/form-data; boundary=\(boundary)"
+        }
+
+        mutating func addField(name: String, value: String) {
+            append("--\(boundary)\r\n")
+            append("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n")
+            append("\(value)\r\n")
+        }
+
+        mutating func addFile(name: String, fileName: String, mimeType: String, data: Data) {
+            append("--\(boundary)\r\n")
+            append("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(fileName)\"\r\n")
+            append("Content-Type: \(mimeType)\r\n\r\n")
+            body.append(data)
+            append("\r\n")
+        }
+
+        func finalized() -> Data {
+            var result = body
+            result.append(Data("--\(boundary)--\r\n".utf8))
+            return result
+        }
+
+        private mutating func append(_ string: String) {
+            body.append(Data(string.utf8))
+        }
+    }
 }

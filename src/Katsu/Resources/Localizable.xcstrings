@@ -514,6 +514,35 @@
         }
       }
     },
+    "Add a name and at least one ingredient or step." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Füge einen Namen und mindestens eine Zutat oder einen Schritt hinzu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a name and at least one ingredient or step."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Añade un nombre y al menos un ingrediente o paso."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "名前と、材料または手順を1つ以上追加してください。"
+          }
+        }
+      }
+    },
     "Add a shopping list to Mealie and it will appear here." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -545,6 +574,35 @@
     },
     "Add Favorite" : {
 
+    },
+    "Add Ingredient" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zutat hinzufügen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Ingredient"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Añadir ingrediente"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "材料を追加"
+          }
+        }
+      }
     },
     "Add meal for %@" : {
       "extractionState" : "manual",
@@ -691,6 +749,35 @@
         }
       }
     },
+    "Add Step" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Schritt hinzufügen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Step"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Añadir paso"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "手順を追加"
+          }
+        }
+      }
+    },
     "Add Type" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -716,6 +803,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "追加タイプ"
+          }
+        }
+      }
+    },
+    "Add up to %lld pages, in reading order." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Füge bis zu %lld Seiten in Lesereihenfolge hinzu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add up to %lld pages, in reading order."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Añade hasta %lld páginas, en orden de lectura."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "最大%lldページを読む順に追加してください。"
           }
         }
       }
@@ -922,6 +1038,64 @@
         }
       }
     },
+    "Apple Intelligence is still getting ready. Try again later." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apple Intelligence wird noch vorbereitet. Versuche es später erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence is still getting ready. Try again later."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apple Intelligence todavía se está preparando. Inténtalo más tarde."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apple Intelligenceの準備中です。後でもう一度お試しください。"
+          }
+        }
+      }
+    },
+    "Apple Intelligence isn't available right now." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apple Intelligence ist gerade nicht verfügbar."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence isn't available right now."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apple Intelligence no está disponible en este momento."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "現在Apple Intelligenceは利用できません。"
+          }
+        }
+      }
+    },
     "Apply Filters" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1009,6 +1183,64 @@
         }
       }
     },
+    "Attach photos to recipe" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fotos an Rezept anhängen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attach photos to recipe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Adjuntar fotos a la receta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "写真をレシピに添付"
+          }
+        }
+      }
+    },
+    "Attached photos are saved as recipe assets in Mealie so you can refer back to the original pages." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Angehängte Fotos werden in Mealie als Rezeptanhänge gespeichert, damit du die Originalseiten nachschlagen kannst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attached photos are saved as recipe assets in Mealie so you can refer back to the original pages."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Las fotos adjuntas se guardan como recursos de la receta en Mealie para que puedas consultar las páginas originales."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "添付した写真はMealieにレシピのアセットとして保存され、元のページを後から確認できます。"
+          }
+        }
+      }
+    },
     "Back" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1034,6 +1266,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "戻る"
+          }
+        }
+      }
+    },
+    "Basic text recognition" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Einfache Texterkennung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Basic text recognition"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Reconocimiento de texto básico"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "基本的なテキスト認識"
           }
         }
       }
@@ -1502,6 +1763,35 @@
         }
       }
     },
+    "Choose Photos" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fotos auswählen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose Photos"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Elegir fotos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "写真を選択"
+          }
+        }
+      }
+    },
     "Choose Recipe" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1937,6 +2227,35 @@
         }
       }
     },
+    "Copy anything the reader missed from the original text." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Kopiere aus dem Originaltext, was beim Lesen übersehen wurde."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy anything the reader missed from the original text."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Copia del texto original lo que no se haya reconocido."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "読み取れなかった部分は元のテキストからコピーしてください。"
+          }
+        }
+      }
+    },
     "Could not load changelog: %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2107,6 +2426,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "削除"
+          }
+        }
+      }
+    },
+    "Description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Beschreibung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Description"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Descripción"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "説明"
           }
         }
       }
@@ -2694,6 +3042,35 @@
         }
       }
     },
+    "Finish Without Photos" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ohne Fotos abschließen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish Without Photos"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Terminar sin fotos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "写真なしで完了"
+          }
+        }
+      }
+    },
     "Fresh" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2929,11 +3306,98 @@
         }
       }
     },
+    "Import from Photos" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aus Fotos importieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import from Photos"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Importar desde fotos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "写真から読み込む"
+          }
+        }
+      }
+    },
+    "Import from URL" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Von URL importieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import from URL"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Importar desde URL"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "URLから読み込む"
+          }
+        }
+      }
+    },
     "Import Options" : {
 
     },
     "Import Recipe" : {
 
+    },
+    "Import to Mealie" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "In Mealie importieren"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import to Mealie"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Importar a Mealie"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mealieに読み込む"
+          }
+        }
+      }
     },
     "Imported and saved recipes will appear here." : {
       "extractionState" : "manual",
@@ -3350,6 +3814,122 @@
         }
       }
     },
+    "Katsu couldn't find any text in these photos. Try a sharper, well-lit photo." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Katsu hat in diesen Fotos keinen Text gefunden. Versuche ein schärferes, gut beleuchtetes Foto."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katsu couldn't find any text in these photos. Try a sharper, well-lit photo."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Katsu no encontró texto en estas fotos. Prueba con una foto más nítida y bien iluminada."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "これらの写真から文字が見つかりませんでした。ピントが合った明るい写真でお試しください。"
+          }
+        }
+      }
+    },
+    "Katsu couldn't read these photos. Try again with clearer pages." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Katsu konnte diese Fotos nicht lesen. Versuche es mit deutlicheren Seiten erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katsu couldn't read these photos. Try again with clearer pages."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Katsu no pudo leer estas fotos. Inténtalo de nuevo con páginas más claras."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "これらの写真を読み取れませんでした。より鮮明なページでもう一度お試しください。"
+          }
+        }
+      }
+    },
+    "Katsu filled in what it could from the recognized text. Review it carefully." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Katsu hat aus dem erkannten Text ausgefüllt, was möglich war. Prüfe es sorgfältig."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katsu filled in what it could from the recognized text. Review it carefully."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Katsu completó lo que pudo a partir del texto reconocido. Revísalo con atención."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "認識したテキストから可能な範囲で入力しました。内容をよく確認してください。"
+          }
+        }
+      }
+    },
+    "Katsu will sort the text into ingredients and steps as best it can. Review it carefully before importing." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Katsu ordnet den Text so gut wie möglich in Zutaten und Schritte. Prüfe ihn vor dem Import sorgfältig."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katsu will sort the text into ingredients and steps as best it can. Review it carefully before importing."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Katsu ordenará el texto en ingredientes y pasos lo mejor posible. Revísalo con atención antes de importar."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "テキストをできる限り材料と手順に整理します。読み込む前によく確認してください。"
+          }
+        }
+      }
+    },
     "Last Updated" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3726,6 +4306,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "さらに買い物リストを読み込み中..."
+          }
+        }
+      }
+    },
+    "Loading photos…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fotos werden geladen …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading photos…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cargando fotos…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "写真を読み込み中…"
           }
         }
       }
@@ -4252,6 +4861,35 @@
         }
       }
     },
+    "Mealie can split quantities and units after import with its ingredient parser." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mealie kann Mengen und Einheiten nach dem Import mit seinem Zutatenparser trennen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mealie can split quantities and units after import with its ingredient parser."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mealie puede separar cantidades y unidades tras importar con su analizador de ingredientes."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "読み込み後、Mealieの材料パーサーで分量と単位を分けられます。"
+          }
+        }
+      }
+    },
     "Mealie didn't accept this API token. Check that the whole token was copied and that it hasn't been deleted." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4306,6 +4944,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mealie サーバの URL"
+          }
+        }
+      }
+    },
+    "Minutes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Minuten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minutes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Minutos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "分"
           }
         }
       }
@@ -4983,6 +5650,35 @@
     "OK" : {
 
     },
+    "On-device Apple Intelligence" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apple Intelligence auf dem Gerät"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On-device Apple Intelligence"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Apple Intelligence en el dispositivo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "デバイス上のApple Intelligence"
+          }
+        }
+      }
+    },
     "Open" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5099,6 +5795,93 @@
         }
       }
     },
+    "Organizing recipe…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rezept wird geordnet …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Organizing recipe…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Organizando la receta…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "レシピを整理中…"
+          }
+        }
+      }
+    },
+    "Page %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Seite %lld"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Página %lld"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lldページ目"
+          }
+        }
+      }
+    },
+    "Pages" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Seiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pages"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Páginas"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ページ"
+          }
+        }
+      }
+    },
     "Password" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5185,6 +5968,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "API トークンを貼り付け"
+          }
+        }
+      }
+    },
+    "Photos" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fotos"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photos"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fotos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "写真"
           }
         }
       }
@@ -5479,6 +6291,64 @@
         }
       }
     },
+    "Read Recipe" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rezept lesen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read Recipe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Leer receta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "レシピを読み取る"
+          }
+        }
+      }
+    },
+    "Reading text…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Text wird gelesen …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reading text…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Leyendo texto…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "テキストを読み取り中…"
+          }
+        }
+      }
+    },
     "Recent search: %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5591,6 +6461,64 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "レシピの材料"
+          }
+        }
+      }
+    },
+    "Recipe name" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rezeptname"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recipe name"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nombre de la receta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "レシピ名"
+          }
+        }
+      }
+    },
+    "Recipe Page %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rezeptseite %lld"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recipe Page %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Página de receta %lld"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "レシピページ%lld"
           }
         }
       }
@@ -5743,6 +6671,35 @@
         }
       }
     },
+    "Recognized Text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Erkannter Text"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recognized Text"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Texto reconocido"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "認識されたテキスト"
+          }
+        }
+      }
+    },
     "Refine Search" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5861,6 +6818,35 @@
     },
     "Remove Favorite" : {
 
+    },
+    "Remove page %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Seite %lld entfernen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove page %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Quitar página %lld"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "%lldページ目を削除"
+          }
+        }
+      }
     },
     "Remove Planned Meal" : {
       "extractionState" : "manual",
@@ -6036,6 +7022,64 @@
         }
       }
     },
+    "Retry Photo Upload" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Foto-Upload wiederholen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retry Photo Upload"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Reintentar subida de fotos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "写真のアップロードを再試行"
+          }
+        }
+      }
+    },
+    "Review Recipe" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rezept prüfen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review Recipe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Revisar receta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "レシピを確認"
+          }
+        }
+      }
+    },
     "Salad" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6119,6 +7163,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "保存"
+          }
+        }
+      }
+    },
+    "Scan Pages" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Seiten scannen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan Pages"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Escanear páginas"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ページをスキャン"
           }
         }
       }
@@ -7228,6 +8301,64 @@
         }
       }
     },
+    "Some photos couldn't be loaded." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Einige Fotos konnten nicht geladen werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Some photos couldn't be loaded."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No se pudieron cargar algunas fotos."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "一部の写真を読み込めませんでした。"
+          }
+        }
+      }
+    },
+    "Source Photos" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Quellfotos"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Source Photos"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Fotos de origen"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "元の写真"
+          }
+        }
+      }
+    },
     "Start" : {
 
     },
@@ -7372,6 +8503,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "タイマーを開始"
+          }
+        }
+      }
+    },
+    "Step" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Schritt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Step"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Paso"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "手順"
           }
         }
       }
@@ -7782,6 +8942,35 @@
         }
       }
     },
+    "Take or choose photos of a recipe card or cookbook page. Katsu reads them on this device, then lets you review the recipe before importing it into Mealie." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nimm Fotos einer Rezeptkarte oder Kochbuchseite auf oder wähle sie aus. Katsu liest sie auf diesem Gerät und lässt dich das Rezept prüfen, bevor es in Mealie importiert wird."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Take or choose photos of a recipe card or cookbook page. Katsu reads them on this device, then lets you review the recipe before importing it into Mealie."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Toma o elige fotos de una tarjeta de receta o de una página de un libro de cocina. Katsu las lee en este dispositivo y te permite revisar la receta antes de importarla a Mealie."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "レシピカードや料理本のページを撮影または選択してください。Katsuがこのデバイス上で読み取り、Mealieに読み込む前にレシピを確認できます。"
+          }
+        }
+      }
+    },
     "Tap Add Favorite on a recipe to see it here." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7836,6 +9025,151 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mealie サーバはオフラインか、到達できないようです。"
+          }
+        }
+      }
+    },
+    "The on-device model couldn't read this recipe." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Das Modell auf dem Gerät konnte dieses Rezept nicht lesen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The on-device model couldn't read this recipe."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "El modelo del dispositivo no pudo leer esta receta."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "デバイス上のモデルはこのレシピを読み取れませんでした。"
+          }
+        }
+      }
+    },
+    "The on-device model declined to read this recipe." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Das Modell auf dem Gerät hat das Lesen dieses Rezepts abgelehnt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The on-device model declined to read this recipe."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "El modelo del dispositivo se negó a leer esta receta."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "デバイス上のモデルはこのレシピの読み取りを拒否しました。"
+          }
+        }
+      }
+    },
+    "The on-device model doesn't support this recipe's language yet." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Das Modell auf dem Gerät unterstützt die Sprache dieses Rezepts noch nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The on-device model doesn't support this recipe's language yet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "El modelo del dispositivo aún no admite el idioma de esta receta."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "デバイス上のモデルはこのレシピの言語にまだ対応していません。"
+          }
+        }
+      }
+    },
+    "The recipe could not be prepared for import." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Das Rezept konnte nicht für den Import vorbereitet werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The recipe could not be prepared for import."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No se pudo preparar la receta para importarla."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "レシピを読み込み用に準備できませんでした。"
+          }
+        }
+      }
+    },
+    "The recipe was imported, but its photos couldn't be uploaded." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Das Rezept wurde importiert, aber die Fotos konnten nicht hochgeladen werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The recipe was imported, but its photos couldn't be uploaded."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "La receta se importó, pero no se pudieron subir sus fotos."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "レシピは読み込まれましたが、写真をアップロードできませんでした。"
           }
         }
       }
@@ -7956,6 +9290,35 @@
         }
       }
     },
+    "This device doesn't support Apple Intelligence." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieses Gerät unterstützt Apple Intelligence nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This device doesn't support Apple Intelligence."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Este dispositivo no es compatible con Apple Intelligence."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "このデバイスはApple Intelligenceに対応していません。"
+          }
+        }
+      }
+    },
     "This planned meal cannot be edited because Mealie did not return ownership details." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8010,6 +9373,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "このレシピにはまだ手順がありません。"
+          }
+        }
+      }
+    },
+    "This recipe is too long for the on-device model." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Dieses Rezept ist für das Modell auf dem Gerät zu lang."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This recipe is too long for the on-device model."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Esta receta es demasiado larga para el modelo del dispositivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "このレシピはデバイス上のモデルには長すぎます。"
           }
         }
       }
@@ -8275,6 +9667,64 @@
         }
       }
     },
+    "Times" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Zeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Times"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tiempos"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "時間"
+          }
+        }
+      }
+    },
+    "Tips, variations, or storage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tipps, Varianten oder Aufbewahrung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tips, variations, or storage"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Consejos, variaciones o conservación"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "コツ、アレンジ、保存方法"
+          }
+        }
+      }
+    },
     "Title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8300,6 +9750,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "タイトル"
+          }
+        }
+      }
+    },
+    "Total" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Gesamt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Total"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "合計"
           }
         }
       }
@@ -8507,6 +9986,35 @@
         }
       }
     },
+    "Turn on Apple Intelligence in Settings to use on-device recipe reading." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Aktiviere Apple Intelligence in den Einstellungen, um Rezepte auf dem Gerät zu lesen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on Apple Intelligence in Settings to use on-device recipe reading."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Activa Apple Intelligence en Ajustes para leer recetas en el dispositivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "デバイス上でレシピを読み取るには、設定でApple Intelligenceをオンにしてください。"
+          }
+        }
+      }
+    },
     "Type a recipe name to find matches on this server." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8706,6 +10214,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL"
+          }
+        }
+      }
+    },
+    "Use first photo as recipe image" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Erstes Foto als Rezeptbild verwenden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use first photo as recipe image"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Usar la primera foto como imagen de la receta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "最初の写真をレシピ画像に使用"
           }
         }
       }
@@ -8938,6 +10475,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "API トークンが拒否されました。この Mealie サーバーとの同期を復元するには、新しいトークンを貼り付けてください。オフラインレシピはこのデバイスで引き続き利用できます。"
+          }
+        }
+      }
+    },
+    "Your photos never leave this device until you import the reviewed recipe." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Deine Fotos verlassen dieses Gerät erst, wenn du das geprüfte Rezept importierst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your photos never leave this device until you import the reviewed recipe."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Tus fotos no salen de este dispositivo hasta que importes la receta revisada."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "確認したレシピを読み込むまで、写真がこのデバイスの外に出ることはありません。"
           }
         }
       }

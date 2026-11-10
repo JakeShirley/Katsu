@@ -17,6 +17,9 @@ protocol MealieAPIClient: AnyObject, Sendable {
     func fetchRecipeImageData(serverURL: URL, token: MealieAuthToken, recipeID: String, fileName: String) async throws -> Data
     func fetchRecipeAssetData(serverURL: URL, token: MealieAuthToken, recipeID: String, fileName: String) async throws -> Data
     func importRecipeFromURL(serverURL: URL, token: MealieAuthToken, url: URL, includeTags: Bool, includeCategories: Bool) async throws -> String
+    func importRecipeFromJSON(serverURL: URL, token: MealieAuthToken, json: String) async throws -> String
+    func uploadRecipeAsset(serverURL: URL, token: MealieAuthToken, slug: String, name: String, icon: String, fileExtension: String, data: Data) async throws
+    func updateRecipeImage(serverURL: URL, token: MealieAuthToken, slug: String, fileExtension: String, data: Data) async throws
     func fetchUserRating(serverURL: URL, token: MealieAuthToken, recipeID: String) async throws -> MealieUserRatingSummary
     func fetchFavorites(serverURL: URL, token: MealieAuthToken) async throws -> [MealieUserRatingSummary]
     func updateUserRating(serverURL: URL, token: MealieAuthToken, userID: String, slug: String, rating: Double?, isFavorite: Bool?) async throws
