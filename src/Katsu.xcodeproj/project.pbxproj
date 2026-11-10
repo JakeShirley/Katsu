@@ -36,6 +36,7 @@
 		AA00010114 /* RecipeIngredientViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010114 /* RecipeIngredientViews.swift */; };
 		AA00010115 /* RecipeMetadataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010115 /* RecipeMetadataView.swift */; };
 		AA00010116 /* RecipeRatingSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010116 /* RecipeRatingSection.swift */; };
+		AA00010145 /* RecipeDetailCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010145 /* RecipeDetailCard.swift */; };
 		AA00010120 /* MealPlanRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010120 /* MealPlanRows.swift */; };
 		AA00010121 /* MealPlanEntryEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010121 /* MealPlanEntryEditorView.swift */; };
 		AA00010122 /* MealPlanModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010122 /* MealPlanModels.swift */; };
@@ -86,6 +87,7 @@
 		BB00010114 /* RecipeIngredientViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeIngredientViews.swift; sourceTree = "<group>"; };
 		BB00010115 /* RecipeMetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeMetadataView.swift; sourceTree = "<group>"; };
 		BB00010116 /* RecipeRatingSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeRatingSection.swift; sourceTree = "<group>"; };
+		BB00010145 /* RecipeDetailCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeDetailCard.swift; sourceTree = "<group>"; };
 		BB00010120 /* MealPlanRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanRows.swift; sourceTree = "<group>"; };
 		BB00010121 /* MealPlanEntryEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanEntryEditorView.swift; sourceTree = "<group>"; };
 		BB00010122 /* MealPlanModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanModels.swift; sourceTree = "<group>"; };
@@ -240,6 +242,7 @@
 				BB00010114 /* RecipeIngredientViews.swift */,
 				BB00010115 /* RecipeMetadataView.swift */,
 				BB00010116 /* RecipeRatingSection.swift */,
+				BB00010145 /* RecipeDetailCard.swift */,
 			);
 			path = RecipeDetail;
 			sourceTree = "<group>";
@@ -413,6 +416,7 @@
 				AA00010114 /* RecipeIngredientViews.swift in Sources */,
 				AA00010115 /* RecipeMetadataView.swift in Sources */,
 				AA00010116 /* RecipeRatingSection.swift in Sources */,
+				AA00010145 /* RecipeDetailCard.swift in Sources */,
 				AA00010044 /* MealPlansView.swift in Sources */,
 				AA00010120 /* MealPlanRows.swift in Sources */,
 				AA00010121 /* MealPlanEntryEditorView.swift in Sources */,

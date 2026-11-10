@@ -15,12 +15,16 @@ struct HomeView: View {
         } else {
             TabView(selection: $selectedTab) {
                 ForEach(enabledTabs) { tab in
-                    tab.destination
-                        .tabItem { tab.label }
-                        .badge(tab == .settings && env.activeProfileNeedsSignIn ? Text(verbatim: "!") : nil)
-                        .tag(tab)
+                    Tab(value: tab) {
+                        tab.destination
+                    } label: {
+                        tab.label
+                    }
+                    .badge(tab == .settings && env.activeProfileNeedsSignIn ? Text(verbatim: "!") : nil)
                 }
             }
+            .tabViewStyle(.sidebarAdaptable)
+            .tabBarMinimizeBehavior(.onScrollDown)
             .onChange(of: enabledTabs) { _, tabs in
                 if !tabs.contains(selectedTab) {
                     selectedTab = tabs.first ?? .settings

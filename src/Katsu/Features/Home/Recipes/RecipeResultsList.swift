@@ -18,7 +18,7 @@ struct RecipeResultsList<Header: View>: View {
     let presentation: RecipeResultsPresentation
     let header: Header
 
-    @Environment(\.bookFoldX) private var bookFoldX
+    @Environment(\.deviceFold) private var deviceFold
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isTwoPage = false
     @State private var feedGridSpan: ClosedRange<CGFloat> = 0...0
@@ -146,15 +146,15 @@ struct RecipeResultsList<Header: View>: View {
     }
 
     private var showsTwoColumns: Bool {
-        isTwoPage || bookFoldX != nil
+        isTwoPage || bookColumnWidths != nil
     }
 
     private var feedColumns: [GridItem] {
         if let bookColumnWidths {
-            // Book posture: the gutter straddles the fold so each column sits
-            // entirely on one half of the screen.
+            // Book posture: the gutter straddles the active fold so each
+            // column sits entirely on one side of it.
             return [
-                GridItem(.fixed(bookColumnWidths.leading), spacing: AdaptiveLayout.twoPageMargin * 2, alignment: .top),
+                GridItem(.fixed(bookColumnWidths.leading), spacing: deviceFold?.frame.width ?? 0, alignment: .top),
                 GridItem(.fixed(bookColumnWidths.trailing), spacing: 0, alignment: .top),
             ]
         }
@@ -164,13 +164,16 @@ struct RecipeResultsList<Header: View>: View {
         )
     }
 
-    /// Column widths that center the grid's gutter on the book fold, each
-    /// column keeping `twoPageMargin` of clearance from the fold.
+    /// Column widths that center the grid's gutter on a vertical fold, each
+    /// column clearing the fold's reserved region and its margins.
     private var bookColumnWidths: (leading: CGFloat, trailing: CGFloat)? {
-        guard let bookFoldX else { return nil }
-        let leading = bookFoldX - feedGridSpan.lowerBound - AdaptiveLayout.twoPageMargin
-        let trailing = feedGridSpan.upperBound - bookFoldX - AdaptiveLayout.twoPageMargin
-        guard leading > 0, trailing > 0 else { return nil }
+        guard let fold = deviceFold, fold.orientation == .vertical else { return nil }
+        let leading = fold.frame.minX - feedGridSpan.lowerBound
+        let trailing = feedGridSpan.upperBound - fold.frame.maxX
+        // Only split when the fold crosses the grid with room for a column on
+        // each side (not, say, when the grid sits in a sidebar beside it).
+        let minimumColumn = AdaptiveLayout.twoPageMinimumWidth / 3
+        guard leading >= minimumColumn, trailing >= minimumColumn else { return nil }
         return (leading, trailing)
     }
 
@@ -296,7 +299,7 @@ struct RecipeResultsList<Header: View>: View {
             } action: { span in
                 feedGridSpan = span
             }
-            .animation(reduceMotion ? nil : DesignSystem.Motion.emphasized, value: bookFoldX)
+            .animation(reduceMotion ? nil : DesignSystem.Motion.emphasized, value: deviceFold)
             .padding(.horizontal, DesignSystem.Spacing.lg)
 
             if state.isLoadingMoreRecipes {

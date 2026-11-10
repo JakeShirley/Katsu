@@ -1473,6 +1473,35 @@
         }
       }
     },
+    "Choose a recipe to see its ingredients and steps." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wähle ein Rezept, um Zutaten und Schritte zu sehen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a recipe to see its ingredients and steps."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Elige una receta para ver sus ingredientes y pasos."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "レシピを選ぶと材料と手順が表示されます。"
+          }
+        }
+      }
+    },
     "Choose Recipe" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4165,35 +4194,6 @@
         }
       }
     },
-    "Meal plans and shopping lists are coming soon." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Essenspläne und Einkaufslisten folgen in Kürze."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meal plans and shopping lists are coming soon."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Los planes de comidas y las listas de compras llegarán pronto."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ミールプランと買い物リストは近日公開予定です。"
-          }
-        }
-      }
-    },
     "Meal Type" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6293,6 +6293,35 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Search recipes"
+          }
+        }
+      }
+    },
+    "Select a recipe" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Rezept auswählen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a recipe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Selecciona una receta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "レシピを選択"
           }
         }
       }

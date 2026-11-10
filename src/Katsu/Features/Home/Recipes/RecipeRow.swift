@@ -63,21 +63,14 @@ struct RecipeRow: View {
                     Spacer(minLength: DesignSystem.Spacing.xs)
                 }
 
-                HStack(spacing: DesignSystem.Spacing.sm) {
-                    Text(categoryHint)
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(DesignSystem.Colors.accentDeep)
-                        .lineLimit(1)
-                        .padding(.horizontal, DesignSystem.Spacing.sm)
-                        .padding(.vertical, DesignSystem.Spacing.xs)
-                        .background(DesignSystem.Colors.accentSoft.opacity(0.75), in: Capsule())
-
-                    if let recipeYield = recipe.recipeYield, !recipeYield.isEmpty {
-                        Label(recipeYield, systemImage: "person.2")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
+                // Stack the category and yield when a narrow column (e.g. a
+                // split view sidebar) can't fit them side by side.
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: DesignSystem.Spacing.sm) {
+                        metadata
+                    }
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+                        metadata
                     }
                 }
             }
@@ -86,7 +79,6 @@ struct RecipeRow: View {
                 Image(systemName: "chevron.right")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.tertiary)
-                    .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
                     .accessibilityHidden(true)
             }
         }
@@ -99,6 +91,25 @@ struct RecipeRow: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
+    }
+
+    @ViewBuilder
+    private var metadata: some View {
+        Text(categoryHint)
+            .font(.caption)
+            .fontWeight(.semibold)
+            .foregroundStyle(DesignSystem.Colors.accentDeep)
+            .lineLimit(1)
+            .padding(.horizontal, DesignSystem.Spacing.sm)
+            .padding(.vertical, DesignSystem.Spacing.xs)
+            .background(DesignSystem.Colors.accentSoft.opacity(0.75), in: Capsule())
+
+        if let recipeYield = recipe.recipeYield, !recipeYield.isEmpty {
+            Label(recipeYield, systemImage: "person.2")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+        }
     }
 
     private var accessibilityLabel: String {

@@ -3,50 +3,63 @@ import SwiftUI
 /// Shared breakpoints for wide layouts such as iPhone Duo unfolded (inner
 /// display ≈ 669pt wide) and iPad.
 enum AdaptiveLayout {
-    /// Narrowest width at which content can sit as two side-by-side "pages",
-    /// one on each side of the iPhone Duo hinge.
+    /// Narrowest width at which content can sit as two side-by-side "pages".
     static let twoPageMinimumWidth: CGFloat = 600
 
     /// Horizontal content margin applied to both edges of each page in a
-    /// two-page layout, so the gutter at the hinge is twice this value.
+    /// two-page layout, so the gutter between pages is twice this value.
     static let twoPageMargin: CGFloat = DesignSystem.Spacing.lg
 
-    /// Shortest landscape height that can split into upper and lower halves.
-    /// Ordinary phones in landscape (≈440pt or less) stay below this.
-    static let tabletopMinimumHeight: CGFloat = 500
+    /// Narrowest width at which a list/detail split keeps both columns on
+    /// screen. Below it (iPhone Duo or iPad mini in portrait) the system
+    /// would overlay the sidebar on an empty detail, so split views collapse
+    /// into a single stack instead.
+    static let splitViewMinimumWidth: CGFloat = 800
 
     static func isTwoPage(width: CGFloat) -> Bool {
         width >= twoPageMinimumWidth
     }
+}
 
-    /// Landscape with enough height to split into upper and lower halves along
-    /// a horizontal hinge (iPhone Duo held like a laptop).
-    static func isTabletop(size: CGSize) -> Bool {
-        size.width > size.height && size.height >= tabletopMinimumHeight
+/// An active fold (a `.division` reserved region) on a foldable display such
+/// as iPhone Duo. The system only reports the fold as active while the hinge
+/// is partially open; when the device lies flat the fold is ignorable and
+/// content may span it.
+struct DeviceFold: Equatable {
+    enum Orientation {
+        /// The fold runs top to bottom (book posture).
+        case vertical
+        /// The fold runs side to side (tabletop posture).
+        case horizontal
     }
 
-    /// Book posture: the hinge is partially open and the screen is held in
-    /// landscape, so the fold runs top to bottom through the screen's center
-    /// (iPhone Duo half closed like an open book).
-    static func isBookPosture(isHingePartiallyOpen: Bool, screenSize: CGSize) -> Bool {
-        isHingePartiallyOpen && screenSize.width > screenSize.height
+    /// The region content should avoid, including the system's recommended
+    /// margins on either side of the fold, in global coordinates.
+    var frame: CGRect
+
+    var orientation: Orientation {
+        frame.height > frame.width ? .vertical : .horizontal
+    }
+
+    /// The x position of a vertical fold's center, in global coordinates.
+    var verticalFoldX: CGFloat? {
+        orientation == .vertical ? frame.midX : nil
     }
 }
 
 extension EnvironmentValues {
-    /// The x position of the fold, in global coordinates, while the device is
-    /// in book posture; `nil` otherwise. Two-pane layouts split exactly here so
-    /// each half of the screen shows one pane. Published from the app root by
-    /// `tracksDeviceHinge()`.
-    @Entry var bookFoldX: CGFloat?
+    /// The device's active fold, or `nil` when there is none (no hinge, the
+    /// hinge is flat, or iOS earlier than 27.1). Published from the app root
+    /// by `tracksDeviceFold()`.
+    @Entry var deviceFold: DeviceFold?
 }
 
 extension View {
-    /// Observes the device hinge (iOS 27.1+) and the screen it spans, and
-    /// publishes `bookFoldX` to this view's descendants. Attach it to a view
-    /// that fills the screen, such as the window root or a full-screen cover.
-    func tracksDeviceHinge() -> some View {
-        modifier(DeviceHingeTracker())
+    /// Reads the device's `.division` reserved region (iOS 27.1+) and
+    /// publishes it as `deviceFold` to this view's descendants. Attach it to a
+    /// view that fills the window, such as the window root.
+    func tracksDeviceFold() -> some View {
+        modifier(DeviceFoldTracker())
     }
 
     /// Reports whether this view is wide enough for a two-page layout.
@@ -59,48 +72,27 @@ extension View {
     }
 }
 
-private struct DeviceHingeTracker: ViewModifier {
+private struct DeviceFoldTracker: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var settler = HingeSettler()
-    @State private var screenFrame: CGRect = .zero
-
-    private var bookFoldX: CGFloat? {
-        guard AdaptiveLayout.isBookPosture(
-            isHingePartiallyOpen: settler.isSettledPartiallyOpen,
-            screenSize: screenFrame.size
-        ) else { return nil }
-        return screenFrame.midX
-    }
+    @State private var settler = FoldSettler()
 
     func body(content: Content) -> some View {
         content
-            .environment(\.bookFoldX, bookFoldX)
-            .background {
-                // Some insets (e.g. the unfolded Duo's trailing status and tab
-                // column) can't be ignored, so add back whatever safe area the
-                // view still reports to recover the whole screen.
-                Color.clear
-                    .ignoresSafeArea()
-                    .onGeometryChange(for: CGRect.self) { proxy in
-                        let frame = proxy.frame(in: .global)
-                        let insets = proxy.safeAreaInsets
-                        return CGRect(
-                            x: frame.minX - insets.leading,
-                            y: frame.minY - insets.top,
-                            width: frame.width + insets.leading + insets.trailing,
-                            height: frame.height + insets.top + insets.bottom
-                        )
-                    } action: { frame in
-                        screenFrame = frame
-                    }
-            }
+            .environment(\.deviceFold, settler.fold)
             .background {
                 if #available(iOS 27.1, *) {
-                    HingeObserverView { isPartiallyOpen, angle in
-                        settler.update(isPartiallyOpen: isPartiallyOpen, angle: angle)
-                    }
-                    .allowsHitTesting(false)
-                    .accessibilityHidden(true)
+                    Color.clear
+                        .onGeometryChange(for: CGRect?.self) { proxy in
+                            guard let region = proxy.reservedRegions(kind: .division).first(where: \.isActive) else {
+                                return nil
+                            }
+                            let origin = proxy.frame(in: .global).origin
+                            return region.frame.offsetBy(dx: origin.x, dy: origin.y)
+                        } action: { frame in
+                            settler.update(frame.map(DeviceFold.init(frame:)))
+                        }
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
                 }
             }
             .onAppear {
@@ -112,83 +104,44 @@ private struct DeviceHingeTracker: ViewModifier {
     }
 }
 
-/// Debounces hinge updates so book posture only engages once the hinge has
-/// come to rest partially open. Folding the device shut sweeps through the
+/// Debounces fold activation so fold-aware layouts only engage once the hinge
+/// has come to rest partially open. Folding the device shut sweeps through the
 /// partially open range, and snapping layouts on the way would be jarring.
+/// Deactivation and changes to an already active fold apply immediately.
 @MainActor
 @Observable
-private final class HingeSettler {
-    /// How long the hinge must hold still before book posture engages.
+private final class FoldSettler {
     static let settleDelay: Duration = .milliseconds(400)
-    /// Angle change, in radians (2°), that counts as the hinge still moving.
-    static let movementTolerance: CGFloat = .pi / 90
 
-    private(set) var isSettledPartiallyOpen = false
+    private(set) var fold: DeviceFold?
     @ObservationIgnored var animation: Animation?
-    @ObservationIgnored private var restingAngle: CGFloat?
     @ObservationIgnored private var settleTask: Task<Void, Never>?
 
-    func update(isPartiallyOpen: Bool, angle: CGFloat) {
-        guard isPartiallyOpen else {
-            settleTask?.cancel()
-            settleTask = nil
-            restingAngle = nil
-            setSettled(false)
-            return
-        }
-
-        if let restingAngle, abs(angle - restingAngle) <= Self.movementTolerance {
-            return
-        }
-
-        restingAngle = angle
+    func update(_ newFold: DeviceFold?) {
         settleTask?.cancel()
+        settleTask = nil
+
+        guard let newFold else {
+            apply(nil)
+            return
+        }
+
+        if fold != nil {
+            apply(newFold)
+            return
+        }
+
         settleTask = Task { [weak self] in
             try? await Task.sleep(for: Self.settleDelay)
             guard !Task.isCancelled else { return }
-            self?.setSettled(true)
+            self?.apply(newFold)
         }
     }
 
-    private func setSettled(_ isSettled: Bool) {
-        guard isSettledPartiallyOpen != isSettled else { return }
+    private func apply(_ newFold: DeviceFold?) {
+        guard fold != newFold else { return }
         withAnimation(animation) {
-            isSettledPartiallyOpen = isSettled
+            fold = newFold
         }
-    }
-}
-
-/// Reports hinge status and angle through UIKit, which, unlike SwiftUI's
-/// `onHingeChange`, exposes the angle needed to tell when the hinge is moving.
-@available(iOS 27.1, *)
-private struct HingeObserverView: UIViewRepresentable {
-    let onUpdate: @MainActor (_ isPartiallyOpen: Bool, _ angle: CGFloat) -> Void
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator()
-    }
-
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView()
-        view.isUserInteractionEnabled = false
-        let coordinator = context.coordinator
-        coordinator.onUpdate = onUpdate
-        view.addInteraction(UIHingeInteraction { _, update in
-            guard let hinge = update.hinge else {
-                coordinator.onUpdate?(false, 0)
-                return
-            }
-            coordinator.onUpdate?(hinge.status == .partiallyOpen, hinge.angle)
-        })
-        return view
-    }
-
-    func updateUIView(_ uiView: UIView, context: Context) {
-        context.coordinator.onUpdate = onUpdate
-    }
-
-    @MainActor
-    final class Coordinator {
-        var onUpdate: (@MainActor (_ isPartiallyOpen: Bool, _ angle: CGFloat) -> Void)?
     }
 }

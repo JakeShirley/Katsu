@@ -21,7 +21,7 @@ struct RecipeHeroSection: View {
     }
 
     var body: some View {
-        Section {
+        RecipeDetailCard {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
                 if let imageURL = displayImageURL {
                     Button {
