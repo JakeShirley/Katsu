@@ -3,7 +3,7 @@ import SwiftUI
 struct RecipesView: View {
     @StateObject private var recipeResultsState = RecipeResultsState()
     @AppStorage("katsu.recentRecipeSearches") private var recentSearchesData = Data()
-    @State private var showImportRecipe = false
+    @State private var importSource: RecipeImportSource?
     @State private var refreshTrigger = 0
     @State private var searchText = ""
     @State private var appliedFilters = MealieRecipeFilters()
@@ -120,12 +120,13 @@ struct RecipesView: View {
                 .toolbar {
                     recipesToolbar
                 }
-                .sheet(isPresented: $showImportRecipe) {
+                .sheet(item: $importSource) { source in
                     NavigationStack {
-                        ImportRecipeView {
-                            await MainActor.run {
-                                refreshTrigger += 1
-                            }
+                        switch source {
+                        case .url:
+                            ImportRecipeView(onImported: recipeImported)
+                        case .photos:
+                            PhotoRecipeImportView(onImported: recipeImported)
                         }
                     }
                 }
@@ -184,12 +185,27 @@ struct RecipesView: View {
         }
 
         ToolbarItem(placement: .topBarTrailing) {
-            Button {
-                showImportRecipe = true
+            Menu {
+                Button {
+                    importSource = .url
+                } label: {
+                    Label("Import from URL", systemImage: "link")
+                }
+                Button {
+                    importSource = .photos
+                } label: {
+                    Label("Import from Photos", systemImage: "camera")
+                }
             } label: {
                 Label("Import Recipe", systemImage: "square.and.arrow.down")
             }
             .accessibilityLabel("Import Recipe")
+        }
+    }
+
+    private func recipeImported() async {
+        await MainActor.run {
+            refreshTrigger += 1
         }
     }
 
@@ -206,4 +222,11 @@ struct RecipesView: View {
         recents.insert(query, at: 0)
         recentSearchesData = (try? JSONEncoder().encode(Array(recents.prefix(4)))) ?? Data()
     }
+}
+
+private enum RecipeImportSource: String, Identifiable {
+    case url
+    case photos
+
+    var id: String { rawValue }
 }

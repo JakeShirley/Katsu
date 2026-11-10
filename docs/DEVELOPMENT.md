@@ -139,6 +139,22 @@ Supported debug inputs:
 The active server profile and app preferences are persisted with `UserDefaults`.
 Access tokens live in the Keychain.
 
+### Testing Photo Import
+
+Recipes > Import Recipe > Import from Photos (`Features/Home/Recipes/PhotoImport/`)
+runs entirely on-device: Vision OCR, then Apple's Foundation Models through
+guided generation into `GeneratedRecipe`, then a review screen that posts
+schema.org JSON to `/api/recipes/create/html-or-json`.
+
+- Seed the simulator's library with a recipe photo:
+  `xcrun simctl addmedia "$SIM_UDID" recipe.jpg`. The document scanner
+  (Scan Pages) is hidden on the simulator because it has no camera.
+- Simulators may report the system language model as available but fail at
+  inference when model assets are missing (`ModelManagerError 1001`). Katsu
+  then falls back to `RecipeDraft.heuristic(from:)` and shows a notice. Check
+  the `org.odinseye.katsu` / `PhotoImport` log category for the underlying
+  error, and verify model output on an Apple Intelligence device.
+
 ## Verifying Swift Changes
 
 Any change that touches a `.swift` file is not "done" until it has been

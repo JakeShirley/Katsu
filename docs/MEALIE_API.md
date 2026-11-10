@@ -109,11 +109,11 @@ v3.0.0 moved admin user CRUD from `/api/users` to `/api/admin/users`.
 | Detail | `GET /api/recipes/{slug}` | — |
 | Create / update / delete | `POST /api/recipes`, `PUT\|PATCH\|DELETE /api/recipes/{slug}`, bulk `PUT\|PATCH /api/recipes`, `POST /api/recipes/{slug}/duplicate` | After v3.30.0, new recipes no longer get a placeholder ingredient and step. |
 | Import from URL | `POST /api/recipes/create/url` with `{ url, includeTags, includeCategories }` → slug; `.../url/stream` (SSE progress); `.../url/bulk` | Categories v3.10.0; progress v3.13.0. |
-| Import HTML/JSON | `POST /api/recipes/create/html-or-json[/stream]` | Pasted Mealie export v3.30.0. |
+| Import HTML/JSON | `POST /api/recipes/create/html-or-json[/stream]` with `{ data, includeTags, includeCategories, url? }`; `data` is raw HTML or a schema.org `Recipe` JSON string → slug | Pasted Mealie export v3.30.0. Katsu's on-device photo import (REC-016) sends schema.org JSON here. |
 | AI import | `POST /api/recipes/create/ai[/stream]` multipart: `content`, `url`, `images[]`, `translateLanguage`, `createNewOrganizers` | Requires an AI provider. Video URLs (YouTube/TikTok/Instagram) v3.13.0. |
 | Zip import | `POST /api/recipes/create/zip` | — |
 | Test scrape | `POST /api/recipes/test-scrape-url` | — |
-| Images and assets | `POST\|PUT\|DELETE /api/recipes/{slug}/image`, `POST /api/recipes/{slug}/assets[/url]`, media routes above | `DELETE` image v3.5.0. |
+| Images and assets | `POST\|PUT\|DELETE /api/recipes/{slug}/image`, `POST /api/recipes/{slug}/assets[/url]`, media routes above. `PUT .../image` is multipart `image` + `extension`; `POST .../assets` is multipart `name`, `icon` (e.g. `mdi-file-image`), `extension`, `file`. | `DELETE` image v3.5.0. Photo import (REC-016) uploads source pages as assets and optionally the first page as the recipe image. |
 | Mark as made | `PATCH /api/recipes/{slug}/last-made` with `{ timestamp }` | — |
 | Timeline | `GET\|POST /api/recipes/timeline/events`, `GET\|PUT\|DELETE .../{id}`, `PUT .../{id}/image` | Image management v3.30.0; edits limited to author or admin after v3.30.0. |
 | Comments | `GET /api/recipes/{slug}/comments`, `GET\|POST /api/comments`, `GET\|PUT\|DELETE /api/comments/{id}` | — |

@@ -1,0 +1,35 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "NSCameraUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Katsu verwendet die Kamera, um Rezeptseiten zu scannen und sie auf diesem Gerät zu lesen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katsu uses the camera to scan recipe pages so it can read them on this device."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Katsu usa la cámara para escanear páginas de recetas y leerlas en este dispositivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Katsuはカメラを使ってレシピのページをスキャンし、このデバイス上で読み取ります。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
