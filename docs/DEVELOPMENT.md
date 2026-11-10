@@ -227,28 +227,51 @@ geometry, not size classes:
 
 - Two-page (width ≥ 600pt): the recipe feed becomes a 2-column card grid and
   recipe detail becomes a cookbook spread (overview and ingredients on the
-  left, instructions and nutrition on the right).
-- Tabletop (landscape, height ≥ 500pt): Making Mode puts the step card above
-  the horizontal hinge and the timer and Back/Next controls below it.
-- Book posture (hinge partially open, landscape): the app root's
-  `.tracksDeviceHinge()` observes the hinge with UIKit's iOS 27.1
-  `UIHingeInteraction` (which, unlike SwiftUI's `onHingeChange`, reports the
-  angle) and publishes the fold's global x-coordinate as the `\.bookFoldX`
-  environment value (`nil` otherwise). Book posture engages only after the
-  hinge has rested partially open for 400ms (moving less than 2°), so
-  folding the device shut never flashes the split. Leaving the partially
-  open range exits book posture immediately. Changes animate with
-  `DesignSystem.Motion.emphasized` unless Reduce Motion is on; views that
-  restructure for the fold should also attach
-  `.animation(_:value: bookFoldX)`, because the root transaction doesn't
-  reach presented content such as full-screen covers. Two-pane views split
-  exactly at that line so each half of the display shows one pane: the feed
-  grid centers its gutter on the fold, recipe detail always shows the
-  spread, and Making Mode puts the step card on the left page and the timer
-  and Back/Next controls on the right. Book posture takes precedence over
-  tabletop. New two-pane views should read `\.bookFoldX` and align their
-  split to it. The fold is measured on the full screen, including the
-  trailing status/tab column that `ignoresSafeArea` cannot expand into.
+  left, instructions and nutrition on the right). Recipe detail is one
+  `ScrollView` of `RecipeDetailCard`s whose two page columns switch between
+  `VStackLayout` and `HStackLayout` through `AnyLayout`, so when the width
+  crosses the breakpoint (for example, the split view's sidebar sliding in
+  or out) the cards animate to their new places instead of being rebuilt.
+  Both pages therefore scroll together. Size the pages from layout size, not
+  the global frame, which can be stale after rotation.
+- List/detail: `RecipesView` is a `NavigationSplitView` (recipe list in the
+  sidebar, detail beside it) when it is at least
+  `AdaptiveLayout.splitViewMinimumWidth` (800pt) wide. Narrower containers,
+  including the unfolded Duo and iPad mini in portrait, override the size
+  class to compact so the split collapses into a stack instead of overlaying
+  the sidebar on an empty detail; rotating keeps the open recipe. When the
+  device is flat open, the system clamps the sidebar to about a third of the
+  display, so sidebar rows must reflow rather than truncate (`RecipeRow`
+  uses `ViewThatFits` for its metadata).
+- Fold: the app root's `.tracksDeviceFold()` reads SwiftUI's iOS 27.1
+  `reservedRegions(kind: .division)` and publishes the hinge as the
+  `\.deviceFold` environment value (a `DeviceFold` with a global frame and
+  orientation; `nil` otherwise). The system only reports a division region
+  while the hinge is partially open; a flat-open display is one continuous
+  surface by Apple's design, so layouts must look right with no fold at all.
+  A fold engages only after it has stayed put for 400ms, so folding the
+  device shut never flashes a split, and it clears immediately. Changes
+  animate with `DesignSystem.Motion.emphasized` unless Reduce Motion is on;
+  views that restructure for the fold should also attach
+  `.animation(_:value: deviceFold)`, because the root transaction doesn't
+  reach presented content such as full-screen covers.
+- Two-pane views split exactly at `deviceFold?.verticalFoldX` when present
+  (and evenly otherwise) so each half of the display shows one pane: the
+  feed grid's gutter equals the fold, recipe detail's spread pages meet at
+  the fold, and the split view's sidebar width matches the left page. The
+  fold is measured on the full screen, including the trailing status/tab
+  column that `ignoresSafeArea` cannot expand into.
+- Making Mode: on regular×regular (iOS 27.1+) it uses `ArrangementView` with
+  `.arrangementViewStyle(.split)`, letting the system place the step card
+  and the timer/Back/Next controls on either side of a vertical (book) or
+  horizontal (tabletop) fold. Compact layouts keep a single column. Making
+  Mode keeps the screen awake, and its timer counts down to an end date and
+  schedules a local notification so it survives backgrounding.
+
+Colors come from asset catalog colorsets (`AccentColor`, `AccentDeep`,
+`AccentSoft`) with light, dark, and Increase Contrast variants; the light
+accent is darkened so tinted text and white-on-accent labels meet WCAG AA.
+Use the `DesignSystem.Palette`/`Colors` tokens rather than literal colors.
 
 `simctl` cannot unfold the Duo simulator (`screenConfig power` leaves the
 inner display black). Unfold it with the skill's experimental `duo.py`, which

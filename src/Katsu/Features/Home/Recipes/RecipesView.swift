@@ -8,6 +8,10 @@ struct RecipesView: View {
     @State private var searchText = ""
     @State private var appliedFilters = MealieRecipeFilters()
     @State private var favoritesOnly = false
+    @State private var columnVisibility: NavigationSplitViewVisibility = .all
+    @State private var containerWidth: CGFloat = 0
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.deviceFold) private var deviceFold
 
     private let suggestions = [
         "Dinner",
@@ -52,96 +56,140 @@ struct RecipesView: View {
         (try? JSONDecoder().decode([String].self, from: recentSearchesData)) ?? []
     }
 
+    /// In book posture the list fills the page before the fold and the
+    /// selected recipe the page after it.
+    private var sidebarWidth: CGFloat {
+        deviceFold?.verticalFoldX ?? 400
+    }
+
+    private var navigationTitle: LocalizedStringKey {
+        favoritesOnly ? "Favorites" : "Recipes"
+    }
+
+    /// Collapses the split view into a stack when both columns can't fit
+    /// side by side, even though the size class is regular.
+    private var splitHorizontalSizeClass: UserInterfaceSizeClass? {
+        guard containerWidth > 0, containerWidth < AdaptiveLayout.splitViewMinimumWidth else {
+            return horizontalSizeClass
+        }
+        return .compact
+    }
+
     var body: some View {
-        NavigationStack {
-            RecipeResultsList(
-                state: recipeResultsState,
-                filters: appliedFilters,
-                refreshTrigger: refreshTrigger,
-                loadsWhenFiltersEmpty: true,
-                allowsOfflineCache: true,
-                resultsTitle: nil,
-                emptyStateTitle: emptyStateTitle,
-                emptyStateDescription: emptyStateDescription,
-                emptyStateImage: emptyStateImage,
-                idleStateTitle: "No recipes yet",
-                idleStateDescription: "Imported and saved recipes will appear here.",
-                idleStateImage: "book.closed",
-                footer: !appliedFilters.isEmpty ? nil : "Meal plans and shopping lists are coming soon.",
-                presentation: .cardFeed
-            ) {
-                EmptyView()
-            }
-            .navigationTitle(favoritesOnly ? "Favorites" : "Recipes")
-            .navigationBarTitleDisplayMode(.inline)
-            .searchable(
-                text: $searchText,
-                placement: .navigationBarDrawer(displayMode: .always),
-                prompt: "Search recipes"
-            ) {
-                if draftFilters.search.isEmpty {
-                    if !recentSearches.isEmpty {
-                        Section("Recents") {
-                            ForEach(recentSearches, id: \.self) { recentSearch in
-                                Text(recentSearch)
-                                    .searchCompletion(recentSearch)
+        // When there's room for two columns (iPad and unfolded iPhone Duo in
+        // landscape) the feed stays visible beside the selected recipe;
+        // otherwise the split view collapses into a single navigation stack.
+        NavigationSplitView(columnVisibility: $columnVisibility) {
+            results
+                .navigationTitle(navigationTitle)
+                .navigationSplitViewColumnWidth(sidebarWidth)
+                .searchable(
+                    text: $searchText,
+                    placement: .navigationBarDrawer(displayMode: .always),
+                    prompt: "Search recipes"
+                ) {
+                    if draftFilters.search.isEmpty {
+                        if !recentSearches.isEmpty {
+                            Section("Recents") {
+                                ForEach(recentSearches, id: \.self) { recentSearch in
+                                    Text(recentSearch)
+                                        .searchCompletion(recentSearch)
+                                }
+                            }
+                        }
+
+                        Section("Suggestions") {
+                            ForEach(suggestions, id: \.self) { suggestion in
+                                Text(suggestion)
+                                    .searchCompletion(suggestion)
                             }
                         }
                     }
-
-                    Section("Suggestions") {
-                        ForEach(suggestions, id: \.self) { suggestion in
-                            Text(suggestion)
-                                .searchCompletion(suggestion)
-                        }
-                    }
                 }
-            }
-            .onSubmit(of: .search) {
-                applySubmittedSearch()
-            }
-            .task(id: draftFilters) {
-                try? await Task.sleep(nanoseconds: 350_000_000)
-                guard !Task.isCancelled else { return }
-                await MainActor.run {
-                    appliedFilters = draftFilters
-                    saveRecentSearch(draftFilters.search)
+                .onSubmit(of: .search) {
+                    applySubmittedSearch()
                 }
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        favoritesOnly.toggle()
+                .task(id: draftFilters) {
+                    try? await Task.sleep(nanoseconds: 350_000_000)
+                    guard !Task.isCancelled else { return }
+                    await MainActor.run {
                         appliedFilters = draftFilters
-                    } label: {
-                        Label(
-                            favoritesOnly ? "Show All Recipes" : "Show Favorites Only",
-                            systemImage: favoritesOnly ? "heart.fill" : "heart"
-                        )
+                        saveRecentSearch(draftFilters.search)
                     }
-                    .accessibilityLabel(favoritesOnly ? "Show All Recipes" : "Show Favorites Only")
-                    .accessibilityAddTraits(favoritesOnly ? .isSelected : [])
                 }
-
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showImportRecipe = true
-                    } label: {
-                        Label("Import Recipe", systemImage: "square.and.arrow.down")
-                    }
-                    .accessibilityLabel("Import Recipe")
+                .toolbar {
+                    recipesToolbar
                 }
-
-            }
-            .sheet(isPresented: $showImportRecipe) {
-                NavigationStack {
-                    ImportRecipeView {
-                        await MainActor.run {
-                            refreshTrigger += 1
+                .sheet(isPresented: $showImportRecipe) {
+                    NavigationStack {
+                        ImportRecipeView {
+                            await MainActor.run {
+                                refreshTrigger += 1
+                            }
                         }
                     }
                 }
+        } detail: {
+            ContentUnavailableView {
+                Label("Select a recipe", systemImage: "book.closed")
+            } description: {
+                Text("Choose a recipe to see its ingredients and steps.")
             }
+            .background(DesignSystem.Colors.background)
+        }
+        .navigationSplitViewStyle(.balanced)
+        .environment(\.horizontalSizeClass, splitHorizontalSizeClass)
+        .onGeometryChange(for: CGFloat.self) { proxy in
+            proxy.size.width
+        } action: { width in
+            containerWidth = width
+        }
+    }
+
+    private var results: some View {
+        RecipeResultsList(
+            state: recipeResultsState,
+            filters: appliedFilters,
+            refreshTrigger: refreshTrigger,
+            loadsWhenFiltersEmpty: true,
+            allowsOfflineCache: true,
+            resultsTitle: nil,
+            emptyStateTitle: emptyStateTitle,
+            emptyStateDescription: emptyStateDescription,
+            emptyStateImage: emptyStateImage,
+            idleStateTitle: "No recipes yet",
+            idleStateDescription: "Imported and saved recipes will appear here.",
+            idleStateImage: "book.closed",
+            footer: nil,
+            presentation: .cardFeed
+        ) {
+            EmptyView()
+        }
+    }
+
+    @ToolbarContentBuilder
+    private var recipesToolbar: some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            Button {
+                favoritesOnly.toggle()
+                appliedFilters = draftFilters
+            } label: {
+                Label(
+                    favoritesOnly ? "Show All Recipes" : "Show Favorites Only",
+                    systemImage: favoritesOnly ? "heart.fill" : "heart"
+                )
+            }
+            .accessibilityLabel(favoritesOnly ? "Show All Recipes" : "Show Favorites Only")
+            .accessibilityAddTraits(favoritesOnly ? .isSelected : [])
+        }
+
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                showImportRecipe = true
+            } label: {
+                Label("Import Recipe", systemImage: "square.and.arrow.down")
+            }
+            .accessibilityLabel("Import Recipe")
         }
     }
 

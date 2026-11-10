@@ -33,7 +33,9 @@ later work; do not block v0 on it.
 - [x] **FND-012** Build with the iOS 27 SDK (Xcode 27.2) and raise the minimum
   deployment target to iOS 26.0 in preparation for iPhone Duo.
 - **FND-013** iPhone Duo support: adapt layouts to fold states and verify on
-  the iPhone Duo simulator (iOS 27.1+).
+  the iPhone Duo simulator (iOS 27.1+). Uses `reservedRegions(.division)`
+  for the fold, `NavigationSplitView` for recipes on regular width, and
+  `ArrangementView` for Making Mode (see `docs/DEVELOPMENT.md`).
 
 ## Connection & Auth (CON) — v0 scope
 

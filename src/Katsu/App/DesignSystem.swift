@@ -14,17 +14,27 @@ import SwiftUI
 enum DesignSystem {
     // MARK: - Brand palette
     //
-    // Katsu's identity color is a warm, food-app orange/amber pulled from the
-    // app icon (≈ #EB7333). Keep these raw values in one place; views should
-    // reach for `Colors` or the convenience accessors below instead.
+    // Katsu's identity color is a warm, food-app orange pulled from the app
+    // icon (≈ #EB7333). The orange tokens live in the asset catalog so each
+    // one adapts to dark mode and Increase Contrast while keeping WCAG AA
+    // (4.5:1) contrast for text:
+    //
+    // | Token       | Light   | Dark    | Light HC | Dark HC |
+    // |-------------|---------|---------|----------|---------|
+    // | AccentColor | #B94A14 | #EB7333 | #9A3B0B  | #FF8F52 |
+    // | AccentDeep  | #9A3B0B | #FFA266 | #7F2F08  | #FFC299 |
+    // | AccentSoft  | #FBE3CE | #4A2A18 | #FCE6D3  | #3D2416 |
+    //
+    // Views should reach for `Colors` or the convenience accessors below
+    // instead of these raw references.
 
     enum Palette {
-        /// Primary Katsu orange (≈ #EB7333). Matches `Assets.xcassets/AccentColor`.
-        static let katsuOrange = Color(red: 0.922, green: 0.451, blue: 0.200)
-        /// Slightly deeper variant for pressed / emphasis states.
-        static let katsuOrangeDeep = Color(red: 0.804, green: 0.361, blue: 0.149)
+        /// Primary Katsu orange. Same asset as the app-wide `AccentColor`.
+        static let katsuOrange = Color("AccentColor")
+        /// Deeper variant for text and icons on `katsuOrangeSoft` surfaces.
+        static let katsuOrangeDeep = Color("AccentDeep")
         /// Soft, low-chroma orange for tinted surfaces (e.g. badge backgrounds).
-        static let katsuOrangeSoft = Color(red: 0.984, green: 0.890, blue: 0.808)
+        static let katsuOrangeSoft = Color("AccentSoft")
         /// Companion warm-cream for hero surfaces.
         static let katsuCream = Color(red: 0.988, green: 0.957, blue: 0.910)
     }
@@ -84,6 +94,8 @@ enum DesignSystem {
         static let sm: CGFloat = 6
         static let md: CGFloat = 10
         static let lg: CGFloat = 16
+        /// Grouped content cards, matching inset-grouped list sections.
+        static let xl: CGFloat = 24
         static let pill: CGFloat = 999
     }
 

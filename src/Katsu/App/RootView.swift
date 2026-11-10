@@ -4,9 +4,10 @@ import SwiftUI
 /// recipe experience so the app always lands on one home surface.
 struct RootView: View {
     @EnvironmentObject private var env: AppEnvironment
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         HomeView()
-        .animation(.easeInOut, value: env.activeProfile?.id)
+            .animation(reduceMotion ? nil : .easeInOut, value: env.activeProfile?.id)
     }
 }

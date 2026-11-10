@@ -8,7 +8,7 @@ struct RecipeRatingSection: View {
     let onSetRating: (Double?) async -> Void
 
     var body: some View {
-        Section("My Rating") {
+        RecipeDetailCard(title: "My Rating") {
             Button {
                 Task { await onToggleFavorite(rating) }
             } label: {
@@ -20,16 +20,19 @@ struct RecipeRatingSection: View {
 
             HStack(spacing: DesignSystem.Spacing.sm) {
                 ForEach(1...5, id: \.self) { value in
+                    let isFilled = (rating.rating ?? 0) >= Double(value)
                     Button {
                         Task { await onSetRating(Double(value)) }
                     } label: {
-                        Image(systemName: (rating.rating ?? 0) >= Double(value) ? "star.fill" : "star")
+                        Image(systemName: isFilled ? "star.fill" : "star")
                             .font(.title3)
+                            .foregroundStyle(isFilled ? AnyShapeStyle(DesignSystem.Colors.accent) : AnyShapeStyle(.secondary))
                             .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
                     }
                     .buttonStyle(.plain)
                     .disabled(isUpdating)
                     .accessibilityLabel(String(localized: "Set rating to \(value) stars"))
+                    .accessibilityAddTraits(isFilled ? .isSelected : [])
                 }
             }
 

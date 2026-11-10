@@ -1,17 +1,22 @@
 import AudioToolbox
 import SwiftUI
+import UIKit
+import UserNotifications
 
 struct RecipeMakingModeView: View {
     let detail: MealieRecipeDetail
     let ingredientScaleFactor: Double
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.bookFoldX) private var bookFoldX
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var selectedPage = 0
     @State private var timerMinutes = 5
-    @State private var timerRemainingSeconds: Int?
+    @State private var timerEndDate: Date?
+    @State private var now = Date.now
     @State private var didPlayTimerCompletionAlert = false
-    @State private var isTabletop = false
+
+    private static let timerNotificationID = "katsu.makingMode.timer"
 
     private var pages: [RecipeMakingPage] {
         var pages = [RecipeMakingPage.ingredients(detail.recipeIngredient)]
@@ -21,101 +26,102 @@ struct RecipeMakingModeView: View {
         return pages
     }
 
-    var body: some View {
-        ZStack {
-            DesignSystem.Colors.background
-                .ignoresSafeArea()
+    /// Seconds left on the running timer, derived from its end date so the
+    /// countdown stays accurate while the app is in the background.
+    private var timerRemainingSeconds: Int? {
+        timerEndDate.map { max(0, Int($0.timeIntervalSince(now).rounded(.up))) }
+    }
 
-            if bookFoldX != nil || isTabletop {
-                foldLayout(isBook: bookFoldX != nil)
-            } else {
-                VStack(spacing: DesignSystem.Spacing.lg) {
-                    header
-                    timerPanel
-                    progressStrip
-                    pager
-                    navigationControls
+    var body: some View {
+        NavigationStack {
+            content
+                .background {
+                    DesignSystem.Colors.background
+                        .ignoresSafeArea()
                 }
-                .padding(.vertical, DesignSystem.Spacing.lg)
-            }
+                .navigationTitle(detail.displayName)
+                .navigationSubtitle("Making Mode")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(role: .close) {
+                            dismiss()
+                        }
+                        .accessibilityLabel("Close making mode")
+                    }
+                }
         }
-        .animation(reduceMotion ? nil : DesignSystem.Motion.emphasized, value: bookFoldX)
-        .onGeometryChange(for: Bool.self) { proxy in
-            AdaptiveLayout.isTabletop(size: proxy.size)
-        } action: { isTabletop = $0 }
         .accessibilityAction(.escape) {
             dismiss()
         }
         .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
             tickTimer()
         }
+        .onAppear {
+            // Keep the screen awake while cooking.
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
+        .onDisappear {
+            UIApplication.shared.isIdleTimerDisabled = false
+            cancelTimerNotification()
+        }
     }
 
-    /// Layouts for a device with a hinge. The step card and its controls sit
-    /// on opposite sides of the fold, and both postures share one view tree so
-    /// the panes glide between them as the posture changes.
-    ///
-    /// - Tabletop (wide landscape, e.g. iPhone Duo held like a laptop): the
-    ///   card sits on the upper half facing the cook, and the timer and paging
-    ///   controls sit on the lower half, below the horizontal hinge.
-    /// - Book (iPhone Duo half closed like a book): the card fills the left page
-    ///   and the timer and paging controls sit on the right page. Pages are
-    ///   exact halves of the full screen width so the split lands on the fold
-    ///   even when the trailing status column insets the safe area.
-    private func foldLayout(isBook: Bool) -> some View {
-        GeometryReader { proxy in
-            let insets = proxy.safeAreaInsets
-            let pageWidth = (proxy.size.width + insets.leading + insets.trailing) / 2
-            let pagesLayout = isBook ? AnyLayout(HStackLayout(spacing: 0)) : AnyLayout(VStackLayout(spacing: 0))
-            let controlsLayout = isBook
-                ? AnyLayout(VStackLayout(spacing: DesignSystem.Spacing.xl))
-                : AnyLayout(HStackLayout(alignment: .center, spacing: 0))
-
-            pagesLayout {
-                VStack(spacing: DesignSystem.Spacing.md) {
-                    header
-                    progressStrip
-                    pager
-                }
-                .padding(.leading, isBook ? insets.leading : 0)
-                .padding(.vertical, DesignSystem.Spacing.md)
-                .frame(width: isBook ? pageWidth : nil)
-                .frame(maxHeight: .infinity)
-
-                // Each posture gets its own divider so they cross-fade instead
-                // of one line stretching between orientations.
-                if !isBook {
-                    Divider()
-                        .transition(.opacity)
-                }
-
-                controlsLayout {
-                    timerPanel
-                        .frame(maxWidth: isBook ? nil : .infinity)
-                    navigationControls
-                        .controlSize(.large)
-                        .frame(maxWidth: isBook ? nil : .infinity)
-                }
-                .padding(.trailing, isBook ? insets.trailing : 0)
-                .frame(width: isBook ? pageWidth : nil)
-                .frame(maxHeight: .infinity)
+    @ViewBuilder
+    private var content: some View {
+        if #available(iOS 27.1, *), horizontalSizeClass == .regular, verticalSizeClass == .regular {
+            splitLayout
+        } else {
+            VStack(spacing: DesignSystem.Spacing.lg) {
+                timerPanel
+                progressStrip
+                pager
+                navigationControls
             }
-            .overlay {
-                if isBook {
-                    HStack { Divider() }
-                        .transition(.opacity)
-                }
-            }
-            .ignoresSafeArea(.container, edges: isBook ? .horizontal : [])
+            .padding(.vertical, DesignSystem.Spacing.lg)
         }
+    }
+
+    /// Regular-size layout (iPad, unfolded iPhone Duo). The system arranges
+    /// the step card and its controls side by side or stacked to suit the
+    /// display, and keeps both clear of an active fold: in book posture the
+    /// card and controls sit on opposite pages, and in tabletop posture the
+    /// card faces the cook on the upper half with the controls below.
+    @available(iOS 27.1, *)
+    private var splitLayout: some View {
+        ArrangementView {
+            VStack(spacing: DesignSystem.Spacing.md) {
+                progressStrip
+                pager
+            }
+            .padding(.vertical, DesignSystem.Spacing.md)
+        } secondary: {
+            ViewThatFits(in: .vertical) {
+                controlsStack
+                    .frame(maxHeight: .infinity)
+                ScrollView {
+                    controlsStack
+                }
+            }
+        }
+        .arrangementViewStyle(.split)
+    }
+
+    private var controlsStack: some View {
+        VStack(spacing: DesignSystem.Spacing.xl) {
+            timerPanel
+            navigationControls
+                .controlSize(.large)
+        }
+        .padding(.vertical, DesignSystem.Spacing.md)
     }
 
     private var timerPanel: some View {
         RecipeMakingTimerPanel(
             timerMinutes: $timerMinutes,
-            remainingSeconds: $timerRemainingSeconds,
-            onStart: { didPlayTimerCompletionAlert = false },
-            onCancel: { didPlayTimerCompletionAlert = false }
+            remainingSeconds: timerRemainingSeconds,
+            onStart: startTimer,
+            onCancel: cancelTimer
         )
     }
 
@@ -131,38 +137,6 @@ struct RecipeMakingModeView: View {
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .animation(reduceMotion ? nil : DesignSystem.Motion.standard, value: selectedPage)
-    }
-
-    private var header: some View {
-        HStack(alignment: .top, spacing: DesignSystem.Spacing.md) {
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
-                Text("Making Mode")
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(DesignSystem.Colors.accentDeep)
-                    .textCase(.uppercase)
-
-                Text(detail.displayName)
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.primary)
-                    .lineLimit(2)
-            }
-
-            Spacer(minLength: 0)
-
-            Button {
-                dismiss()
-            } label: {
-                Image(systemName: "xmark")
-                    .font(.headline)
-                    .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
-                    .background(DesignSystem.Colors.surface, in: Circle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Close making mode")
-        }
-        .padding(.horizontal, DesignSystem.Spacing.lg)
     }
 
     private var progressStrip: some View {
@@ -218,16 +192,51 @@ struct RecipeMakingModeView: View {
         }
     }
 
+    private func startTimer() {
+        let duration = TimeInterval(timerMinutes * 60)
+        now = .now
+        timerEndDate = now.addingTimeInterval(duration)
+        didPlayTimerCompletionAlert = false
+        scheduleTimerNotification(after: duration)
+    }
+
+    private func cancelTimer() {
+        timerEndDate = nil
+        didPlayTimerCompletionAlert = false
+        cancelTimerNotification()
+    }
+
     private func tickTimer() {
-        guard let remainingSeconds = timerRemainingSeconds else { return }
-        if remainingSeconds > 1 {
-            timerRemainingSeconds = remainingSeconds - 1
-        } else if remainingSeconds == 1 {
-            timerRemainingSeconds = 0
-            playTimerCompletionAlertIfNeeded()
-        } else if !didPlayTimerCompletionAlert {
+        guard timerEndDate != nil else { return }
+        now = .now
+        if timerRemainingSeconds == 0 {
             playTimerCompletionAlertIfNeeded()
         }
+    }
+
+    /// Alerts the cook when the timer ends while Katsu is in the background
+    /// or the device is locked. Permission is requested the first time a
+    /// timer starts, when the reason is clear.
+    private func scheduleTimerNotification(after duration: TimeInterval) {
+        let content = UNMutableNotificationContent()
+        content.title = String(localized: "Timer finished")
+        content.body = detail.displayName
+        content.sound = .default
+        let request = UNNotificationRequest(
+            identifier: Self.timerNotificationID,
+            content: content,
+            trigger: UNTimeIntervalNotificationTrigger(timeInterval: duration, repeats: false)
+        )
+
+        Task {
+            let center = UNUserNotificationCenter.current()
+            guard (try? await center.requestAuthorization(options: [.alert, .sound])) == true else { return }
+            try? await center.add(request)
+        }
+    }
+
+    private func cancelTimerNotification() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [Self.timerNotificationID])
     }
 
     private func playTimerCompletionAlertIfNeeded() {
@@ -244,7 +253,7 @@ struct RecipeMakingModeView: View {
 
 private struct RecipeMakingTimerPanel: View {
     @Binding var timerMinutes: Int
-    @Binding var remainingSeconds: Int?
+    let remainingSeconds: Int?
     let onStart: () -> Void
     let onCancel: () -> Void
 
@@ -282,7 +291,7 @@ private struct RecipeMakingTimerPanel: View {
 
             HStack(spacing: DesignSystem.Spacing.md) {
                 Button {
-                    startTimer()
+                    onStart()
                 } label: {
                     Label(
                         remainingSeconds == 0 ? "Restart" : "Start",
@@ -295,7 +304,7 @@ private struct RecipeMakingTimerPanel: View {
                 .accessibilityLabel(remainingSeconds == 0 ? "Restart timer" : "Start timer")
 
                 Button {
-                    cancelTimer()
+                    onCancel()
                 } label: {
                     Label("Cancel", systemImage: "xmark")
                         .frame(maxWidth: .infinity, minHeight: DesignSystem.HitTarget.minimum)
@@ -331,16 +340,6 @@ private struct RecipeMakingTimerPanel: View {
         } else {
             String(localized: "\(timerMinutes) minutes")
         }
-    }
-
-    private func startTimer() {
-        onStart()
-        remainingSeconds = timerMinutes * 60
-    }
-
-    private func cancelTimer() {
-        onCancel()
-        remainingSeconds = nil
     }
 
     private static let durationFormatter: DateComponentsFormatter = {

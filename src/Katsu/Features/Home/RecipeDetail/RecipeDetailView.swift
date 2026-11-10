@@ -13,12 +13,23 @@ struct RecipeDetailView: View {
     @State private var showingCachedDetail = false
     @State private var isShowingMakingMode = false
     @State private var adjustedServings: Double?
-    @Environment(\.bookFoldX) private var bookFoldX
-    @State private var isTwoPage = false
+    @Environment(\.deviceFold) private var deviceFold
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var geometry: DetailGeometry?
+
+    private let sectionSpacing = DesignSystem.Spacing.xl
 
     var body: some View {
         content
-            .onTwoPageWidthChange { isTwoPage = $0 }
+            .onGeometryChange(for: DetailGeometry.self) { proxy in
+                DetailGeometry(
+                    size: proxy.size,
+                    safeAreaInsets: proxy.safeAreaInsets,
+                    globalMinX: proxy.frame(in: .global).minX
+                )
+            } action: { newGeometry in
+                updateGeometry(newGeometry)
+            }
             .navigationTitle(detail?.displayName ?? recipe.displayName)
             .navigationBarTitleDisplayMode(.inline)
             .task(id: recipe.slug) {
@@ -34,65 +45,88 @@ struct RecipeDetailView: View {
             }
     }
 
+    /// The detail view's size and safe-area insets, used to size the
+    /// spread's pages, plus its global position for aligning them with a
+    /// fold. Sizes come from layout rather than the global frame, which can
+    /// be stale after a rotation.
+    private struct DetailGeometry: Equatable {
+        var size: CGSize
+        var safeAreaInsets: EdgeInsets
+        var globalMinX: CGFloat
+    }
+
+    private var isTwoPage: Bool {
+        geometry.map { AdaptiveLayout.isTwoPage(width: $0.size.width) } ?? false
+    }
+
+    /// Animates the pages into their new arrangement when the width crosses
+    /// the two-page breakpoint, such as when a split view's sidebar slides in
+    /// or out. Other size changes (and the first measurement) apply
+    /// immediately.
+    private func updateGeometry(_ newGeometry: DetailGeometry) {
+        let crossesBreakpoint = geometry != nil
+            && AdaptiveLayout.isTwoPage(width: newGeometry.size.width) != isTwoPage
+        if crossesBreakpoint, !reduceMotion {
+            withAnimation(DesignSystem.Motion.emphasized) {
+                geometry = newGeometry
+            }
+        } else {
+            geometry = newGeometry
+        }
+    }
+
+    /// Column widths and gutter for the two-page spread. The pages split at a
+    /// vertical fold (iPhone Duo in book posture) when one crosses the view,
+    /// keeping clear of its reserved region, and at the screen's center
+    /// otherwise. The split is measured across the full screen, including
+    /// horizontal safe-area insets such as the unfolded Duo's status/tab
+    /// column, so it lines up with the hardware.
+    private func spreadColumns(in geometry: DetailGeometry) -> (leading: CGFloat, trailing: CGFloat, gutter: CGFloat) {
+        let width = geometry.size.width
+        let insets = geometry.safeAreaInsets
+        let margin = AdaptiveLayout.twoPageMargin
+        let minimumPage = AdaptiveLayout.twoPageMinimumWidth / 3
+
+        // Positions are local to the view's safe area.
+        var splitX = (width + insets.trailing - insets.leading) / 2
+        var innerMargin = margin
+        if let fold = deviceFold, fold.orientation == .vertical {
+            let foldX = fold.frame.midX - geometry.globalMinX
+            if foldX >= minimumPage, width - foldX >= minimumPage {
+                splitX = foldX
+                innerMargin = max(fold.frame.width / 2, margin)
+            }
+        }
+
+        let leading = max(0, splitX - innerMargin - margin)
+        let trailing = max(0, width - margin - (splitX + innerMargin))
+        return (leading, trailing, innerMargin * 2)
+    }
+
     @ViewBuilder
     private var content: some View {
-        if isTwoPage || bookFoldX != nil, let detail {
-            // Two-page "cookbook spread": overview and ingredients on the left
-            // page, steps on the right, split at the iPhone Duo hinge so each
-            // side scrolls independently while cooking. Pages are exact halves
-            // of the full screen width so the split lands on the hinge even
-            // when system chrome (the unfolded Duo's status/tab column) insets
-            // one edge. Each page adds that edge's safe-area inset to its outer
-            // margin, and both pages get matching inner margins so content
-            // keeps a clear gutter on both sides of the fold.
-            GeometryReader { proxy in
-                let insets = proxy.safeAreaInsets
-                let pageWidth = (proxy.size.width + insets.leading + insets.trailing) / 2
-                let margin = AdaptiveLayout.twoPageMargin
-
-                HStack(spacing: 0) {
-                    List {
-                        offlineNotice
-                        overviewSections(detail)
-                        ingredientsSection(detail)
-                    }
-                    .contentMargins(.leading, margin + insets.leading, for: .scrollContent)
-                    .contentMargins(.trailing, margin, for: .scrollContent)
-                    .frame(width: pageWidth)
-
-                    List {
-                        instructionsSection(detail)
-                        nutritionSection(detail)
-                        if !detail.hasInstructions && !detail.hasVisibleNutrition {
-                            ContentUnavailableView {
-                                Label("No instructions", systemImage: "list.number")
-                            } description: {
-                                Text("This recipe doesn't have any steps yet.")
-                            }
-                            .listRowBackground(Color.clear)
-                        }
-                    }
-                    .contentMargins(.leading, margin, for: .scrollContent)
-                    .contentMargins(.trailing, margin + insets.trailing, for: .scrollContent)
-                    .frame(width: pageWidth)
-                }
-                .overlay {
-                    HStack { Divider() }
-                        .ignoresSafeArea(edges: .bottom)
-                }
-                .ignoresSafeArea(.container, edges: .horizontal)
+        if let detail {
+            ScrollView {
+                pages(detail)
+                    .padding(.horizontal, AdaptiveLayout.twoPageMargin)
+                    .padding(.vertical, DesignSystem.Spacing.lg)
             }
+            // The pages' widths are derived from this view's measured size,
+            // so its ideal width must not come from them; otherwise a
+            // container that sizes detail to fit (such as a split view
+            // collapsing on rotation) would keep the old width.
+            .frame(minWidth: 0, idealWidth: 0, maxWidth: .infinity)
             .background(DesignSystem.Colors.background)
         } else {
             List {
-                if isLoading && detail == nil {
+                if isLoading {
                     HStack(spacing: DesignSystem.Spacing.sm) {
                         ProgressView()
                         Text("Loading recipe…")
                     }
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel("Loading recipe")
-                } else if let loadError, detail == nil {
+                } else if let loadError {
                     Section {
                         VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
                             Text(loadError)
@@ -103,21 +137,48 @@ struct RecipeDetailView: View {
                             .frame(minHeight: DesignSystem.HitTarget.minimum)
                         }
                     }
-                } else if let detail {
-                    offlineNotice
-                    overviewSections(detail)
-                    ingredientsSection(detail)
-                    instructionsSection(detail)
-                    nutritionSection(detail)
                 }
             }
+        }
+    }
+
+    /// The recipe as two "pages": overview and ingredients, then steps and
+    /// nutrition. On wide layouts they sit side by side as a cookbook spread;
+    /// otherwise the second page follows the first. Switching between the
+    /// two arrangements with `AnyLayout` keeps every section's identity, so
+    /// sections glide to their new positions instead of being rebuilt.
+    private func pages(_ detail: MealieRecipeDetail) -> some View {
+        let columns = isTwoPage ? geometry.map(spreadColumns(in:)) : nil
+        let layout = columns.map { AnyLayout(HStackLayout(alignment: .top, spacing: $0.gutter)) }
+            ?? AnyLayout(VStackLayout(spacing: sectionSpacing))
+
+        return layout {
+            VStack(spacing: sectionSpacing) {
+                offlineNotice
+                overviewSections(detail)
+                ingredientsSection(detail)
+            }
+            .frame(width: columns?.leading)
+
+            VStack(spacing: sectionSpacing) {
+                instructionsSection(detail)
+                nutritionSection(detail)
+                if columns != nil, !detail.hasInstructions, !detail.hasVisibleNutrition {
+                    ContentUnavailableView {
+                        Label("No instructions", systemImage: "list.number")
+                    } description: {
+                        Text("This recipe doesn't have any steps yet.")
+                    }
+                }
+            }
+            .frame(width: columns?.trailing)
         }
     }
 
     @ViewBuilder
     private var offlineNotice: some View {
         if showingCachedDetail {
-            Section {
+            RecipeDetailCard {
                 Label("Showing offline copy", systemImage: "wifi.slash")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -150,7 +211,7 @@ struct RecipeDetailView: View {
     @ViewBuilder
     private func ingredientsSection(_ detail: MealieRecipeDetail) -> some View {
         if !detail.recipeIngredient.isEmpty {
-            Section("Ingredients") {
+            RecipeDetailCard(title: "Ingredients") {
                 if detail.defaultServings != nil || detail.recipeYield?.nilIfBlank != nil {
                     RecipeServingsMetric(detail: detail, adjustedServings: $adjustedServings)
                 }
@@ -165,7 +226,7 @@ struct RecipeDetailView: View {
     @ViewBuilder
     private func instructionsSection(_ detail: MealieRecipeDetail) -> some View {
         if let instructions = detail.recipeInstructions, !instructions.isEmpty {
-            Section("Instructions") {
+            RecipeDetailCard(title: "Instructions") {
                 ForEach(Array(instructions.enumerated()), id: \.element.id) { index, instruction in
                     VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
                         Text(String(localized: "Step \(index + 1)"))
@@ -173,6 +234,7 @@ struct RecipeDetailView: View {
                             .foregroundStyle(.secondary)
                         Text(instruction.displayText)
                             .font(.body)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel(String(localized: "Step \(index + 1), \(instruction.displayText)"))
@@ -184,7 +246,7 @@ struct RecipeDetailView: View {
     @ViewBuilder
     private func nutritionSection(_ detail: MealieRecipeDetail) -> some View {
         if detail.hasVisibleNutrition, let nutrition = detail.nutrition {
-            Section("Nutrition") {
+            RecipeDetailCard(title: "Nutrition") {
                 ForEach(nutrition.entries) { entry in
                     LabeledContent(entry.label, value: entry.value)
                 }

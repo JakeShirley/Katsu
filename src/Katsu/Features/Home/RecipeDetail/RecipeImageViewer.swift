@@ -47,15 +47,16 @@ struct RecipeImageViewer: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            Button {
+            Button(role: .close) {
                 dismiss()
             } label: {
                 Image(systemName: "xmark")
                     .font(.headline)
-                    .foregroundStyle(.white)
                     .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
-                    .background(.black.opacity(0.55), in: Circle())
             }
+            .buttonStyle(.glass)
+            .buttonBorderShape(.circle)
+            .environment(\.colorScheme, .dark)
             .padding(DesignSystem.Spacing.lg)
             .accessibilityLabel("Close image viewer")
         }
