@@ -380,6 +380,8 @@ final class AppEnvironment: ObservableObject {
 
         var pageNumber = 1
         var totalPages = 1
+        var serverSlugs = Set<String>()
+        var fetchedAllPages = false
         repeat {
             do {
                 var usedToken: MealieAuthToken?
@@ -396,6 +398,7 @@ final class AppEnvironment: ObservableObject {
                 totalPages = page.totalPages ?? page.total.map { Int(ceil(Double($0) / Double(page.perPage))) } ?? pageNumber
                 expectedRecipeCount = page.total ?? expectedRecipeCount ?? (totalPages * page.perPage)
                 guard let usedToken else { return }
+                serverSlugs.formUnion(page.items.map(\.slug))
                 await cacheRecipesOffline(page.items, profile: profile, token: usedToken, force: force) {
                     downloadedRecipeCount += 1
                     if let expectedRecipeCount, expectedRecipeCount > 0 {
@@ -403,10 +406,17 @@ final class AppEnvironment: ObservableObject {
                     }
                 }
                 pageNumber += 1
+                fetchedAllPages = pageNumber > totalPages
             } catch {
                 break
             }
         } while pageNumber <= totalPages
+
+        // Only prune against a complete listing so a failed page can't
+        // evict recipes that still exist.
+        if fetchedAllPages {
+            recipeOfflineCache.removeRecipes(notIn: serverSlugs, profileID: profile.id)
+        }
 
         _ = try? await withToken(for: profile) { token in
             try await refreshFavoriteRecipeIDs(profile: profile, token: token)
