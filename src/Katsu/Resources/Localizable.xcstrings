@@ -3933,6 +3933,35 @@
         }
       }
     },
+    "Made with Copilot" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Mit Copilot erstellt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Made with Copilot"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Hecho con Copilot"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Copilot で作成"
+          }
+        }
+      }
+    },
     "Making Mode" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -119,6 +119,20 @@ struct SettingsView: View {
                 }
 
                 AppVersionFooter()
+
+                HStack(spacing: DesignSystem.Spacing.sm) {
+                    Image(systemName: "sparkles")
+                        .accessibilityHidden(true)
+                    Text("Made with Copilot")
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(DesignSystem.Colors.textPrimary)
+                .padding(.horizontal, DesignSystem.Spacing.lg)
+                .padding(.vertical, DesignSystem.Spacing.sm)
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(Text("Made with Copilot"))
+                .frame(maxWidth: .infinity)
             }
             .padding(.horizontal, DesignSystem.Spacing.lg)
             .padding(.top, DesignSystem.Spacing.lg)
