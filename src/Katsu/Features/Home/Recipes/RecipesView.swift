@@ -197,7 +197,7 @@ struct RecipesView: View {
                     Label("Import from Photos", systemImage: "camera")
                 }
             } label: {
-                Label("Import Recipe", systemImage: "square.and.arrow.down")
+                Label("Import Recipe", systemImage: "plus")
             }
             .accessibilityLabel("Import Recipe")
         }
