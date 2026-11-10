@@ -17,6 +17,9 @@ protocol RecipeOfflineCache: AnyObject, Sendable {
     func snapshot(profileID: UUID) -> RecipeOfflineCacheSnapshot
     func cachedFavoriteRecipeIDs(profileID: UUID) -> Set<String>
     func cacheFavoriteRecipeIDs(_ recipeIDs: Set<String>, profileID: UUID)
+    /// Removes cached recipes whose slug isn't in `slugs`, such as recipes
+    /// deleted on the server since they were downloaded.
+    func removeRecipes(notIn slugs: Set<String>, profileID: UUID)
     func clear(profileID: UUID)
 }
 
@@ -113,6 +116,21 @@ final class FileRecipeOfflineCache: RecipeOfflineCache, @unchecked Sendable {
             try encoder.encode(recipeIDs.sorted()).write(to: url, options: .atomic)
         } catch {
             return
+        }
+    }
+
+    func removeRecipes(notIn slugs: Set<String>, profileID: UUID) {
+        let keptDirectories = Set(slugs.map { safePathComponent($0) })
+        guard let directories = try? fileManager.contentsOfDirectory(
+            at: profileDirectory(profileID: profileID),
+            includingPropertiesForKeys: [.isDirectoryKey],
+            options: [.skipsHiddenFiles]
+        ) else { return }
+
+        for directory in directories {
+            guard let values = try? directory.resourceValues(forKeys: [.isDirectoryKey]), values.isDirectory == true,
+                  !keptDirectories.contains(directory.lastPathComponent) else { continue }
+            try? fileManager.removeItem(at: directory)
         }
     }
 

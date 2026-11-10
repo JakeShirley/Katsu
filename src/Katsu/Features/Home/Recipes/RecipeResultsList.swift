@@ -93,10 +93,16 @@ struct RecipeResultsList<Header: View>: View {
             }
         }
         .refreshable {
-            await refreshRecipesForCurrentFilters(force: true)
-            if filters.isEmpty, loadsWhenFiltersEmpty {
-                await env.syncOfflineRecipes(force: true)
-            }
+            // SwiftUI cancels the refresh action's task as soon as the feed
+            // re-renders for the loading state, which abandons the request
+            // and leaves stale (e.g. remotely deleted) recipes on screen.
+            // An unstructured task keeps the spinner while surviving that.
+            await Task {
+                await refreshRecipesForCurrentFilters(force: true)
+                if filters.isEmpty, loadsWhenFiltersEmpty {
+                    await env.syncOfflineRecipes(force: true)
+                }
+            }.value
         }
         .task(id: env.networkReachabilityTrigger) {
             guard state.showingCachedRecipes else { return }
