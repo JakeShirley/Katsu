@@ -107,12 +107,12 @@ struct RecipeServingsMetric: View {
                 Text("Servings")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: true, vertical: false)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(servingDisplayValue)
                     .font(.title3.monospacedDigit())
                     .fontWeight(.semibold)
                     .foregroundStyle(.primary)
-                    .fixedSize(horizontal: true, vertical: false)
+                    .fixedSize(horizontal: false, vertical: true)
                 if detail.defaultServings == nil,
                    let recipeYield = detail.recipeYield?.nilIfBlank,
                    recipeYield != servingDisplayValue {
