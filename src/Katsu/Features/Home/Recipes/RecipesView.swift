@@ -57,9 +57,18 @@ struct RecipesView: View {
     }
 
     /// In book posture the list fills the page before the fold and the
-    /// selected recipe the page after it.
-    private var sidebarWidth: CGFloat {
-        deviceFold?.verticalFoldX ?? 400
+    /// selected recipe the page after it; otherwise iPad uses a balanced
+    /// sidebar width that leaves generous space for the recipe detail column.
+    private var sidebarIdealWidth: CGFloat {
+        deviceFold?.verticalFoldX ?? 340
+    }
+
+    private var sidebarMinWidth: CGFloat {
+        deviceFold?.verticalFoldX ?? 300
+    }
+
+    private var sidebarMaxWidth: CGFloat {
+        deviceFold?.verticalFoldX ?? 420
     }
 
     private var navigationTitle: LocalizedStringKey {
@@ -75,6 +84,10 @@ struct RecipesView: View {
         return .compact
     }
 
+    private var isSidebarVisible: Bool {
+        splitHorizontalSizeClass != .compact && columnVisibility != .detailOnly
+    }
+
     var body: some View {
         // When there's room for two columns (iPad and unfolded iPhone Duo in
         // landscape) the feed stays visible beside the selected recipe;
@@ -82,7 +95,11 @@ struct RecipesView: View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             results
                 .navigationTitle(navigationTitle)
-                .navigationSplitViewColumnWidth(sidebarWidth)
+                .navigationSplitViewColumnWidth(
+                    min: sidebarMinWidth,
+                    ideal: sidebarIdealWidth,
+                    max: sidebarMaxWidth
+                )
                 .searchable(
                     text: $searchText,
                     placement: .navigationBarDrawer(displayMode: .always),
@@ -120,16 +137,6 @@ struct RecipesView: View {
                 .toolbar {
                     recipesToolbar
                 }
-                .sheet(item: $importSource) { source in
-                    NavigationStack {
-                        switch source {
-                        case .url:
-                            ImportRecipeView(onImported: recipeImported)
-                        case .photos:
-                            PhotoRecipeImportView(onImported: recipeImported)
-                        }
-                    }
-                }
         } detail: {
             ContentUnavailableView {
                 Label("Select a recipe", systemImage: "book.closed")
@@ -139,7 +146,18 @@ struct RecipesView: View {
             .background(DesignSystem.Colors.background)
         }
         .navigationSplitViewStyle(.balanced)
+        .sheet(item: $importSource) { source in
+            NavigationStack {
+                switch source {
+                case .url:
+                    ImportRecipeView(onImported: recipeImported)
+                case .photos:
+                    PhotoRecipeImportView(onImported: recipeImported)
+                }
+            }
+        }
         .environment(\.horizontalSizeClass, splitHorizontalSizeClass)
+        .environment(\.isSplitViewSidebarVisible, isSidebarVisible)
         .onGeometryChange(for: CGFloat.self) { proxy in
             proxy.size.width
         } action: { width in

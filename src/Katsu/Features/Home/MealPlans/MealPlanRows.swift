@@ -65,14 +65,16 @@ struct MealPlanDayRow: View {
 
                 HStack(spacing: DesignSystem.Spacing.xs) {
                     Button(action: onRandom) {
-                        if isSuggestingRandomMeal {
-                            ProgressView()
-                                .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
-                        } else {
-                            Label("Surprise Me", systemImage: "sparkles")
-                                .labelStyle(.iconOnly)
-                                .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                        Group {
+                            if isSuggestingRandomMeal {
+                                ProgressView()
+                            } else {
+                                Label("Surprise Me", systemImage: "sparkles")
+                                    .labelStyle(.iconOnly)
+                            }
                         }
+                        .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                        .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                     .disabled(isSuggestingRandomMeal)
@@ -82,6 +84,7 @@ struct MealPlanDayRow: View {
                         Label("Add", systemImage: "plus.circle")
                             .labelStyle(.iconOnly)
                             .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                            .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(String(localized: "Add meal for \(day.weekday)"))

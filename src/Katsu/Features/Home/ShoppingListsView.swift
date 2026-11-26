@@ -25,7 +25,6 @@ struct ShoppingListsView: View {
             NavigationStack {
                 ServerUpdateRequiredView(feature: .households, serverVersion: env.activeProfile?.version)
                     .navigationTitle("Shopping Lists")
-                    .navigationBarTitleDisplayMode(.inline)
             }
         }
     }
@@ -75,8 +74,8 @@ struct ShoppingListsView: View {
                 }
             }
             .listStyle(.insetGrouped)
+            .readableListContentWidth()
             .navigationTitle("Shopping Lists")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar { addToolbarItem }
             .navigationDestination(item: $navigationListID) { listID in
                 if let summary = lists.first(where: { $0.id == listID }) {

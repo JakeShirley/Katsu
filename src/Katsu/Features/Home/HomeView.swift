@@ -23,7 +23,7 @@ struct HomeView: View {
                     .badge(tab == .settings && env.activeProfileNeedsSignIn ? Text(verbatim: "!") : nil)
                 }
             }
-            .tabViewStyle(.sidebarAdaptable)
+            .tabViewStyle(.tabBarOnly)
             .tabBarMinimizeBehavior(.onScrollDown)
             .onChange(of: enabledTabs) { _, tabs in
                 if !tabs.contains(selectedTab) {
@@ -113,11 +113,13 @@ extension HomeTab {
 }
 
 private struct AddServerHomeView: View {
+    @State private var showOnboarding = false
+
     var body: some View {
         NavigationStack {
-            Form {
-                Section {
-                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.lg) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.lg) {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
                         Image(systemName: "server.rack")
                             .font(.largeTitle)
                             .foregroundStyle(DesignSystem.Colors.accent)
@@ -132,21 +134,33 @@ private struct AddServerHomeView: View {
                                 .font(.body)
                                 .foregroundStyle(.secondary)
                         }
-
-                        NavigationLink {
-                            OnboardingFlowView()
-                        } label: {
-                            Label("Add Server", systemImage: "plus.circle.fill")
-                                .frame(maxWidth: .infinity, minHeight: DesignSystem.HitTarget.minimum)
-                        }
-                        .buttonStyle(.borderedProminent)
                     }
-                    .padding(.vertical, DesignSystem.Spacing.md)
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel("Add a Mealie server. Connect Katsu to your Mealie server, then sign in to browse your recipes.")
+
+                    Button {
+                        showOnboarding = true
+                    } label: {
+                        Label("Add Server", systemImage: "plus.circle.fill")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity, minHeight: DesignSystem.HitTarget.minimum)
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
+                .padding(DesignSystem.Spacing.xl)
+                .background(
+                    DesignSystem.Colors.surface,
+                    in: RoundedRectangle(cornerRadius: DesignSystem.Radius.lg * 1.5, style: .continuous)
+                )
+                .readableContentWidth(AdaptiveLayout.formMaxWidth)
+                .padding(.horizontal, DesignSystem.Spacing.lg)
+                .padding(.vertical, DesignSystem.Spacing.xl)
             }
+            .background(DesignSystem.Colors.background)
             .navigationTitle("Katsu")
+            .navigationDestination(isPresented: $showOnboarding) {
+                OnboardingFlowView()
+            }
         }
     }
 }

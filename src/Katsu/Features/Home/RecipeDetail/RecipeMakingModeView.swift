@@ -113,6 +113,7 @@ struct RecipeMakingModeView: View {
             navigationControls
                 .controlSize(.large)
         }
+        .readableContentWidth()
         .padding(.vertical, DesignSystem.Spacing.md)
     }
 
@@ -130,8 +131,11 @@ struct RecipeMakingModeView: View {
             ForEach(Array(pages.enumerated()), id: \.offset) { index, page in
                 RecipeMakingCard(page: page, totalSteps: max(pages.count - 1, 0))
                     .environment(\.recipeIngredientScaleFactor, ingredientScaleFactor)
-                    .tag(index)
+                    .readableContentWidth()
                     .padding(.horizontal, DesignSystem.Spacing.lg)
+                    .padding(.top, DesignSystem.Spacing.xs)
+                    .padding(.bottom, DesignSystem.Spacing.xl)
+                    .tag(index)
                     .accessibilityElement(children: .contain)
             }
         }
@@ -148,6 +152,7 @@ struct RecipeMakingModeView: View {
                     .accessibilityHidden(true)
             }
         }
+        .readableContentWidth()
         .padding(.horizontal, DesignSystem.Spacing.lg)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(String(localized: "Making mode page \(selectedPage + 1) of \(pages.count)"))

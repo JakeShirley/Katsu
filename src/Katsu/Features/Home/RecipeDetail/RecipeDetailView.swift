@@ -14,6 +14,7 @@ struct RecipeDetailView: View {
     @State private var isShowingMakingMode = false
     @State private var adjustedServings: Double?
     @Environment(\.deviceFold) private var deviceFold
+    @Environment(\.isSplitViewSidebarVisible) private var isSplitViewSidebarVisible
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var geometry: DetailGeometry?
 
@@ -56,7 +57,8 @@ struct RecipeDetailView: View {
     }
 
     private var isTwoPage: Bool {
-        geometry.map { AdaptiveLayout.isTwoPage(width: $0.size.width) } ?? false
+        guard !isSplitViewSidebarVisible else { return false }
+        return geometry.map { AdaptiveLayout.isTwoPage(width: $0.size.width) } ?? false
     }
 
     /// Animates the pages into their new arrangement when the width crosses
@@ -64,8 +66,9 @@ struct RecipeDetailView: View {
     /// or out. Other size changes (and the first measurement) apply
     /// immediately.
     private func updateGeometry(_ newGeometry: DetailGeometry) {
-        let crossesBreakpoint = geometry != nil
-            && AdaptiveLayout.isTwoPage(width: newGeometry.size.width) != isTwoPage
+        let nextIsTwoPage = !isSplitViewSidebarVisible
+            && AdaptiveLayout.isTwoPage(width: newGeometry.size.width)
+        let crossesBreakpoint = geometry != nil && nextIsTwoPage != isTwoPage
         if crossesBreakpoint, !reduceMotion {
             withAnimation(DesignSystem.Motion.emphasized) {
                 geometry = newGeometry
@@ -77,10 +80,10 @@ struct RecipeDetailView: View {
 
     /// Column widths and gutter for the two-page spread. The pages split at a
     /// vertical fold (iPhone Duo in book posture) when one crosses the view,
-    /// keeping clear of its reserved region, and at the screen's center
-    /// otherwise. The split is measured across the full screen, including
-    /// horizontal safe-area insets such as the unfolded Duo's status/tab
-    /// column, so it lines up with the hardware.
+    /// keeping clear of its reserved region. On a full-screen unfolded display
+    /// without a split-view sidebar, the split aligns with the screen center
+    /// across small hardware safe-area insets; inside a split-view detail
+    /// column (such as iPad) it splits evenly across the detail column itself.
     private func spreadColumns(in geometry: DetailGeometry) -> (leading: CGFloat, trailing: CGFloat, gutter: CGFloat) {
         let width = geometry.size.width
         let insets = geometry.safeAreaInsets
@@ -88,13 +91,18 @@ struct RecipeDetailView: View {
         let minimumPage = AdaptiveLayout.twoPageMinimumWidth / 3
 
         // Positions are local to the view's safe area.
-        var splitX = (width + insets.trailing - insets.leading) / 2
+        var splitX = width / 2
         var innerMargin = margin
         if let fold = deviceFold, fold.orientation == .vertical {
             let foldX = fold.frame.midX - geometry.globalMinX
             if foldX >= minimumPage, width - foldX >= minimumPage {
                 splitX = foldX
                 innerMargin = max(fold.frame.width / 2, margin)
+            }
+        } else if geometry.globalMinX <= 1, max(insets.leading, insets.trailing) < 120 {
+            let centeredSplitX = (width + insets.trailing - insets.leading) / 2
+            if centeredSplitX >= minimumPage, width - centeredSplitX >= minimumPage {
+                splitX = centeredSplitX
             }
         }
 
@@ -173,6 +181,9 @@ struct RecipeDetailView: View {
             }
             .frame(width: columns?.trailing)
         }
+        .frame(maxWidth: isTwoPage ? .infinity : AdaptiveLayout.readableContentMaxWidth)
+        .frame(maxWidth: .infinity)
+        .animation(reduceMotion ? nil : DesignSystem.Motion.emphasized, value: isTwoPage)
     }
 
     @ViewBuilder

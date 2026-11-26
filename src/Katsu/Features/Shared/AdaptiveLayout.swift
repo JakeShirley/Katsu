@@ -16,6 +16,12 @@ enum AdaptiveLayout {
     /// into a single stack instead.
     static let splitViewMinimumWidth: CGFloat = 800
 
+    /// Comfortable maximum line/card width for single-column content on iPad.
+    static let readableContentMaxWidth: CGFloat = 700
+
+    /// Comfortable maximum width for focused onboarding and sign-in forms on iPad.
+    static let formMaxWidth: CGFloat = 560
+
     static func isTwoPage(width: CGFloat) -> Bool {
         width >= twoPageMinimumWidth
     }
@@ -52,6 +58,11 @@ extension EnvironmentValues {
     /// hinge is flat, or iOS earlier than 27.1). Published from the app root
     /// by `tracksDeviceFold()`.
     @Entry var deviceFold: DeviceFold?
+
+    /// `true` when a parent `NavigationSplitView` is displaying its sidebar
+    /// alongside the detail column. Detail views stay single-column while the
+    /// sidebar is visible so wide displays never stack three or more columns.
+    @Entry var isSplitViewSidebarVisible = false
 }
 
 extension View {
@@ -69,6 +80,50 @@ extension View {
         } action: { isTwoPage in
             action(isTwoPage)
         }
+    }
+
+    /// Constrains single-column scroll content to a comfortable reading width
+    /// on wide displays (such as iPad) while leaving compact widths full-bleed.
+    func readableContentWidth(_ maxWidth: CGFloat = AdaptiveLayout.readableContentMaxWidth) -> some View {
+        frame(maxWidth: maxWidth)
+            .frame(maxWidth: .infinity)
+    }
+
+    /// Constrains an inset-grouped `List` or `Form` to a readable content width
+    /// on wide displays while preserving full-bleed backgrounds, edge scroll
+    /// indicators, and native system margins on compact widths.
+    func readableListContentWidth(_ maxWidth: CGFloat = AdaptiveLayout.readableContentMaxWidth) -> some View {
+        modifier(ReadableListContentWidthModifier(maxWidth: maxWidth))
+    }
+}
+
+private struct ReadableListContentWidthModifier: ViewModifier {
+    let maxWidth: CGFloat
+    @State private var margins: EdgeInsets?
+
+    func body(content: Content) -> some View {
+        content
+            .contentMargins(.leading, margins?.leading, for: .scrollContent)
+            .contentMargins(.trailing, margins?.trailing, for: .scrollContent)
+            .onGeometryChange(for: EdgeInsets?.self) { proxy in
+                let defaultSideMargin = DesignSystem.Spacing.lg
+                let availableWidth = proxy.size.width
+                guard availableWidth > maxWidth + (defaultSideMargin * 2) else {
+                    return nil
+                }
+                let sideInset = (availableWidth - maxWidth) / 2
+                // `contentMargins` on `List` measures from the scroll view's
+                // bounds rather than adding to safe-area insets (such as the
+                // iPad landscape tab sidebar), so include them explicitly.
+                return EdgeInsets(
+                    top: 0,
+                    leading: sideInset + proxy.safeAreaInsets.leading,
+                    bottom: 0,
+                    trailing: sideInset + proxy.safeAreaInsets.trailing
+                )
+            } action: { newMargins in
+                margins = newMargins
+            }
     }
 }
 
