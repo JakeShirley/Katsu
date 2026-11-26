@@ -77,10 +77,10 @@ struct RecipeDetailView: View {
 
     /// Column widths and gutter for the two-page spread. The pages split at a
     /// vertical fold (iPhone Duo in book posture) when one crosses the view,
-    /// keeping clear of its reserved region, and at the screen's center
-    /// otherwise. The split is measured across the full screen, including
-    /// horizontal safe-area insets such as the unfolded Duo's status/tab
-    /// column, so it lines up with the hardware.
+    /// keeping clear of its reserved region. On a full-screen unfolded display
+    /// without a split-view sidebar, the split aligns with the screen center
+    /// across small hardware safe-area insets; inside a split-view detail
+    /// column (such as iPad) it splits evenly across the detail column itself.
     private func spreadColumns(in geometry: DetailGeometry) -> (leading: CGFloat, trailing: CGFloat, gutter: CGFloat) {
         let width = geometry.size.width
         let insets = geometry.safeAreaInsets
@@ -88,13 +88,18 @@ struct RecipeDetailView: View {
         let minimumPage = AdaptiveLayout.twoPageMinimumWidth / 3
 
         // Positions are local to the view's safe area.
-        var splitX = (width + insets.trailing - insets.leading) / 2
+        var splitX = width / 2
         var innerMargin = margin
         if let fold = deviceFold, fold.orientation == .vertical {
             let foldX = fold.frame.midX - geometry.globalMinX
             if foldX >= minimumPage, width - foldX >= minimumPage {
                 splitX = foldX
                 innerMargin = max(fold.frame.width / 2, margin)
+            }
+        } else if geometry.globalMinX <= 1, max(insets.leading, insets.trailing) < 120 {
+            let centeredSplitX = (width + insets.trailing - insets.leading) / 2
+            if centeredSplitX >= minimumPage, width - centeredSplitX >= minimumPage {
+                splitX = centeredSplitX
             }
         }
 

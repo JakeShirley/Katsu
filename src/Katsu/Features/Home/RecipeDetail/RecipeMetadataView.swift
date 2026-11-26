@@ -13,12 +13,25 @@ struct RecipeMetadataView: View {
             if let totalTime {
                 RecipeTotalTimeCard(totalTime: totalTime)
             }
-            HStack(alignment: .top, spacing: DesignSystem.Spacing.sm) {
-                if let prepTime {
-                    RecipeTimeMetric(label: "Prep", value: prepTime, systemImage: "timer")
-                }
-                if let cookTime {
-                    RecipeTimeMetric(label: "Cook", value: cookTime, systemImage: "flame")
+            if prepTime != nil || cookTime != nil {
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .top, spacing: DesignSystem.Spacing.sm) {
+                        if let prepTime {
+                            RecipeTimeMetric(label: "Prep", value: prepTime, systemImage: "timer", prefersSingleLine: true)
+                        }
+                        if let cookTime {
+                            RecipeTimeMetric(label: "Cook", value: cookTime, systemImage: "flame", prefersSingleLine: true)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                        if let prepTime {
+                            RecipeTimeMetric(label: "Prep", value: prepTime, systemImage: "timer", prefersSingleLine: false)
+                        }
+                        if let cookTime {
+                            RecipeTimeMetric(label: "Cook", value: cookTime, systemImage: "flame", prefersSingleLine: false)
+                        }
+                    }
                 }
             }
             if let rating = detail.rating {
@@ -94,10 +107,12 @@ struct RecipeServingsMetric: View {
                 Text("Servings")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: true, vertical: false)
                 Text(servingDisplayValue)
                     .font(.title3.monospacedDigit())
                     .fontWeight(.semibold)
                     .foregroundStyle(.primary)
+                    .fixedSize(horizontal: true, vertical: false)
                 if detail.defaultServings == nil,
                    let recipeYield = detail.recipeYield?.nilIfBlank,
                    recipeYield != servingDisplayValue {
@@ -106,6 +121,7 @@ struct RecipeServingsMetric: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            .layoutPriority(1)
         }
     }
 
@@ -205,6 +221,7 @@ private struct RecipeTimeMetric: View {
     let label: LocalizedStringKey
     let value: String
     let systemImage: String
+    var prefersSingleLine = false
 
     var body: some View {
         HStack(spacing: DesignSystem.Spacing.sm) {
@@ -216,10 +233,12 @@ private struct RecipeTimeMetric: View {
                 Text(label)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: prefersSingleLine, vertical: false)
                 Text(value)
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundStyle(.primary)
+                    .fixedSize(horizontal: prefersSingleLine, vertical: false)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

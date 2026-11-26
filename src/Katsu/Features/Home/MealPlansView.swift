@@ -22,7 +22,6 @@ struct MealPlansView: View {
             NavigationStack {
                 ServerUpdateRequiredView(feature: .households, serverVersion: env.activeProfile?.version)
                     .navigationTitle("Meal Plans")
-                    .navigationBarTitleDisplayMode(.inline)
             }
         }
     }
@@ -31,14 +30,14 @@ struct MealPlansView: View {
         NavigationStack {
             mealPlanList
             .listStyle(.insetGrouped)
+            .readableListContentWidth()
             .navigationTitle("Meal Plans")
-            .navigationBarTitleDisplayMode(.inline)
             .contentMargins(.top, DesignSystem.Spacing.sm, for: .scrollContent)
             .toolbar { addToolbarItem }
             .sheet(item: $activeEditor) { draft in
                 editorSheet(for: draft)
             }
-            .confirmationDialog("Remove Planned Meal", isPresented: deleteDialogBinding, presenting: entryPendingDeletion, actions: deleteDialogActions, message: deleteDialogMessage)
+            .alert("Remove Planned Meal", isPresented: deleteDialogBinding, presenting: entryPendingDeletion, actions: deleteDialogActions, message: deleteDialogMessage)
             .task(id: env.activeProfile?.id) {
                 await loadMealPlan()
             }

@@ -64,6 +64,7 @@ struct ShoppingListDetailView: View {
             }
         }
         .listStyle(.insetGrouped)
+        .readableListContentWidth()
         .navigationTitle(detail?.displayName ?? summary.displayName)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { addToolbarItem }

@@ -80,6 +80,7 @@ private struct ServerURLEntryView: View {
                 .disabled(isValidating || urlText.trimmingCharacters(in: .whitespaces).isEmpty)
             }
         }
+        .readableListContentWidth(AdaptiveLayout.formMaxWidth)
         .navigationTitle("Welcome to Katsu")
         .onAppear {
             if let preset = env.configuration.initialServerURL?.absoluteString,
@@ -209,7 +210,9 @@ private struct LoginView: View {
                 ))
             }
         }
+        .readableListContentWidth(AdaptiveLayout.formMaxWidth)
         .navigationTitle("Sign in")
+        .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button("Change Server", action: onBack)

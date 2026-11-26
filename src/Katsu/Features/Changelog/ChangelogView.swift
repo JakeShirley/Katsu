@@ -27,6 +27,7 @@ struct ChangelogView: View {
                             ReleaseCard(entry: entry, isLatest: index == 0)
                         }
                     }
+                    .readableContentWidth()
                     .padding(.horizontal, DesignSystem.Spacing.lg)
                     .padding(.vertical, DesignSystem.Spacing.md)
                 }

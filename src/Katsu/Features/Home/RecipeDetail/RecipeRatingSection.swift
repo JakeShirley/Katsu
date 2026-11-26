@@ -18,7 +18,7 @@ struct RecipeRatingSection: View {
             .disabled(isUpdating)
             .accessibilityLabel(rating.isFavorite ? "Remove Favorite" : "Add Favorite")
 
-            HStack(spacing: DesignSystem.Spacing.sm) {
+            HStack(spacing: 0) {
                 ForEach(1...5, id: \.self) { value in
                     let isFilled = (rating.rating ?? 0) >= Double(value)
                     Button {
@@ -27,7 +27,12 @@ struct RecipeRatingSection: View {
                         Image(systemName: isFilled ? "star.fill" : "star")
                             .font(.title3)
                             .foregroundStyle(isFilled ? AnyShapeStyle(DesignSystem.Colors.accent) : AnyShapeStyle(.secondary))
-                            .frame(width: DesignSystem.HitTarget.minimum, height: DesignSystem.HitTarget.minimum)
+                            .frame(
+                                minWidth: DesignSystem.HitTarget.minimum,
+                                maxWidth: DesignSystem.HitTarget.minimum + DesignSystem.Spacing.sm,
+                                minHeight: DesignSystem.HitTarget.minimum
+                            )
+                            .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                     .disabled(isUpdating)

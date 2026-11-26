@@ -134,6 +134,7 @@ struct SettingsView: View {
                 .accessibilityLabel(Text("Made with Copilot"))
                 .frame(maxWidth: .infinity)
             }
+            .readableContentWidth()
             .padding(.horizontal, DesignSystem.Spacing.lg)
             .padding(.top, DesignSystem.Spacing.lg)
             .padding(.bottom, DesignSystem.Spacing.xxl)
@@ -210,6 +211,7 @@ private struct LayoutSettingsView: View {
             }
         }
         .listStyle(.insetGrouped)
+        .readableListContentWidth()
         .background(DesignSystem.Colors.background)
         .scrollContentBackground(.hidden)
         .navigationTitle("Layout")
@@ -333,6 +335,7 @@ private struct StorageSettingsView: View {
                     .accessibilityLabel(env.isSyncingOfflineRecipes ? downloadProgressAccessibilityLabel : String(localized: "Download Recipes"))
                 }
             }
+            .readableContentWidth()
             .padding(.horizontal, DesignSystem.Spacing.lg)
             .padding(.top, DesignSystem.Spacing.lg)
             .padding(.bottom, DesignSystem.Spacing.xxl)
@@ -554,6 +557,7 @@ private struct ReauthenticationView: View {
                 ))
             }
         }
+        .readableListContentWidth(AdaptiveLayout.formMaxWidth)
         .navigationTitle("Sign in")
         .onAppear {
             username = profile.lastUsername ?? username
