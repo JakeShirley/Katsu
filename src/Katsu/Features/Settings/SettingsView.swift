@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct SettingsView: View {
+    private static let privacyPolicyURL = URL(string: "https://github.com/JakeShirley/Katsu/blob/main/PRIVACY.md")!
+    private static let supportURL = URL(string: "https://github.com/JakeShirley/Katsu/issues")!
+
     @EnvironmentObject private var env: AppEnvironment
     @Environment(\.dismiss) private var dismiss
     @State private var showAddServer = false
@@ -112,6 +115,31 @@ struct SettingsView: View {
                                 title: Text("Tabs"),
                                 systemImage: "rectangle.3.group",
                                 accessory: .chevron
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                SettingsSection("About") {
+                    SettingsGroup {
+                        Link(destination: Self.privacyPolicyURL) {
+                            SettingsRowContent(
+                                title: Text("Privacy Policy"),
+                                systemImage: "hand.raised",
+                                accessory: .externalLink
+                            )
+                        }
+                        .buttonStyle(.plain)
+
+                        SettingsDivider()
+
+                        Link(destination: Self.supportURL) {
+                            SettingsRowContent(
+                                title: Text("Support"),
+                                subtitle: Text("Report an Issue"),
+                                systemImage: "questionmark.circle",
+                                accessory: .externalLink
                             )
                         }
                         .buttonStyle(.plain)
@@ -463,6 +491,11 @@ private struct SettingsRowContent: View {
                 .font(.body.weight(.semibold))
                 .foregroundStyle(.tertiary)
                 .accessibilityHidden(true)
+        case .externalLink:
+            Image(systemName: "arrow.up.right")
+                .font(.body.weight(.semibold))
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
         case .checkmark:
             Image(systemName: "checkmark")
                 .font(.body.weight(.semibold))
@@ -485,6 +518,7 @@ private struct SettingsRowContent: View {
 private enum SettingsRowAccessory {
     case none
     case chevron
+    case externalLink
     case checkmark
     case warning
     case value(String)
