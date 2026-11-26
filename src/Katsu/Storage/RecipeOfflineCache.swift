@@ -44,6 +44,7 @@ final class FileRecipeOfflineCache: RecipeOfflineCache, @unchecked Sendable {
         )
         self.rootURL = (baseURL ?? fileManager.temporaryDirectory).appendingPathComponent("OfflineRecipes", isDirectory: true)
         encoder.outputFormatting = [.sortedKeys]
+        ensureRootDirectoryExcludedFromBackup()
     }
 
     func cachedRecipeDetail(profileID: UUID, slug: String) -> MealieRecipeDetail? {
@@ -62,7 +63,7 @@ final class FileRecipeOfflineCache: RecipeOfflineCache, @unchecked Sendable {
     func cacheRecipeDetail(_ detail: MealieRecipeDetail, rawData: Data, profileID: UUID) {
         let directory = recipeDirectory(profileID: profileID, slug: detail.slug)
         do {
-            try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
+            try prepareDirectory(at: directory)
             try rawData.write(to: directory.appendingPathComponent("detail.json"), options: .atomic)
             let manifest = RecipeOfflineManifest(
                 recipeID: detail.recipeID,
@@ -85,7 +86,7 @@ final class FileRecipeOfflineCache: RecipeOfflineCache, @unchecked Sendable {
     func cacheMedia(_ data: Data, profileID: UUID, recipeID: String, slug: String, fileName: String, kind: RecipeOfflineMediaKind) {
         let url = mediaURL(profileID: profileID, slug: slug, fileName: fileName, kind: kind)
         do {
-            try fileManager.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try prepareDirectory(at: url.deletingLastPathComponent())
             try data.write(to: url, options: .atomic)
         } catch {
             return
@@ -112,7 +113,7 @@ final class FileRecipeOfflineCache: RecipeOfflineCache, @unchecked Sendable {
     func cacheFavoriteRecipeIDs(_ recipeIDs: Set<String>, profileID: UUID) {
         let url = favoritesURL(profileID: profileID)
         do {
-            try fileManager.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try prepareDirectory(at: url.deletingLastPathComponent())
             try encoder.encode(recipeIDs.sorted()).write(to: url, options: .atomic)
         } catch {
             return
@@ -175,6 +176,23 @@ final class FileRecipeOfflineCache: RecipeOfflineCache, @unchecked Sendable {
             total += Int64(values?.fileSize ?? 0)
         }
         return total
+    }
+
+    private func ensureRootDirectoryExcludedFromBackup() {
+        var directoryURL = rootURL
+        do {
+            try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+            var values = URLResourceValues()
+            values.isExcludedFromBackup = true
+            try directoryURL.setResourceValues(values)
+        } catch {
+            return
+        }
+    }
+
+    private func prepareDirectory(at directory: URL) throws {
+        ensureRootDirectoryExcludedFromBackup()
+        try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
     }
 
     private func profileDirectory(profileID: UUID) -> URL {
