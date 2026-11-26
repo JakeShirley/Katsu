@@ -4,7 +4,7 @@ Katsu is an open-source iOS companion app for self-hosted [Mealie](https://docs.
 
 ## Data Collection and Tracking
 
-Katsu does **not** collect, store, sell, or share any personal data, usage analytics, telemetry, crash reports, or advertising identifiers.
+Katsu's developer does **not** collect, receive, sell, or share any personal data, usage analytics, telemetry, crash reports, or advertising identifiers. Information needed to connect to your Mealie server (such as your server URL, username, credentials, and cached recipes) is stored only on your device and exchanged directly with your configured Mealie server, as described below.
 
 - No third-party analytics, advertising, or tracking SDKs are included in Katsu.
 - Katsu does not track you across apps or websites.
@@ -25,7 +25,7 @@ To provide fast sign-in and offline access, Katsu stores the following informati
 - **UserDefaults**: Configured server profiles (server name, URL, authentication method, and last username) and app preferences (such as tab layout) are stored locally in `UserDefaults`.
 - **Offline Recipe Cache**: Downloaded recipes, recipe images and assets, and cached favorites are stored locally in the app's Application Support directory so you can browse recipes without a network connection.
 
-You can delete cached offline recipes at any time in **Settings → Offline Recipes → Storage → Clear Offline Recipes**, or remove a server profile and its stored credentials in **Settings → Servers**. Deleting the app removes its local storage.
+You can delete cached offline recipes at any time in **Settings → Offline Recipes → Storage → Clear Offline Recipes**, or remove a server profile and its stored Keychain credentials in **Settings → Servers**. Deleting the app removes its sandboxed local data (`UserDefaults` and the offline recipe cache), though iOS Keychain items may persist across app deletion; remove your server profiles in **Settings → Servers** before deleting the app if you want to clear stored credentials and tokens.
 
 ## Camera, Photos, and On-Device Recipe Scanning
 
@@ -41,7 +41,7 @@ If you start a cooking timer in Making Mode, Katsu schedules local notifications
 
 ## Children's Privacy
 
-Because Katsu collects no personal information from anyone, it does not knowingly collect personal information from children under 13.
+Because Katsu's developer collects no personal information from anyone, Katsu does not knowingly collect personal information from children under 13.
 
 ## Changes to This Policy
 
