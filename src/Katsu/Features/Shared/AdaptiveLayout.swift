@@ -58,6 +58,11 @@ extension EnvironmentValues {
     /// hinge is flat, or iOS earlier than 27.1). Published from the app root
     /// by `tracksDeviceFold()`.
     @Entry var deviceFold: DeviceFold?
+
+    /// `true` when a parent `NavigationSplitView` is displaying its sidebar
+    /// alongside the detail column. Detail views stay single-column while the
+    /// sidebar is visible so wide displays never stack three or more columns.
+    @Entry var isSplitViewSidebarVisible = false
 }
 
 extension View {

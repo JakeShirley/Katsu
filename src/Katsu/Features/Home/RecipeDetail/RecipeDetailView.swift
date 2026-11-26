@@ -14,6 +14,7 @@ struct RecipeDetailView: View {
     @State private var isShowingMakingMode = false
     @State private var adjustedServings: Double?
     @Environment(\.deviceFold) private var deviceFold
+    @Environment(\.isSplitViewSidebarVisible) private var isSplitViewSidebarVisible
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var geometry: DetailGeometry?
 
@@ -56,7 +57,8 @@ struct RecipeDetailView: View {
     }
 
     private var isTwoPage: Bool {
-        geometry.map { AdaptiveLayout.isTwoPage(width: $0.size.width) } ?? false
+        guard !isSplitViewSidebarVisible else { return false }
+        return geometry.map { AdaptiveLayout.isTwoPage(width: $0.size.width) } ?? false
     }
 
     /// Animates the pages into their new arrangement when the width crosses
@@ -64,8 +66,9 @@ struct RecipeDetailView: View {
     /// or out. Other size changes (and the first measurement) apply
     /// immediately.
     private func updateGeometry(_ newGeometry: DetailGeometry) {
-        let crossesBreakpoint = geometry != nil
-            && AdaptiveLayout.isTwoPage(width: newGeometry.size.width) != isTwoPage
+        let nextIsTwoPage = !isSplitViewSidebarVisible
+            && AdaptiveLayout.isTwoPage(width: newGeometry.size.width)
+        let crossesBreakpoint = geometry != nil && nextIsTwoPage != isTwoPage
         if crossesBreakpoint, !reduceMotion {
             withAnimation(DesignSystem.Motion.emphasized) {
                 geometry = newGeometry
@@ -178,6 +181,9 @@ struct RecipeDetailView: View {
             }
             .frame(width: columns?.trailing)
         }
+        .frame(maxWidth: isTwoPage ? .infinity : AdaptiveLayout.readableContentMaxWidth)
+        .frame(maxWidth: .infinity)
+        .animation(reduceMotion ? nil : DesignSystem.Motion.emphasized, value: isTwoPage)
     }
 
     @ViewBuilder

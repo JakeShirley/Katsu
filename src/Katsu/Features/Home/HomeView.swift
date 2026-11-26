@@ -23,7 +23,7 @@ struct HomeView: View {
                     .badge(tab == .settings && env.activeProfileNeedsSignIn ? Text(verbatim: "!") : nil)
                 }
             }
-            .tabViewStyle(.sidebarAdaptable)
+            .tabViewStyle(.tabBarOnly)
             .tabBarMinimizeBehavior(.onScrollDown)
             .onChange(of: enabledTabs) { _, tabs in
                 if !tabs.contains(selectedTab) {

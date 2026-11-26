@@ -84,6 +84,10 @@ struct RecipesView: View {
         return .compact
     }
 
+    private var isSidebarVisible: Bool {
+        splitHorizontalSizeClass != .compact && columnVisibility != .detailOnly
+    }
+
     var body: some View {
         // When there's room for two columns (iPad and unfolded iPhone Duo in
         // landscape) the feed stays visible beside the selected recipe;
@@ -153,6 +157,7 @@ struct RecipesView: View {
             }
         }
         .environment(\.horizontalSizeClass, splitHorizontalSizeClass)
+        .environment(\.isSplitViewSidebarVisible, isSidebarVisible)
         .onGeometryChange(for: CGFloat.self) { proxy in
             proxy.size.width
         } action: { width in
