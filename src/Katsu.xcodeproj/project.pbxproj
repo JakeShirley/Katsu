@@ -12,6 +12,7 @@
 		AA00010003 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010003 /* AppEnvironment.swift */; };
 		AA00010004 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010004 /* DesignSystem.swift */; };
 		AA00010005 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010005 /* RootView.swift */; };
+		AA00010006 /* LaunchScreenOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010006 /* LaunchScreenOverlayView.swift */; };
 		AA00010010 /* MealieModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010010 /* MealieModels.swift */; };
 		AA00010011 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010011 /* AppError.swift */; };
 		AA00010020 /* MealieAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010020 /* MealieAPIClient.swift */; };
@@ -55,6 +56,8 @@
 		AA00010050 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB00010050 /* Assets.xcassets */; };
 		AA00010051 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BB00010051 /* Localizable.xcstrings */; };
 		AA00010052 /* CHANGELOG.md in Resources */ = {isa = PBXBuildFile; fileRef = BB00010052 /* CHANGELOG.md */; };
+		AA00010053 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = BB00010053 /* PrivacyInfo.xcprivacy */; };
+		AA00010054 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB00010054 /* LaunchScreen.storyboard */; };
 		AA00010200 /* RecipeDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010200 /* RecipeDraft.swift */; };
 		AA00010201 /* RecipeTextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010201 /* RecipeTextRecognizer.swift */; };
 		AA00010202 /* RecipeDraftGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00010202 /* RecipeDraftGenerator.swift */; };
@@ -71,6 +74,7 @@
 		BB00010003 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		BB00010004 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		BB00010005 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		BB00010006 /* LaunchScreenOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenOverlayView.swift; sourceTree = "<group>"; };
 		BB00010010 /* MealieModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealieModels.swift; sourceTree = "<group>"; };
 		BB00010011 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		BB00010020 /* MealieAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealieAPIClient.swift; sourceTree = "<group>"; };
@@ -114,6 +118,8 @@
 		BB00010050 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BB00010051 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		BB00010052 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
+		BB00010053 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		BB00010054 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CC00000001 /* Katsu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Katsu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC00000002 /* Katsu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Katsu.entitlements; sourceTree = "<group>"; };
 		CC00000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -168,6 +174,7 @@
 				BB00010003 /* AppEnvironment.swift */,
 				BB00010004 /* DesignSystem.swift */,
 				BB00010005 /* RootView.swift */,
+				BB00010006 /* LaunchScreenOverlayView.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -320,6 +327,8 @@
 				BB00010050 /* Assets.xcassets */,
 				BB00010051 /* Localizable.xcstrings */,
 				BB00010206 /* InfoPlist.xcstrings */,
+				BB00010053 /* PrivacyInfo.xcprivacy */,
+				BB00010054 /* LaunchScreen.storyboard */,
 				BB00010052 /* CHANGELOG.md */,
 			);
 			path = Resources;
@@ -411,6 +420,8 @@
 				AA00010050 /* Assets.xcassets in Resources */,
 				AA00010051 /* Localizable.xcstrings in Resources */,
 				AA00010206 /* InfoPlist.xcstrings in Resources */,
+				AA00010053 /* PrivacyInfo.xcprivacy in Resources */,
+				AA00010054 /* LaunchScreen.storyboard in Resources */,
 				AA00010052 /* CHANGELOG.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -427,6 +438,7 @@
 				AA00010003 /* AppEnvironment.swift in Sources */,
 				AA00010004 /* DesignSystem.swift in Sources */,
 				AA00010005 /* RootView.swift in Sources */,
+				AA00010006 /* LaunchScreenOverlayView.swift in Sources */,
 				AA00010010 /* MealieModels.swift in Sources */,
 				AA00010011 /* AppError.swift in Sources */,
 				AA00010020 /* MealieAPIClient.swift in Sources */,

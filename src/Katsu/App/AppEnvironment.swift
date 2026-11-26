@@ -77,6 +77,7 @@ final class AppEnvironment: ObservableObject {
         }
         refreshAllRecipeCacheSnapshot()
 
+        #if DEBUG
         if configuration.useMockServer,
            let token = configuration.debugAuthToken,
            self.activeProfile == nil {
@@ -94,6 +95,7 @@ final class AppEnvironment: ObservableObject {
             recipeCacheSnapshot = recipeOfflineCache.snapshot(profileID: profile.id)
             refreshAllRecipeCacheSnapshot()
         }
+        #endif
 
         reloadFavoriteRecipeIDs()
         startNetworkMonitor()
@@ -104,9 +106,13 @@ final class AppEnvironment: ObservableObject {
     }
 
     static func live(configuration: AppConfiguration) -> AppEnvironment {
+        #if DEBUG
         let apiClient: MealieAPIClient = configuration.useMockServer
             ? MockMealieAPIClient.preloaded(serverVersion: configuration.debugMockServerVersion)
             : URLSessionMealieAPIClient()
+        #else
+        let apiClient: MealieAPIClient = URLSessionMealieAPIClient()
+        #endif
 
         return AppEnvironment(
             configuration: configuration,

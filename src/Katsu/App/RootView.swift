@@ -5,9 +5,18 @@ import SwiftUI
 struct RootView: View {
     @EnvironmentObject private var env: AppEnvironment
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var showLaunchOverlay = true
 
     var body: some View {
-        HomeView()
-            .animation(reduceMotion ? nil : .easeInOut, value: env.activeProfile?.id)
+        ZStack {
+            HomeView()
+                .animation(reduceMotion ? nil : .easeInOut, value: env.activeProfile?.id)
+
+            if showLaunchOverlay {
+                LaunchScreenOverlayView {
+                    showLaunchOverlay = false
+                }
+            }
+        }
     }
 }
