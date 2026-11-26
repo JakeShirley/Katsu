@@ -1,3 +1,4 @@
+#if DEBUG
 import Foundation
 
 /// In-memory implementation used when `-debugUseMockServer` is set. Backed
@@ -960,3 +961,4 @@ final class MockMealieAPIClient: MealieAPIClient, @unchecked Sendable {
             .joined(separator: " ")
     }
 }
+#endif

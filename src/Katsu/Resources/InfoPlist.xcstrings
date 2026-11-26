@@ -29,6 +29,35 @@
           }
         }
       }
+    },
+    "NSLocalNetworkUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Katsu nutzt das lokale Netzwerk, um eine Verbindung zu selbst gehosteten Mealie-Servern in Ihrem Netzwerk herzustellen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Katsu uses the local network to connect to self-hosted Mealie servers on your network."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Katsu usa la red local para conectarse a servidores Mealie autohospedados en tu red."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Katsuはローカルネットワークを使用して、同じネットワーク上のセルフホスト型Mealieサーバーに接続します。"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

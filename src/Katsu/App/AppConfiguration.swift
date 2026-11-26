@@ -4,12 +4,15 @@ import Foundation
 /// variables. See `docs/DEVELOPMENT.md` for the full list of supported flags.
 struct AppConfiguration: Equatable {
     var initialServerURL: URL?
+    #if DEBUG
     var useMockServer: Bool
     var debugAuthToken: String?
     var debugMockServerVersion: String?
     var openSettingsOnLaunch: Bool
     var openChangelogOnLaunch: Bool
+    #endif
 
+    #if DEBUG
     static let empty = AppConfiguration(
         initialServerURL: nil,
         useMockServer: false,
@@ -18,6 +21,9 @@ struct AppConfiguration: Equatable {
         openSettingsOnLaunch: false,
         openChangelogOnLaunch: false
     )
+    #else
+    static let empty = AppConfiguration(initialServerURL: nil)
+    #endif
 
     static func fromProcess(
         arguments: [String] = ProcessInfo.processInfo.arguments,
@@ -37,6 +43,7 @@ struct AppConfiguration: Equatable {
             config.initialServerURL = url
         }
 
+        #if DEBUG
         if arguments.contains("-debugUseMockServer") || environment["KATSU_USE_MOCK_SERVER"] == "1" {
             config.useMockServer = true
         }
@@ -57,6 +64,7 @@ struct AppConfiguration: Equatable {
         if arguments.contains("-debugShowChangelog") {
             config.openChangelogOnLaunch = true
         }
+        #endif
 
         return config
     }

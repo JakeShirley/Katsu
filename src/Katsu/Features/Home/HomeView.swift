@@ -34,9 +34,13 @@ struct HomeView: View {
                 await env.refreshActiveServerInfo()
             }
             .onAppear {
+                #if DEBUG
                 if env.configuration.openSettingsOnLaunch {
                     selectedTab = .settings
-                } else if !enabledTabs.contains(selectedTab) {
+                    return
+                }
+                #endif
+                if !enabledTabs.contains(selectedTab) {
                     selectedTab = enabledTabs.first ?? .settings
                 }
             }
